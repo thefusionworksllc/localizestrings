@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+  <file source-language="en" target-language="" original="sample" datatype="plaintext">
+    <header>
+      <skl>
+        <external-file href="sample.skl"/>
+      </skl>
+    </header>
+    <body>
+      <trans-unit id="1">
+        <source>Welcome to our application </source>
+        <target></target>
+      </trans-unit>
+      <trans-unit id="2">
+        <source>Please select your language</source>
+        <target></target>
+      </trans-unit>
+      <trans-unit id="3">
+        <source>Thank you for using our service</source>
+        <target></target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
