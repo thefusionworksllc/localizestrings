@@ -434,14 +434,14 @@ export default function Home() {
               LocalizeStrings.com
             </Typography>
             <Typography variant="body2" sx={{ color: '#9ca3af' }}>
-              Your ultimate translation and localization platform
+              Your Ultimate Translation and Localization Platform!!
             </Typography>
           </div>
           <div>
             <Typography variant="h6" sx={{ color: 'white', mb: 2 }}>Links</Typography>
             <ul className={styles.footerLinks}>
               <li><Link href="/features">Features</Link></li>
-              <li><Link href="/pricing">Pricing</Link></li>
+              <li><Link href="/support">Support</Link></li>
               <li><Link href="/about">About Us</Link></li>
               <li><Link href="/contact">Contact Us</Link></li>
             </ul>
