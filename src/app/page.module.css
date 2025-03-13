@@ -20,11 +20,11 @@
 }
 
 .heroTitle {
-  font-size: 2rem;
-  font-weight: 400;
+  font-size: 1.75rem;
+  font-weight: 800;
   color: #1a1a1a;
-  margin-bottom: 1.5rem;
-  line-height: 1.2;
+  margin-bottom: 2rem;
+  line-height: 1.3;
   background: linear-gradient(135deg, #7c3aed 0%, #6366f1 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -33,38 +33,38 @@
 .heroSubtitle {
   font-size: 1rem;
   color: #6b7280;
-  margin-bottom: 2.5rem;
-  max-width: 600px;
+  margin-bottom: 2rem;
+  max-width: 800px;
   margin-left: auto;
   margin-right: auto;
-  line-height: 1.6;
+  line-height: 1.4;
 }
 
 .ctaButtons {
   display: flex;
   gap: 1rem;
   justify-content: center;
-  margin-bottom: 3rem;
+  margin-bottom: 2rem;
 }
 
 .primaryButton {
-  padding: 0.875rem 2rem;
+  padding: 0.75rem 1.5rem;
   background: linear-gradient(135deg, #7c3aed 0%, #6366f1 100%);
   color: white;
   border-radius: 6px;
   font-weight: 600;
   transition: all 0.3s ease;
   border: none;
-  box-shadow: 0 4px 6px rgba(124, 58, 237, 0.15);
+  box-shadow: 0 4px 6px rgba(124, 58, 237, 0.2);
 }
 
 .primaryButton:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 8px rgba(124, 58, 237, 0.2);
+  box-shadow: 0 6px 8px rgba(124, 58, 237, 0.25);
 }
 
 .secondaryButton {
-  padding: 0.875rem 2rem;
+  padding: 0.75rem 1.5rem;
   background: white;
   color: #7c3aed;
   border: 1px solid rgba(124, 58, 237, 0.3);
@@ -74,33 +74,49 @@
 }
 
 .secondaryButton:hover {
+  transform: translateY(-2px);
   background: rgba(124, 58, 237, 0.05);
+}
+
+.imageContainer {
+  margin-top: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.heroImage {
+  transition: opacity 0.5s ease-in-out;
+  opacity: 1;
+}
+
+.fadeOut {
+  opacity: 0;
 }
 
 /* Key Advantages Section */
 .advantagesSection {
-  padding: 6rem 2rem;
+  padding: 4rem 2rem;
   background: white;
+  text-align: center;
 }
 
 .sectionTitle {
-  font-size: 2rem;
+  font-size: 1.75rem;
   font-weight: 700;
-  color: #1a1a1a;
-  text-align: center;
-  margin-bottom: 3rem;
+  color: #7c3aed;
+  margin-bottom: 1rem;
 }
 
 .advantagesGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 1.5rem;
   max-width: 1200px;
   margin: 0 auto;
 }
 
 .advantageCard {
-  padding: 1.5rem;
+  padding: 1.25rem;
   background: white;
   border-radius: 8px;
   border: 1px solid rgba(0, 0, 0, 0.05);
@@ -114,8 +130,9 @@
 
 /* Use Cases Section */
 .useCasesSection {
-  padding: 6rem 2rem;
+  padding: 4rem 2rem;
   background: #fafafa;
+  text-align: center;
 }
 
 .useCasesGrid {
@@ -128,8 +145,9 @@
 
 /* How It Works Section */
 .howItWorksSection {
-  padding: 6rem 2rem;
+  padding: 4rem 2rem;
   background: white;
+  text-align: center;
 }
 
 .stepsGrid {
@@ -142,20 +160,21 @@
 
 /* Testimonials Section */
 .testimonialsSection {
-  padding: 6rem 2rem;
+  padding: 4rem 2rem;
   background: #fafafa;
+  text-align: center;
 }
 
 .testimonialGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 2rem;
   max-width: 1200px;
   margin: 0 auto;
 }
 
 .testimonialCard {
-  padding: 1.5rem;
+  padding: 1.25rem;
   background: white;
   border-radius: 8px;
   border: 1px solid rgba(0, 0, 0, 0.05);
@@ -169,8 +188,9 @@
 
 /* Pricing Section */
 .pricingSection {
-  padding: 6rem 2rem;
+  padding: 4rem 2rem;
   background: white;
+  text-align: center;
 }
 
 .pricingGrid {
@@ -186,7 +206,6 @@
   background: white;
   border-radius: 8px;
   border: 1px solid rgba(0, 0, 0, 0.05);
-  text-align: center;
   transition: all 0.3s ease;
 }
 
@@ -197,7 +216,7 @@
 
 /* Call-to-Action Section */
 .ctaSection {
-  padding: 6rem 2rem;
+  padding: 4rem 2rem;
   background: linear-gradient(135deg, #7c3aed 0%, #6366f1 100%);
   color: white;
   text-align: center;
@@ -205,7 +224,7 @@
 
 /* Footer */
 .footer {
-  padding: 4rem 2rem;
+  padding: 3rem 2rem;
   background: #111827;
   color: white;
 }
@@ -213,7 +232,7 @@
 .footerGrid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 3rem;
+  gap: 2rem;
   max-width: 1200px;
   margin: 0 auto;
 }
@@ -225,7 +244,7 @@
 }
 
 .footerLinks li {
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.5rem;
 }
 
 .footerLinks a {
@@ -248,20 +267,21 @@
 /* Responsive Design */
 @media (max-width: 768px) {
   .heroTitle {
-    font-size: 2.25rem;
+    font-size: 1.5rem;
   }
 
   .heroSubtitle {
-    font-size: 1rem;
+    font-size: 0.875rem;
   }
 
   .ctaButtons {
     flex-direction: column;
-    padding: 0 1rem;
   }
 
   .sectionTitle {
-    font-size: 1.75rem;
+    font-size: 1.5rem;
+    color: #7c3aed;
+    font-weight: 800;
   }
 
   .footerGrid {
@@ -269,20 +289,22 @@
   }
 }
 
-.imageContainer {
-  position: relative;
-  overflow: hidden;
+.supportUsSection {
+  padding: 4rem 2rem;
+  background: #f9f9f9; /* Light background for contrast */
+  text-align: center;
 }
 
-.heroImage {
-  transition: opacity 0.5s ease-in-out; /* Fade-in effect */
-  opacity: 1; /* Start fully visible */
+.supportUsSection .sectionTitle {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #7c3aed;
+  margin-bottom: 1.5rem;
 }
 
-.heroImage.fade-out {
-  opacity: 0; /* Fade out */
-}
-
-.fadeOut {
-  opacity: 0; /* Fade out */
+.slideControls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0.5rem;
 }

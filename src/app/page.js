@@ -1,20 +1,48 @@
 'use client';
 import { useState, useCallback, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { Box, Button, Typography, CircularProgress, Alert, TextField, Autocomplete, Chip, Card, CardContent, Avatar } from '@mui/material';
-import { Language, Speed, Security, CloudUpload, Group, CheckCircle, Timeline, Code, Business, Create, Facebook, Twitter, LinkedIn, GitHub } from '@mui/icons-material';
+import {
+  Box,
+  Button,
+  Typography,
+  CircularProgress,
+  Alert,
+  TextField,
+  Autocomplete,
+  Chip,
+  Card,
+  CardContent,
+  Avatar
+} from '@mui/material';
+import {
+  Language,
+  Speed,
+  Security,
+  CloudUpload,
+  Group,
+  CheckCircle,
+  Timeline,
+  Code,
+  Business,
+  Create,
+  Facebook,
+  Twitter,
+  LinkedIn,
+  GitHub,
+  Pause,
+  PlayArrow
+} from '@mui/icons-material';
 import { languages, popularLanguages, getLanguageName } from './utils/languages';
-import { createBrowserClient } from '@supabase/ssr';
+import supabase from './supabaseClient'; // Import the singleton instance
 import styles from './page.module.css';
 import Image from 'next/image';
+import Link from 'next/link';
 
 const images = [
   '/SS_1.jpg',
   '/SS_2.jpg',
-  //'/public/SS_3.jpg',
-  // Add more images as needed
 ];
-
+    
 export default function Home() {
   const [file, setFile] = useState(null);
   const [targetLanguages, setTargetLanguages] = useState([]);
@@ -25,10 +53,8 @@ export default function Home() {
   const [email, setEmail] = useState('');
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [fadeOut, setFadeOut] = useState(false);
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-  );
+  const [isPlaying, setIsPlaying] = useState(true);
+  const totalSlides = images.length;
 
   // Update user state when session changes
   useEffect(() => {
@@ -46,125 +72,34 @@ export default function Home() {
 
   // Slideshow effect
   useEffect(() => {
-    const interval = setInterval(() => {
-      setFadeOut(true); // Start fade out
-      setTimeout(() => {
-        setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
-        setFadeOut(false); // End fade out
-      }, 500); // Match this duration with the CSS transition duration
-    }, 4000); // Change image every 3 seconds
+    let interval;
+    let timeout;
 
-    return () => clearInterval(interval);
-  }, []);
+    if (isPlaying) {
+      interval = setInterval(() => {
+        setFadeOut(true);
+        setTimeout(() => {
+          setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
+          setFadeOut(false);
+        }, 500);
+      }, 5000);
 
-  const onDrop = useCallback((acceptedFiles) => {
-    if (acceptedFiles.length > 0) {
-      setFile(acceptedFiles[0]);
-      setError(null);
-    }
-  }, []);
-
-  const { getRootProps, getInputProps } = useDropzone({
-    onDrop,
-    accept: {
-      'application/xliff+xml': ['.xlf', '.xliff']
-    },
-    maxFiles: 1
-  });
-
-  const handleTranslate = async () => {
-    if (!file || targetLanguages.length === 0) {
-      setError('Please select a file and at least one target language');
-      return;
+      // Pause the slideshow after 1 minute
+      timeout = setTimeout(() => {
+        setIsPlaying(false);
+      }, 60000); // 1 minute
     }
 
-    setLoading(true);
-    setError(null);
-    setSuccess(false);
+    return () => {
+      clearInterval(interval);
+      clearTimeout(timeout);
+    };
+  }, [isPlaying]);
 
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('targetLanguages', JSON.stringify(targetLanguages));
-
-      const headers = new Headers();
-      if (session?.access_token) {
-        headers.append('Authorization', `Bearer ${session.access_token}`);
-      }
-
-      const response = await fetch('/api/translate', {
-        method: 'POST',
-        headers,
-        body: formData
-      });
-
-      if (!response.ok) {
-        throw new Error('Translation failed. Please try again.');
-      }
-
-      const data = await response.json();
-      // Handle file download logic here...
-
-      setSuccess(true);
-    } catch (err) {
-      setError(err.message || 'Translation failed. Please try again.');
-    } finally {
-      setLoading(false);
-    }
+  const handlePlayPause = () => {
+    setIsPlaying((prev) => !prev);
   };
 
-  const handleLanguageChange = (event, newValue) => {
-    const maxLanguages = user ? 3 : 1;
-    if (newValue.length > maxLanguages) {
-      setError(`You can select up to ${maxLanguages} language${maxLanguages > 1 ? 's' : ''}.`);
-      return;
-    }
-    setTargetLanguages(newValue.map(lang => lang.code));
-    setError(null);
-  };
-
-  // Pricing tiers data
-  const pricingTiers = [
-    {
-      title: 'Free Plan',
-      price: '$0',
-      features: [
-        'Basic translation features',
-        'Limited file formats',
-        'Community support',
-        '1 project',
-        'Basic API access'
-      ]
-    },
-    {
-      title: 'Pro Plan',
-      price: '$49',
-      features: [
-        'Full access to all features',
-        'All file formats supported',
-        'Priority support',
-        'Unlimited projects',
-        'Advanced API access',
-        'Translation memory'
-      ]
-    },
-    {
-      title: 'Enterprise Plan',
-      price: 'Custom',
-      features: [
-        'Custom solutions',
-        'Dedicated support',
-        'SLA guarantee',
-        'Custom integrations',
-        'Advanced security features',
-        'Team management'
-      ]
-    }
-  ];
-
-  // Testimonials data
   const testimonials = [
     {
       name: 'John D.',
@@ -191,64 +126,72 @@ export default function Home() {
       {/* Hero Section */}
       <section className={styles.heroSection}>
         <div className={styles.heroContent}>
-         
-          <Typography 
-            variant="h1" 
+          <Typography
+            variant="h3"
             className={styles.heroTitle}
-            sx={{ fontWeight: 500 }}
+            sx={{ fontWeight: 600 }}
           >
             Your Ultimate Tool for Seamless Translation and Localization
           </Typography>
-          <Typography 
-            variant="h2" 
+          <Typography
+            variant="h5"
             className={styles.heroSubtitle}
-            sx={{ fontWeight: 300 }}
+            sx={{ fontWeight: 400 ,mb: 2}}
           >
-            Translate and localize your content effortlessly with support for XLIFF, JSON, strings.xml, and more. 
-            Perfect for developers, translators, and businesses.
+            Translate and localize your content effortlessly, powered by Google Translate API.<br />
+            Perfect for developers, translators, content creators and businesses.
           </Typography>
           <div className={styles.ctaButtons}>
             <Button 
               variant="contained" 
               className={styles.primaryButton}
+              href="/xliff-online-translator"
               sx={{
                 textTransform: 'none',
                 fontSize: '1rem',
-                minWidth: '160px'
+                minWidth: '140px',
+                fontWeight: 600
               }}
             >
-              Get Started for Free
+              Get Started
             </Button>
             <Button 
               variant="outlined" 
               className={styles.secondaryButton}
+              href="/features"
               sx={{
                 textTransform: 'none',
                 fontSize: '1rem',
-                minWidth: '160px'
+                minWidth: '140px'
               }}
             >
               Explore Features
             </Button>
-            
           </div>
+
           <div className={styles.imageContainer}>
             <Image 
-              src={images[currentImageIndex]} // Use the current image index
+              src={images[currentImageIndex]}
               alt="Hero Image"
-              layout="responsive"
-              width={700}
+             // layout="responsive"
+              priority = {true}
+              width={750}
               height={400}
-              className={`${styles.heroImage} ${fadeOut ? styles.fadeOut : ''}`} // Apply fade-out class
+              className={`${styles.heroImage} ${fadeOut ? styles.fadeOut : ''}`}
             />
+            <div className={styles.slideControls}>
+              <Button onClick={handlePlayPause} variant="outlined" sx={{ marginRight: 2 }}>
+                {isPlaying ? <Pause /> : <PlayArrow />}
+              </Button>             
+            </div>
           </div>
         </div>
       </section>
 
       {/* Key Advantages Section */}
       <section className={styles.advantagesSection}>
-        <Typography 
-          variant="h2" 
+        <Typography
+          variant="h4"
           className={styles.sectionTitle}
           sx={{ fontWeight: 700 }}
         >
@@ -256,16 +199,34 @@ export default function Home() {
         </Typography>
         <div className={styles.advantagesGrid}>
           {[
-            { icon: <Language sx={{ fontSize: 32 }} />, title: 'Multi-Format Support', description: 'Translate and localize XLIFF, JSON, strings.xml, PO, YAML, and more.' },
-            { icon: <Group sx={{ fontSize: 32 }} />, title: 'Real-Time Collaboration', description: 'Work with your team in real-time on translation projects.' },
-            { icon: <Timeline sx={{ fontSize: 32 }} />, title: 'Translation Memory', description: 'Save time with reusable translations and consistent terminology.' },
-            { icon: <CheckCircle sx={{ fontSize: 32 }} />, title: 'Quality Assurance', description: 'Automated QA checks to ensure accurate and consistent translations.' },
-            { icon: <Code sx={{ fontSize: 32 }} />, title: 'Easy Integration', description: 'Seamlessly integrate with your existing workflows and tools.' }
+            {
+              icon: <Language sx={{ fontSize: 28 }} />,
+              title: 'Multi Language Support',
+              description: 'Support for over 100 languages with high accuracy translations'
+            },
+            
+            {
+              icon: <Timeline sx={{ fontSize: 28 }} />,
+              title: 'Translation Memory',
+              description: 'Save time with reusable translations and consistent terminology.'
+            },
+            {
+              icon: <CheckCircle sx={{ fontSize: 28 }} />,
+              title: 'Quality Assurance',
+              description: 'Automated QA checks to ensure accurate and consistent translations.'
+            },
+            {
+              icon: <Speed sx={{ fontSize: 28 }} />,
+              title: 'Lightning Fast',
+              description: 'Get instant translations for your files with our optimized processing engine'
+            }
           ].map((advantage, index) => (
             <Card key={index} className={styles.advantageCard} elevation={0}>
               <CardContent>
                 <Box sx={{ color: '#7c3aed', mb: 2 }}>{advantage.icon}</Box>
-                <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>{advantage.title}</Typography>
+                <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
+                  {advantage.title}
+                </Typography>
                 <Typography variant="body2" sx={{ color: '#6b7280' }}>
                   {advantage.description}
                 </Typography>
@@ -277,8 +238,8 @@ export default function Home() {
 
       {/* Use Cases Section */}
       <section className={styles.useCasesSection}>
-        <Typography 
-          variant="h2" 
+        <Typography
+          variant="h4"
           className={styles.sectionTitle}
           sx={{ fontWeight: 700 }}
         >
@@ -286,15 +247,33 @@ export default function Home() {
         </Typography>
         <div className={styles.useCasesGrid}>
           {[
-            { icon: <Code sx={{ fontSize: 32 }} />, title: 'Developers', description: 'Localize your apps and software with support for XLIFF, JSON, and strings.xml.' },
-            { icon: <Language sx={{ fontSize: 32 }} />, title: 'Translators', description: 'Simplify your workflow with real-time collaboration and translation memory.' },
-            { icon: <Business sx={{ fontSize: 32 }} />, title: 'Businesses', description: 'Expand your global reach with accurate and consistent translations.' },
-            { icon: <Create sx={{ fontSize: 32 }} />, title: 'Content Creators', description: 'Localize your content for a global audience with ease.' }
+            {
+              icon: <Code sx={{ fontSize: 28 }} />,
+              title: 'Developers',
+              description: 'Localize your apps with support for XLIFF, JSON, and strings.xml.'
+            },
+            {
+              icon: <Language sx={{ fontSize: 28 }} />,
+              title: 'Translators',
+              description: 'Simplify your workflow with real-time collaboration and translation memory.'
+            },
+            {
+              icon: <Business sx={{ fontSize: 28 }} />,
+              title: 'Businesses',
+              description: 'Expand your global reach with accurate and consistent translations.'
+            },
+            {
+              icon: <Create sx={{ fontSize: 28 }} />,
+              title: 'Content Creators',
+              description: 'Localize your content for a global audience with ease.'
+            }
           ].map((useCase, index) => (
             <Card key={index} className={styles.advantageCard} elevation={0}>
               <CardContent>
                 <Box sx={{ color: '#7c3aed', mb: 2 }}>{useCase.icon}</Box>
-                <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>{useCase.title}</Typography>
+                <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
+                  {useCase.title}
+                </Typography>
                 <Typography variant="body2" sx={{ color: '#6b7280' }}>
                   {useCase.description}
                 </Typography>
@@ -306,8 +285,8 @@ export default function Home() {
 
       {/* How It Works Section */}
       <section className={styles.howItWorksSection}>
-        <Typography 
-          variant="h2" 
+        <Typography
+          variant="h4"
           className={styles.sectionTitle}
           sx={{ fontWeight: 700 }}
         >
@@ -315,17 +294,44 @@ export default function Home() {
         </Typography>
         <div className={styles.stepsGrid}>
           {[
-            { step: 1, title: 'Upload Your File', description: 'Upload your XLIFF, JSON, or strings.xml file.' },
-            { step: 2, title: 'Select Languages', description: 'Choose the source and target languages.' },
-            { step: 3, title: 'Translate', description: 'Use our powerful translation tools to localize your content.' },
-            { step: 4, title: 'Download', description: 'Download the translated file and integrate it into your project.' }
+            {
+              step: 1,
+              title: 'Upload Your File',
+              description: 'Upload your XLIFF, JSON, or strings.xml file.'
+            },
+            {
+              step: 2,
+              title: 'Select Languages',
+              description: 'Choose the source and target languages.'
+            },
+            {
+              step: 3,
+              title: 'Translate',
+              description: 'Use our powerful translation tools to localize your content.'
+            },
+            {
+              step: 4,
+              title: 'Download',
+              description: 'Download the translated file and integrate it into your project.'
+            }
           ].map((step, index) => (
             <Card key={index} className={styles.advantageCard} elevation={0}>
               <CardContent>
-                <Typography variant="h1" sx={{ color: '#7c3aed', opacity: 0.15, mb: 2, fontSize: '4rem', fontWeight: 800 }}>
+                <Typography
+                  variant="h1"
+                  sx={{
+                    color: '#7c3aed',
+                    opacity: 0.6,
+                    mb: 2,
+                    fontSize: '2.5rem',
+                    fontWeight: 800
+                  }}
+                >
                   {step.step}
                 </Typography>
-                <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>{step.title}</Typography>
+                <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
+                  {step.title}
+                </Typography>
                 <Typography variant="body2" sx={{ color: '#6b7280' }}>
                   {step.description}
                 </Typography>
@@ -337,7 +343,7 @@ export default function Home() {
 
       {/* Testimonials Section */}
       <section className={styles.testimonialsSection}>
-        <Typography variant="h2" className={styles.sectionTitle}>
+        <Typography variant="h4" className={styles.sectionTitle} sx={{ fontWeight: 700 }}>
           What Our Users Are Saying
         </Typography>
         <div className={styles.testimonialGrid}>
@@ -345,7 +351,8 @@ export default function Home() {
             <Card key={index} className={styles.testimonialCard}>
               <CardContent>
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                  <Avatar src={testimonial.avatar} sx={{ mr: 2 }} />
+                  <Avatar //src={testimonial.avatar} 
+                  sx={{ mr: 2 , color: '#7c3aed',opacity: 0.6}} />
                   <Box>
                     <Typography variant="h6">{testimonial.name}</Typography>
                     <Typography variant="body2" color="text.secondary">
@@ -360,54 +367,56 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Pricing Section */}
-      <section className={styles.pricingSection}>
-        <Typography variant="h2" className={styles.sectionTitle}>
-          Flexible Pricing for Every Need
+      {/* Support Us Section */}
+      <section className={styles.supportUsSection}>
+        <Typography variant="h4" className={styles.sectionTitle}>
+          Support Us
         </Typography>
-        <div className={styles.pricingGrid}>
-          {pricingTiers.map((tier, index) => (
-            <Card key={index} className={styles.pricingCard}>
-              <CardContent>
-                <Typography variant="h5" gutterBottom>{tier.title}</Typography>
-                <Typography variant="h3" sx={{ color: '#7c3aed', my: 2 }}>
-                  {tier.price}
-                </Typography>
-                <Box sx={{ my: 3 }}>
-                  {tier.features.map((feature, i) => (
-                    <Typography key={i} variant="body2" sx={{ mb: 1 }}>
-                      ✓ {feature}
-                    </Typography>
-                  ))}
-                </Box>
-                <Button 
-                  variant="contained" 
-                  fullWidth 
-                  sx={{ 
-                    background: 'linear-gradient(135deg, #7c3aed 0%, #6366f1 100%)',
-                    '&:hover': { opacity: 0.9 }
-                  }}
-                >
-                  Choose {tier.title}
-                </Button>
-              </CardContent>
-            </Card>
-          ))}
+        <Typography variant="body1" sx={{ mb: 2 }}>
+          If you appreciate our services and want to support us, consider signing up or making a donation.
+        </Typography>
+        <div className={styles.ctaButtons}>
+          <Button 
+            variant="contained" 
+            className={styles.primaryButton}
+            href="/signup"
+            sx={{
+              textTransform: 'none',
+              fontSize: '1rem',
+              minWidth: '140px'
+            }}
+          >
+            Sign Up
+          </Button>
+          <Link href="/support" passHref>
+            <Button 
+              variant="outlined" 
+              className={styles.secondaryButton}
+              sx={{
+                textTransform: 'none',
+                fontSize: '1rem',
+                minWidth: '140px'
+              }}
+            >
+              Support Us
+            </Button>
+          </Link>
         </div>
       </section>
 
       {/* Call-to-Action Section */}
       <section className={styles.ctaSection}>
-        <Typography variant="h2" sx={{ color: 'white', mb: 2 }}>
+        <Typography variant="h4" sx={{ color: 'white', mb: 2 }}>
           Ready to Simplify Your Localization Workflow?
         </Typography>
-        <Typography variant="h6" sx={{ color: 'white', mb: 4 }}>
+        <Typography variant="body1" sx={{ color: 'white', mb: 4 }}>
           Join thousands of developers, translators, and businesses who trust LocalizeStrings.com for their translation needs.
         </Typography>
-        <Button 
-          variant="contained" 
+        <Button
+          variant="contained"
           size="large"
-          sx={{ 
+          href="/xliff-online-translator"
+          sx={{
             background: 'white',
             color: '#7c3aed',
             '&:hover': { background: '#f3f4f6' }
@@ -431,17 +440,17 @@ export default function Home() {
           <div>
             <Typography variant="h6" sx={{ color: 'white', mb: 2 }}>Links</Typography>
             <ul className={styles.footerLinks}>
-              <li><a href="#">Features</a></li>
-              <li><a href="#">Pricing</a></li>
-              <li><a href="#">Blog</a></li>
-              <li><a href="#">Contact Us</a></li>
+              <li><Link href="/features">Features</Link></li>
+              <li><Link href="/pricing">Pricing</Link></li>
+              <li><Link href="/about">About Us</Link></li>
+              <li><Link href="/contact">Contact Us</Link></li>
             </ul>
           </div>
           <div>
             <Typography variant="h6" sx={{ color: 'white', mb: 2 }}>Legal</Typography>
             <ul className={styles.footerLinks}>
-              <li><a href="#">Privacy Policy</a></li>
-              <li><a href="#">Terms of Service</a></li>
+              <li><Link href="/privacy-policy">Privacy Policy</Link></li>
+              <li><Link href="/terms-of-service">Terms of Service</Link></li>
             </ul>
           </div>
           <div>
@@ -464,9 +473,9 @@ export default function Home() {
                   }
                 }}
               />
-              <Button 
+              <Button
                 variant="contained"
-                sx={{ 
+                sx={{
                   background: '#7c3aed',
                   '&:hover': { background: '#6d28d9' }
                 }}
