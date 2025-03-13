@@ -1,11 +1,48 @@
 'use client';
 import { useState, useCallback, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { Box, Button, Typography, CircularProgress, Alert, TextField, Autocomplete, Chip } from '@mui/material';
-import { Language, Speed, Security, CloudUpload } from '@mui/icons-material';
+import {
+  Box,
+  Button,
+  Typography,
+  CircularProgress,
+  Alert,
+  TextField,
+  Autocomplete,
+  Chip,
+  Card,
+  CardContent,
+  Avatar
+} from '@mui/material';
+import {
+  Language,
+  Speed,
+  Security,
+  CloudUpload,
+  Group,
+  CheckCircle,
+  Timeline,
+  Code,
+  Business,
+  Create,
+  Facebook,
+  Twitter,
+  LinkedIn,
+  GitHub,
+  Pause,
+  PlayArrow
+} from '@mui/icons-material';
 import { languages, popularLanguages, getLanguageName } from './utils/languages';
-import { createBrowserClient } from '@supabase/ssr';
+import supabase from './supabaseClient'; // Import the singleton instance
+import styles from './page.module.css';
+import Image from 'next/image';
+import Link from 'next/link';
 
+const images = [
+  '/SS_1.jpg',
+  '/SS_2.jpg',
+];
+    
 export default function Home() {
   const [file, setFile] = useState(null);
   const [targetLanguages, setTargetLanguages] = useState([]);
@@ -13,501 +50,448 @@ export default function Home() {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
   const [user, setUser] = useState(null);
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-  );
+  const [email, setEmail] = useState('');
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [fadeOut, setFadeOut] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(true);
+  const totalSlides = images.length;
 
   // Update user state when session changes
   useEffect(() => {
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      console.log('Auth state changed:', { 
-        event: _event, 
-        isLoggedIn: !!session,
-        email: session?.user?.email 
-      });
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user || null);
     });
 
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
-      console.log('Initial session check:', { 
-        isLoggedIn: !!session,
-        email: session?.user?.email 
-      });
       setUser(session?.user || null);
     });
 
     return () => subscription.unsubscribe();
   }, []);
 
-  const onDrop = useCallback((acceptedFiles) => {
-    if (acceptedFiles.length > 0) {
-      setFile(acceptedFiles[0]);
-      setError(null);
-    }
-  }, []);
-
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop,
-    accept: {
-      'application/xliff+xml': ['.xlf', '.xliff']
-    },
-    maxFiles: 1
-  });
-
-  const handleTranslate = async () => {
-    if (!file || targetLanguages.length === 0) {
-      setError('Please select a file and at least one target language');
-      return;
-    }
-
-    setLoading(true);
-    setError(null);
-    setSuccess(false);
-
-    try {
-      // Get current session and token
-      const { data: { session } } = await supabase.auth.getSession();
-      console.log('Current session:', { 
-        hasSession: !!session,
-        hasUser: !!session?.user,
-        email: session?.user?.email
-      });
-
-      if (!session?.access_token) {
-        console.error('No access token found');
-      }
-
-      // Convert language codes to full language objects
-      const languageObjects = targetLanguages.map(code => {
-        const lang = languages.find(l => l.code === code);
-        if (!lang) throw new Error(`Invalid language code: ${code}`);
-        return { code: lang.code, name: lang.name };
-      });
-
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('targetLanguages', JSON.stringify(languageObjects));
-
-      // Make the request with auth header
-      const headers = new Headers();
-      if (session?.access_token) {
-        headers.append('Authorization', `Bearer ${session.access_token}`);
-      }
-      console.log('Request headers:', {
-        hasAuth: headers.has('Authorization'),
-        authHeader: headers.get('Authorization')?.substring(0, 20) + '...'
-      });
-
-      const response = await fetch('/api/translate', {
-        method: 'POST',
-        headers,
-        body: formData
-      });
-
-      const data = await response.json();
-      console.log('Translation response:', { 
-        status: response.status, 
-        ok: response.ok,
-        error: data.error 
-      });
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Translation failed. Please try again.');
-      }
-
-      // Download each translated file
-      data.translations.forEach(({ content, fileName }) => {
-        const blob = new Blob([content], { type: 'application/xml' });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-
-        // Prefix the target language name with the original file name
-        const targetLanguageName = targetLanguages.map(code => {
-          const lang = languages.find(l => l.code === code);
-          return lang ? lang.name : '';
-        }).join('_'); // Join multiple languages with an underscore
-
-        // Use the original file name and prefix it with the target language name
-        const originalFileName = file.name.split('.').slice(0, -1).join('.'); // Remove file extension
-        a.download = `${originalFileName}_${targetLanguageName}_translated_content.xliff`; // Updated file name
-
-        document.body.appendChild(a);
-        a.click();
-        window.URL.revokeObjectURL(url);
-        document.body.removeChild(a);
-      });
-
-      setSuccess(true);
-    } catch (err) {
-      console.error('Translation error:', err);
-      setError(err.message || 'Translation failed. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleLanguageChange = (event, newValue) => {
-    const maxLanguages = user ? 3 : 1;
-    console.log('Language selection:', { 
-      newValue, 
-      currentCount: newValue.length,
-      maxLanguages,
-      isLoggedIn: !!user 
-    });
-    
-    // Don't allow more selections than the maximum
-    if (newValue.length > maxLanguages) {
-      setError(`You can select up to ${maxLanguages} language${maxLanguages > 1 ? 's' : ''}${!user ? '. Please sign in to select up to 3 languages.' : '.'}`);
-      return;
-    }
-
-    // Map full language objects to just codes for state
-    const languageCodes = newValue.map(lang => lang.code);
-    setTargetLanguages(languageCodes);
-    setError(null);
-  };
-
-  const loadSampleFile = async () => {
-    try {
-      const response = await fetch('/sample.xliff');
-      const blob = await response.blob();
-      const sampleFile = new File([blob], 'sample.xliff', { type: 'application/xliff+xml' });
-      setFile(sampleFile);
-      setError(null);
-    } catch (err) {
-      setError('Error loading sample file');
-    }
-  };
-
-  // Ensure targetLanguages stays within limits even if user logs out
+  // Slideshow effect
   useEffect(() => {
-    const maxLanguages = user ? 3 : 1;
-    if (targetLanguages.length > maxLanguages) {
-      setTargetLanguages(prev => prev.slice(0, maxLanguages));
-      setError(`Number of languages reduced to ${maxLanguages} due to ${user ? 'your current plan' : 'being logged out'}.`);
+    let interval;
+    let timeout;
+
+    if (isPlaying) {
+      interval = setInterval(() => {
+        setFadeOut(true);
+        setTimeout(() => {
+          setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
+          setFadeOut(false);
+        }, 500);
+      }, 5000);
+
+      // Pause the slideshow after 1 minute
+      timeout = setTimeout(() => {
+        setIsPlaying(false);
+      }, 60000); // 1 minute
     }
-  }, [user]);
+
+    return () => {
+      clearInterval(interval);
+      clearTimeout(timeout);
+    };
+  }, [isPlaying]);
+
+  const handlePlayPause = () => {
+    setIsPlaying((prev) => !prev);
+  };
+
+  const testimonials = [
+    {
+      name: 'John D.',
+      role: 'Developer',
+      quote: 'LocalizeStrings.com has made app localization so much easier. The multi-format support is a game-changer!',
+      avatar: '/avatars/john.jpg'
+    },
+    {
+      name: 'Maria S.',
+      role: 'Translator',
+      quote: 'The real-time collaboration feature has saved me so much time. Highly recommend it!',
+      avatar: '/avatars/maria.jpg'
+    },
+    {
+      name: 'Alex T.',
+      role: 'Business Owner',
+      quote: 'Expanding our business globally has never been easier. The translation memory ensures consistency across all our content.',
+      avatar: '/avatars/alex.jpg'
+    }
+  ];
 
   return (
-    <Box
-      sx={{
-        minHeight: 'calc(100vh - 64px)',
-        padding: { xs: 2, md: 4 },
-        background: '#f8f9fa'
-      }}
-    >
-      <Box
-        sx={{
-          maxWidth: 1200,
-          margin: '0 auto',
-        }}
-      >
-        <Typography
-          variant="h1"
-          sx={{
-            fontSize: '2rem',
-            marginBottom: 1,
-            background: 'linear-gradient(135deg, #7c3aed 0%, #6366f1 100%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            textAlign: 'center'
-          }}
-        >
-          XLIFF Translations Made Simple !!
-        </Typography>
-        
-        <Typography
-          variant="subtitle1"
-          sx={{
-            color: '#4b5563',
-            marginBottom: 2,
-            textAlign: 'center',
-            fontSize: '1rem'
-          }}
-        >
-          Transform your XLIFF files into multiple languages instantly using advanced
-          Google Translation API. Fast, accurate, and secure.
-        </Typography>
-
-        {/* Features Section */}
-        <Box
-          sx={{
-            display: 'grid',
-            gridTemplateColumns: { xs: '1fr', md: 'repeat(3, 1fr)' },
-            gap: 2,
-            mb: 3,
-            mt: 1
-          }}
-        >
-          <Box
-            sx={{
-              background: '#fff',
-              borderRadius: 2,
-              p: 2,
-              boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-              border: '1px solid rgba(124, 58, 237, 0.1)',
-              '&:hover': {
-                transform: 'translateY(-4px)',
-                boxShadow: '0 8px 24px rgba(124, 58, 237, 0.2)',
-                borderColor: 'rgba(124, 58, 237, 0.3)'
-              },
-              minHeight: '120px',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center'
-            }}
+    <div className={styles.container}>
+      {/* Hero Section */}
+      <section className={styles.heroSection}>
+        <div className={styles.heroContent}>
+          <Typography
+            variant="h3"
+            className={styles.heroTitle}
+            sx={{ fontWeight: 600 }}
           >
-            <Box sx={{ display: 'flex', alignItems: 'center', mb: 0.5 }}>
-              <Speed sx={{ fontSize: 28, color: '#7c3aed', mr: 1 }} />
-              <Typography variant="h6" sx={{ fontSize: '1rem', fontWeight: 600 }}>Lightning Fast</Typography>
-            </Box>
-            <Typography variant="body2" sx={{ color: '#6b7280', fontSize: '0.875rem', lineHeight: 1.4 }}>
-              Get instant translations in multiple languages simultaneously.
-            </Typography>
-          </Box>
-
-          <Box
-            sx={{
-              background: '#fff',
-              borderRadius: 2,
-              p: 2,
-              boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-              border: '1px solid rgba(124, 58, 237, 0.1)',
-              '&:hover': {
-                transform: 'translateY(-4px)',
-                boxShadow: '0 8px 24px rgba(124, 58, 237, 0.2)',
-                borderColor: 'rgba(124, 58, 237, 0.3)'
-              },
-              minHeight: '120px',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center'
-            }}
+            Your Ultimate Tool for Seamless Translation and Localization
+          </Typography>
+          <Typography
+            variant="h5"
+            className={styles.heroSubtitle}
+            sx={{ fontWeight: 400 ,mb: 2}}
           >
-            <Box sx={{ display: 'flex', alignItems: 'center', mb: 0.5 }}>
-              <Language sx={{ fontSize: 28, color: '#7c3aed', mr: 1 }} />
-              <Typography variant="h6" sx={{ fontSize: '1rem', fontWeight: 600 }}>Multiple Languages</Typography>
-            </Box>
-            <Typography variant="body2" sx={{ color: '#6b7280', fontSize: '0.875rem', lineHeight: 1.4 }}>
-              Support for over 100 languages with high accuracy translation.
-            </Typography>
-          </Box>
-
-          <Box
-            sx={{
-              background: '#fff',
-              borderRadius: 2,
-              p: 2,
-              boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-              border: '1px solid rgba(124, 58, 237, 0.1)',
-              '&:hover': {
-                transform: 'translateY(-4px)',
-                boxShadow: '0 8px 24px rgba(124, 58, 237, 0.2)',
-                borderColor: 'rgba(124, 58, 237, 0.3)'
-              },
-              minHeight: '120px',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center'
-            }}
-          >
-            <Box sx={{ display: 'flex', alignItems: 'center', mb: 0.5 }}>
-              <Security sx={{ fontSize: 28, color: '#7c3aed', mr: 1 }} />
-              <Typography variant="h6" sx={{ fontSize: '1rem', fontWeight: 600 }}>Secure & Reliable</Typography>
-            </Box>
-            <Typography variant="body2" sx={{ color: '#6b7280', fontSize: '0.875rem', lineHeight: 1.4 }}>
-              Your files are processed securely with enterprise-grade encryption.
-            </Typography>
-          </Box>
-        </Box>
-
-        {/* Upload and Translation Section */}
-        <Box
-          sx={{
-            background: 'rgba(255, 255, 255, 0.9)',
-            backdropFilter: 'blur(10px)',
-            borderRadius: 2,
-            p: 4,
-            maxWidth: 800,
-            margin: '0 auto'
-          }}
-        >
-          <Box
-            {...getRootProps()}
-            sx={{
-              border: '2px dashed #7c3aed',
-              borderRadius: 2,
-              padding: 4,
-              marginBottom: 3,
-              cursor: 'pointer',
-              transition: '0.2s ease-in-out',
-              '&:hover': {
-                transform: 'translateY(-2px)',
-                borderColor: '#6366f1'
-              }
-            }}
-          >
-            <input {...getInputProps()} />
-            <Box sx={{ textAlign: 'center' }}>
-              <CloudUpload sx={{ fontSize: 48, color: '#7c3aed', mb: 2 }} />
-              {isDragActive ? (
-                <Typography>Drop the XLIFF file here...</Typography>
-              ) : (
-                <>
-                  <Typography>
-                    Drag & drop an XLIFF file here, or click to select
-                  </Typography>
-                  <Button
-                    onClick={(e) => {
-                      e.stopPropagation(); // Prevent dropzone from triggering
-                      loadSampleFile();
-                    }}
-                    variant="text"
-                    sx={{
-                      mt: 1,
-                      color: '#7c3aed',
-                      '&:hover': {
-                        background: 'rgba(124, 58, 237, 0.1)'
-                      }
-                    }}
-                  >
-                    Try Sample File
-                  </Button>
-                </>
-              )}
-              {file && (
-                <Typography sx={{ mt: 2, color: '#6b7280' }}>
-                  Selected file: {file.name}
-                </Typography>
-              )}
-            </Box>
-          </Box>
-
-          <Box sx={{ marginBottom: 3 }}>
-            <Autocomplete
-              multiple
-              id="language-select"
-              options={languages}
-              value={targetLanguages.map(code => languages.find(lang => lang.code === code)).filter(Boolean)}
-              onChange={handleLanguageChange}
-              getOptionLabel={(option) => option.name}
-              isOptionEqualToValue={(option, value) => option.code === value.code}
-              disabled={loading}
-              limitTags={user ? 3 : 1}
-              disableCloseOnSelect={false}
-              componentsProps={{
-                paper: {
-                  sx: {
-                    pointerEvents: targetLanguages.length >= (user ? 3 : 1) ? 'none' : 'auto'
-                  }
-                }
-              }}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant="outlined"
-                  label={`Select Target Languages (${user ? '3 max' : '1 max'})`}
-                  placeholder={targetLanguages.length >= (user ? 3 : 1) ? '' : 'Choose a language'}
-                  error={Boolean(error)}
-                  helperText={error || `${targetLanguages.length}/${user ? 3 : 1} language${targetLanguages.length === 1 ? '' : 's'} selected`}
-                />
-              )}
-              renderTags={(value, getTagProps) =>
-                value.map((option, index) => {
-                  const { key, ...chipProps } = getTagProps({ index });
-                  return (
-                    <Chip
-                      key={key}
-                      {...chipProps}
-                      label={option.name}
-                      sx={{
-                        background: 'linear-gradient(135deg, #7c3aed 0%, #6366f1 100%)',
-                        color: 'white'
-                      }}
-                    />
-                  );
-                })
-              }
-            />
-
-            <Box
+            Translate and localize your content effortlessly, powered by Google Translate API.<br />
+            Perfect for developers, translators, content creators and businesses.
+          </Typography>
+          <div className={styles.ctaButtons}>
+            <Button 
+              variant="contained" 
+              className={styles.primaryButton}
+              href="/xliff-online-translator"
               sx={{
-                mt: 3,
-                background: 'linear-gradient(135deg, rgba(124, 58, 237, 0.1) 0%, rgba(99, 102, 241, 0.1) 100%)',
-                borderRadius: 2,
-                padding: 3,
-                border: '1px solid rgba(124, 58, 237, 0.1)',
-                boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05)',
-                backdropFilter: 'blur(10px)',
+                textTransform: 'none',
+                fontSize: '1rem',
+                minWidth: '140px',
+                fontWeight: 600
               }}
             >
-              <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold', color: '#4b5563' }}>
-                Popular Languages:
-              </Typography>
-              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, justifyContent: 'center' }}>
-                {popularLanguages.map(code => (
-                  <Chip
-                    key={code}
-                    label={getLanguageName(code)}
-                    onClick={() => {
-                      if (!targetLanguages.includes(code)) {
-                        setTargetLanguages([...targetLanguages, code]);
-                      }
-                    }}
-                    sx={{
-                      background: targetLanguages.includes(code)
-                        ? 'linear-gradient(135deg, #7c3aed 0%, #6366f1 100%)'
-                        : 'white',
-                      color: targetLanguages.includes(code) ? 'white' : '#4b5563',
-                      '&:hover': {
-                        background: targetLanguages.includes(code)
-                          ? 'linear-gradient(135deg, #7c3aed 0%, #6366f1 100%)'
-                          : 'rgba(124, 58, 237, 0.1)'
-                      }
-                    }}
-                  />
-                ))}
-              </Box>
-            </Box>
-          </Box>
-
-          <Box sx={{ textAlign: 'center' }}>
-            <Button
-              variant="contained"
-              disabled={false}
-              onClick={handleTranslate}
-              sx={{
-                mt: 2,
-                background: 'linear-gradient(135deg, #7c3aed 0%, #6366f1 100%)',
-                fontWeight: 'bold',
-                '&:hover': {
-                  background: 'linear-gradient(135deg, #7c3aed 0%, #6366f1 100%)',
-                  opacity: 0.9
-                }
-              }}
-            >
-              Translate Now
+              Get Started
             </Button>
+            <Button 
+              variant="outlined" 
+              className={styles.secondaryButton}
+              href="/features"
+              sx={{
+                textTransform: 'none',
+                fontSize: '1rem',
+                minWidth: '140px'
+              }}
+            >
+              Explore Features
+            </Button>
+          </div>
 
-            {error && (
-              <Alert severity="error" sx={{ mt: 2 }}>
-                {error}
-              </Alert>
-            )}
+          <div className={styles.imageContainer}>
+            <Image 
+              src={images[currentImageIndex]}
+              alt="Hero Image"
+             // layout="responsive"
+              priority = {true}
+              width={750}
+              height={400}
+              className={`${styles.heroImage} ${fadeOut ? styles.fadeOut : ''}`}
+            />
+            <div className={styles.slideControls}>
+              <Button onClick={handlePlayPause} variant="outlined" sx={{ marginRight: 2 }}>
+                {isPlaying ? <Pause /> : <PlayArrow />}
+              </Button>             
+            </div>
+          </div>
+        </div>
+      </section>
 
-            {success && (
-              <Alert severity="success" sx={{ mt: 2 }}>
-                Translation completed successfully! Files have been downloaded.
-              </Alert>
-            )}
-          </Box>
+      {/* Key Advantages Section */}
+      <section className={styles.advantagesSection}>
+        <Typography
+          variant="h4"
+          className={styles.sectionTitle}
+          sx={{ fontWeight: 700 }}
+        >
+          Why Choose LocalizeStrings.com?
+        </Typography>
+        <div className={styles.advantagesGrid}>
+          {[
+            {
+              icon: <Language sx={{ fontSize: 28 }} />,
+              title: 'Multi Language Support',
+              description: 'Support for over 100 languages with high accuracy translations'
+            },
+            
+            {
+              icon: <Timeline sx={{ fontSize: 28 }} />,
+              title: 'Translation Memory',
+              description: 'Save time with reusable translations and consistent terminology.'
+            },
+            {
+              icon: <CheckCircle sx={{ fontSize: 28 }} />,
+              title: 'Quality Assurance',
+              description: 'Automated QA checks to ensure accurate and consistent translations.'
+            },
+            {
+              icon: <Speed sx={{ fontSize: 28 }} />,
+              title: 'Lightning Fast',
+              description: 'Get instant translations for your files with our optimized processing engine'
+            }
+          ].map((advantage, index) => (
+            <Card key={index} className={styles.advantageCard} elevation={0}>
+              <CardContent>
+                <Box sx={{ color: '#7c3aed', mb: 2 }}>{advantage.icon}</Box>
+                <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
+                  {advantage.title}
+                </Typography>
+                <Typography variant="body2" sx={{ color: '#6b7280' }}>
+                  {advantage.description}
+                </Typography>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </section>
+
+      {/* Use Cases Section */}
+      <section className={styles.useCasesSection}>
+        <Typography
+          variant="h4"
+          className={styles.sectionTitle}
+          sx={{ fontWeight: 700 }}
+        >
+          Who Can Benefit from LocalizeStrings.com?
+        </Typography>
+        <div className={styles.useCasesGrid}>
+          {[
+            {
+              icon: <Code sx={{ fontSize: 28 }} />,
+              title: 'Developers',
+              description: 'Localize your apps with support for XLIFF, JSON, and strings.xml.'
+            },
+            {
+              icon: <Language sx={{ fontSize: 28 }} />,
+              title: 'Translators',
+              description: 'Simplify your workflow with real-time collaboration and translation memory.'
+            },
+            {
+              icon: <Business sx={{ fontSize: 28 }} />,
+              title: 'Businesses',
+              description: 'Expand your global reach with accurate and consistent translations.'
+            },
+            {
+              icon: <Create sx={{ fontSize: 28 }} />,
+              title: 'Content Creators',
+              description: 'Localize your content for a global audience with ease.'
+            }
+          ].map((useCase, index) => (
+            <Card key={index} className={styles.advantageCard} elevation={0}>
+              <CardContent>
+                <Box sx={{ color: '#7c3aed', mb: 2 }}>{useCase.icon}</Box>
+                <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
+                  {useCase.title}
+                </Typography>
+                <Typography variant="body2" sx={{ color: '#6b7280' }}>
+                  {useCase.description}
+                </Typography>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </section>
+
+      {/* How It Works Section */}
+      <section className={styles.howItWorksSection}>
+        <Typography
+          variant="h4"
+          className={styles.sectionTitle}
+          sx={{ fontWeight: 700 }}
+        >
+          How LocalizeStrings.com Works
+        </Typography>
+        <div className={styles.stepsGrid}>
+          {[
+            {
+              step: 1,
+              title: 'Upload Your File',
+              description: 'Upload your XLIFF, JSON, or strings.xml file.'
+            },
+            {
+              step: 2,
+              title: 'Select Languages',
+              description: 'Choose the source and target languages.'
+            },
+            {
+              step: 3,
+              title: 'Translate',
+              description: 'Use our powerful translation tools to localize your content.'
+            },
+            {
+              step: 4,
+              title: 'Download',
+              description: 'Download the translated file and integrate it into your project.'
+            }
+          ].map((step, index) => (
+            <Card key={index} className={styles.advantageCard} elevation={0}>
+              <CardContent>
+                <Typography
+                  variant="h1"
+                  sx={{
+                    color: '#7c3aed',
+                    opacity: 0.6,
+                    mb: 2,
+                    fontSize: '2.5rem',
+                    fontWeight: 800
+                  }}
+                >
+                  {step.step}
+                </Typography>
+                <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
+                  {step.title}
+                </Typography>
+                <Typography variant="body2" sx={{ color: '#6b7280' }}>
+                  {step.description}
+                </Typography>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </section>
+
+      {/* Testimonials Section */}
+      <section className={styles.testimonialsSection}>
+        <Typography variant="h4" className={styles.sectionTitle} sx={{ fontWeight: 700 }}>
+          What Our Users Are Saying
+        </Typography>
+        <div className={styles.testimonialGrid}>
+          {testimonials.map((testimonial, index) => (
+            <Card key={index} className={styles.testimonialCard}>
+              <CardContent>
+                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                  <Avatar //src={testimonial.avatar} 
+                  sx={{ mr: 2 , color: '#7c3aed',opacity: 0.6}} />
+                  <Box>
+                    <Typography variant="h6">{testimonial.name}</Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {testimonial.role}
+                    </Typography>
+                  </Box>
+                </Box>
+                <Typography variant="body1">"{testimonial.quote}"</Typography>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </section>
+
+      {/* Support Us Section */}
+      <section className={styles.supportUsSection}>
+        <Typography variant="h4" className={styles.sectionTitle}>
+          Support Us
+        </Typography>
+        <Typography variant="body1" sx={{ mb: 2 }}>
+          If you appreciate our services and want to support us, consider signing up or making a donation.
+        </Typography>
+        <div className={styles.ctaButtons}>
+          <Button 
+            variant="contained" 
+            className={styles.primaryButton}
+            href="/signup"
+            sx={{
+              textTransform: 'none',
+              fontSize: '1rem',
+              minWidth: '140px'
+            }}
+          >
+            Sign Up
+          </Button>
+          <Link href="/support" passHref>
+            <Button 
+              variant="outlined" 
+              className={styles.secondaryButton}
+              sx={{
+                textTransform: 'none',
+                fontSize: '1rem',
+                minWidth: '140px'
+              }}
+            >
+              Support Us
+            </Button>
+          </Link>
+        </div>
+      </section>
+
+      {/* Call-to-Action Section */}
+      <section className={styles.ctaSection}>
+        <Typography variant="h4" sx={{ color: 'white', mb: 2 }}>
+          Ready to Simplify Your Localization Workflow?
+        </Typography>
+        <Typography variant="body1" sx={{ color: 'white', mb: 4 }}>
+          Join thousands of developers, translators, and businesses who trust LocalizeStrings.com for their translation needs.
+        </Typography>
+        <Button
+          variant="contained"
+          size="large"
+          href="/xliff-online-translator"
+          sx={{
+            background: 'white',
+            color: '#7c3aed',
+            '&:hover': { background: '#f3f4f6' }
+          }}
+        >
+          Get Started for Free
+        </Button>
+      </section>
+
+      {/* Footer */}
+      <footer className={styles.footer}>
+        <div className={styles.footerGrid}>
+          <div>
+            <Typography variant="h6" sx={{ color: 'white', mb: 2 }}>
+              LocalizeStrings.com
+            </Typography>
+            <Typography variant="body2" sx={{ color: '#9ca3af' }}>
+              Your ultimate translation and localization platform
+            </Typography>
+          </div>
+          <div>
+            <Typography variant="h6" sx={{ color: 'white', mb: 2 }}>Links</Typography>
+            <ul className={styles.footerLinks}>
+              <li><Link href="/features">Features</Link></li>
+              <li><Link href="/pricing">Pricing</Link></li>
+              <li><Link href="/about">About Us</Link></li>
+              <li><Link href="/contact">Contact Us</Link></li>
+            </ul>
+          </div>
+          <div>
+            <Typography variant="h6" sx={{ color: 'white', mb: 2 }}>Legal</Typography>
+            <ul className={styles.footerLinks}>
+              <li><Link href="/privacy-policy">Privacy Policy</Link></li>
+              <li><Link href="/terms-of-service">Terms of Service</Link></li>
+            </ul>
+          </div>
+          <div>
+            <Typography variant="h6" sx={{ color: 'white', mb: 2 }}>Newsletter</Typography>
+            <Typography variant="body2" sx={{ color: '#9ca3af', mb: 2 }}>
+              Subscribe to our newsletter for updates and tips on localization.
+            </Typography>
+            <div className={styles.newsletterForm}>
+              <TextField
+                variant="outlined"
+                placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                sx={{
+                  input: { color: 'white' },
+                  '& .MuiOutlinedInput-root': {
+                    '& fieldset': { borderColor: '#4b5563' },
+                    '&:hover fieldset': { borderColor: '#6b7280' },
+                    '&.Mui-focused fieldset': { borderColor: '#7c3aed' }
+                  }
+                }}
+              />
+              <Button
+                variant="contained"
+                sx={{
+                  background: '#7c3aed',
+                  '&:hover': { background: '#6d28d9' }
+                }}
+              >
+                Subscribe
+              </Button>
+            </div>
+          </div>
+        </div>
+        <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center', gap: 2 }}>
+          <Facebook sx={{ color: '#9ca3af', cursor: 'pointer' }} />
+          <Twitter sx={{ color: '#9ca3af', cursor: 'pointer' }} />
+          <LinkedIn sx={{ color: '#9ca3af', cursor: 'pointer' }} />
+          <GitHub sx={{ color: '#9ca3af', cursor: 'pointer' }} />
         </Box>
-      </Box>
-    </Box>
+      </footer>
+    </div>
   );
 }

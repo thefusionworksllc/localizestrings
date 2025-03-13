@@ -2,13 +2,13 @@
 import { useState, useCallback, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { Box, Button, Typography, CircularProgress, Alert, TextField, Autocomplete, Chip } from '@mui/material';
-import { Language, Speed, Security, CloudUpload, Translate } from '@mui/icons-material';
+import { Language, Speed, Security, CloudUpload, Translate, CloudDownload } from '@mui/icons-material';
 import { languages, popularLanguages, getLanguageName } from '../utils/languages';
 import { createBrowserClient } from '@supabase/ssr';
 
 export default function XliffFileTranslator() {
   const [file, setFile] = useState(null);
-  const [targetLanguages, setTargetLanguages] = useState([]);
+  const [targetLanguage, setTargetLanguage] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
@@ -59,8 +59,8 @@ export default function XliffFileTranslator() {
   });
 
   const handleTranslate = async () => {
-    if (!file || targetLanguages.length === 0) {
-      setError('Please select a file and at least one target language');
+    if (!file || !targetLanguage) {
+      setError('Please select a file and a target language');
       return;
     }
 
@@ -77,20 +77,15 @@ export default function XliffFileTranslator() {
         email: session?.user?.email
       });
 
-      if (!session?.access_token) {
-        console.error('No access token found');
-      }
 
-      // Convert language codes to full language objects
-      const languageObjects = targetLanguages.map(code => {
-        const lang = languages.find(l => l.code === code);
-        if (!lang) throw new Error(`Invalid language code: ${code}`);
-        return { code: lang.code, name: lang.name };
-      });
+      // Convert selected language to full language object
+      const lang = languages.find(l => l.code === targetLanguage);
+      if (!lang) throw new Error(`Invalid language code: ${targetLanguage}`);
+      const languageObject = { code: lang.code, name: lang.name };
 
       const formData = new FormData();
       formData.append('file', file);
-      formData.append('targetLanguages', JSON.stringify(languageObjects));
+      formData.append('targetLanguages', JSON.stringify([languageObject]));
 
       // Make the request with auth header
       const headers = new Headers();
@@ -126,15 +121,9 @@ export default function XliffFileTranslator() {
         const a = document.createElement('a');
         a.href = url;
 
-        // Prefix the target language name with the original file name
-        const targetLanguageName = targetLanguages.map(code => {
-          const lang = languages.find(l => l.code === code);
-          return lang ? lang.name : '';
-        }).join('_'); // Join multiple languages with an underscore
-
         // Use the original file name and prefix it with the target language name
         const originalFileName = file.name.split('.').slice(0, -1).join('.'); // Remove file extension
-        a.download = `${originalFileName}_${targetLanguageName}_translated_content.xliff`; // Updated file name
+        a.download = `${originalFileName}_${lang.name.replace(/\s+/g, '')}_translated_content.xliff`; // Updated file name
 
         document.body.appendChild(a);
         a.click();
@@ -152,24 +141,10 @@ export default function XliffFileTranslator() {
   };
 
   const handleLanguageChange = (event, newValue) => {
-    const maxLanguages = user ? 3 : 1;
-    console.log('Language selection:', { 
-      newValue, 
-      currentCount: newValue.length,
-      maxLanguages,
-      isLoggedIn: !!user 
-    });
-    
-    // Don't allow more selections than the maximum
-    if (newValue.length > maxLanguages) {
-      setError(`You can select up to ${maxLanguages} language${maxLanguages > 1 ? 's' : ''}${!user ? '. Please sign in to select up to 3 languages.' : '.'}`);
-      return;
+    if (newValue) {
+      setTargetLanguage(newValue.code);
+      setError(null);
     }
-
-    // Map full language objects to just codes for state
-    const languageCodes = newValue.map(lang => lang.code);
-    setTargetLanguages(languageCodes);
-    setError(null);
   };
 
   const loadSampleFile = async () => {
@@ -184,20 +159,11 @@ export default function XliffFileTranslator() {
     }
   };
 
-  // Ensure targetLanguages stays within limits even if user logs out
-  useEffect(() => {
-    const maxLanguages = user ? 3 : 1;
-    if (targetLanguages.length > maxLanguages) {
-      setTargetLanguages(prev => prev.slice(0, maxLanguages));
-      setError(`Number of languages reduced to ${maxLanguages} due to ${user ? 'your current plan' : 'being logged out'}.`);
-    }
-  }, [user]);
-
   return (
     <Box
       sx={{
         minHeight: 'calc(100vh - 64px)',
-        padding: { xs: 2, md: 4 },
+        padding: { xs: 2, md: 2 },
         background: '#f8f9fa'
       }}
     >
@@ -212,6 +178,7 @@ export default function XliffFileTranslator() {
           sx={{
             fontSize: '2rem',
             marginBottom: 1,
+            fontWeight: 'bold',
             background: 'linear-gradient(135deg, #7c3aed 0%, #6366f1 100%)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
@@ -221,7 +188,7 @@ export default function XliffFileTranslator() {
           XLIFF File Translator
         </Typography>
         
-              {/* Features Section */}
+        {/* Features Section */}
         <Box
           sx={{
             display: 'grid',
@@ -254,7 +221,7 @@ export default function XliffFileTranslator() {
               <Typography variant="h6" sx={{ fontSize: '1rem', fontWeight: 600 }}>Lightning Fast</Typography>
             </Box>
             <Typography variant="body2" sx={{ color: '#6b7280', fontSize: '0.875rem', lineHeight: 1.4 }}>
-              Get instant translations in multiple languages simultaneously.
+              Get instant translations in multiple languages with high accuracy.
             </Typography>
           </Box>
 
@@ -308,7 +275,7 @@ export default function XliffFileTranslator() {
               <Typography variant="h6" sx={{ fontSize: '1rem', fontWeight: 600 }}>Secure & Reliable</Typography>
             </Box>
             <Typography variant="body2" sx={{ color: '#6b7280', fontSize: '0.875rem', lineHeight: 1.4 }}>
-              Your files are processed securely with enterprise-grade encryption.
+              Your files are processed securely and never stored on our servers.
             </Typography>
           </Box>
         </Box>
@@ -320,7 +287,7 @@ export default function XliffFileTranslator() {
             backdropFilter: 'blur(10px)',
             borderRadius: 2,
             p: 4,
-            maxWidth: 1000,
+            maxWidth: 900,
             margin: '0 auto'
           }}
         >
@@ -341,7 +308,7 @@ export default function XliffFileTranslator() {
           >
             <input {...getInputProps()} />
             <Box sx={{ textAlign: 'center' }}>
-              <CloudUpload sx={{ fontSize: 48, color: '#7c3aed', mb: 2 }} />
+              <CloudDownload sx={{ fontSize: 48, color: '#7c3aed', mb: 2 }} />
               {isDragActive ? (
                 <Typography>Drop the XLIFF file here...</Typography>
               ) : (
@@ -349,82 +316,69 @@ export default function XliffFileTranslator() {
                   <Typography>
                     Drag & drop an XLIFF file here, or click to select
                   </Typography>
-                  <Button
+                  {!file && ( <Button
                     onClick={(e) => {
                       e.stopPropagation(); // Prevent dropzone from triggering
                       loadSampleFile();
                     }}
                     variant="text"
                     sx={{
-                      mt: 1,
+                      mt: 2,
                       color: '#7c3aed',
                       '&:hover': {
                         background: 'rgba(124, 58, 237, 0.1)'
                       }
                     }}
                   >
-                    Try Sample File
-                  </Button>
+                    Try a Sample File
+                  </Button>)
+                }
                 </>
               )}
               {file && (
-                <Typography sx={{ mt: 2, color: '#6b7280' }}>
+                <Typography sx={{ mt: 2,  color: '#7c3aed' ,fontWeight: 'bold' , fontSize: '1.5rem'}}>
                   Selected file: {file.name}
                 </Typography>
               )}
             </Box>
           </Box>
 
-          <Box sx={{ marginBottom: 3 }}>
+          <Box sx={{ marginBottom: 2 }}>
             <Autocomplete
-              multiple
+              multiple={false}
               id="language-select"
               options={languages}
-              value={targetLanguages.map(code => languages.find(lang => lang.code === code)).filter(Boolean)}
+              value={targetLanguage ? languages.find(lang => lang.code === targetLanguage) : null}
               onChange={handleLanguageChange}
               getOptionLabel={(option) => option.name}
               isOptionEqualToValue={(option, value) => option.code === value.code}
               disabled={loading}
-              limitTags={user ? 3 : 1}
-              disableCloseOnSelect={false}
-              componentsProps={{
-                paper: {
-                  sx: {
-                    pointerEvents: targetLanguages.length >= (user ? 3 : 1) ? 'none' : 'auto'
-                  }
-                }
-              }}
               renderInput={(params) => (
                 <TextField
                   {...params}
                   variant="outlined"
-                  label={`Select Target Languages (${user ? '3 max' : '1 max'})`}
-                  placeholder={targetLanguages.length >= (user ? 3 : 1) ? '' : 'Choose a language'}
+                  label={`Select Target Language`}
+                  placeholder='Choose a language'
                   error={Boolean(error)}
-                  helperText={error || `${targetLanguages.length}/${user ? 3 : 1} language${targetLanguages.length === 1 ? '' : 's'} selected`}
                 />
               )}
               renderTags={(value, getTagProps) =>
-                value.map((option, index) => {
-                  const { key, ...chipProps } = getTagProps({ index });
-                  return (
-                    <Chip
-                      key={key}
-                      {...chipProps}
-                      label={option.name}
-                      sx={{
-                        background: 'linear-gradient(135deg, #7c3aed 0%, #6366f1 100%)',
-                        color: 'white'
-                      }}
-                    />
-                  );
-                })
+                value ? (
+                  <Chip
+                    key={targetLanguage.code}
+                    label={targetLanguage.name}
+                    sx={{
+                      background: 'linear-gradient(135deg, #7c3aed 0%, #6366f1 100%)',
+                      color: 'white'
+                    }}
+                  />
+                ) : null
               }
             />
 
             <Box
               sx={{
-                mt: 3,
+                mt: 2,
                 background: 'linear-gradient(135deg, rgba(124, 58, 237, 0.1) 0%, rgba(99, 102, 241, 0.1) 100%)',
                 borderRadius: 2,
                 padding: 3,
@@ -433,7 +387,7 @@ export default function XliffFileTranslator() {
                 backdropFilter: 'blur(10px)',
               }}
             >
-              <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold', color: '#4b5563' }}>
+              <Typography variant="h6" sx={{ mb: 1, fontWeight: 'bold', color: '#4b5563' }}>
                 Popular Languages:
               </Typography>
               <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, justifyContent: 'center' }}>
@@ -442,17 +396,17 @@ export default function XliffFileTranslator() {
                     key={code}
                     label={getLanguageName(code)}
                     onClick={() => {
-                      if (!targetLanguages.includes(code)) {
-                        setTargetLanguages([...targetLanguages, code]);
+                      if (!targetLanguage || targetLanguage !== code) {
+                        setTargetLanguage(code);
                       }
                     }}
                     sx={{
-                      background: targetLanguages.includes(code)
+                      background: targetLanguage === code
                         ? 'linear-gradient(135deg, #7c3aed 0%, #6366f1 100%)'
                         : 'white',
-                      color: targetLanguages.includes(code) ? 'white' : '#4b5563',
+                      color: targetLanguage === code ? 'white' : '#4b5563',
                       '&:hover': {
-                        background: targetLanguages.includes(code)
+                        background: targetLanguage === code
                           ? 'linear-gradient(135deg, #7c3aed 0%, #6366f1 100%)'
                           : 'rgba(124, 58, 237, 0.1)'
                       }
@@ -469,7 +423,7 @@ export default function XliffFileTranslator() {
               onClick={handleTranslate}
               disabled={loading}
               sx={{
-                mt: 2,
+                mt: 1,
                 background: 'linear-gradient(135deg, #7c3aed 0%, #6366f1 100%)',
                 fontWeight: 'bold',
                 '&:hover': {

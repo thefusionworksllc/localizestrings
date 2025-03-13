@@ -10,53 +10,6 @@ const supabaseAdmin = createClient(
   process.env.SUPABASE_SERVICE_KEY
 );
 
-// Function to check user session using cookies
-async function checkUserSession(request) {
-  try {
-    // Get the token from the Authorization header
-    const authHeader = request.headers.get('Authorization');
-    console.log('Auth check:', { 
-      hasHeader: !!authHeader,
-      headerValue: authHeader?.substring(0, 20) + '...' 
-    });
-    
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      console.log('Invalid or missing Authorization header');
-      return null;
-    }
-
-    const token = authHeader.replace('Bearer ', '');
-    if (!token) {
-      console.log('No token found in Authorization header');
-      return null;
-    }
-
-    // Verify the token using Supabase admin client
-    try {
-      const { data: { user }, error } = await supabaseAdmin.auth.getUser(token);
-      
-      console.log('Token verification:', { 
-        success: !!user,
-        userId: user?.id,
-        error: error?.message
-      });
-
-      if (error) {
-        console.error('Token verification failed:', error);
-        return null;
-      }
-
-      return user;
-    } catch (verifyError) {
-      console.error('Token verification error:', verifyError);
-      return null;
-    }
-  } catch (error) {
-    console.error('Session check error:', error);
-    return null;
-  }
-}
-
 const CHARACTER_LIMIT = 5000;
 
 async function translateText(text, targetLanguage) {
@@ -159,23 +112,12 @@ export async function POST(request) {
   try {
     // Clone the request before reading the body
     const clonedRequest = request.clone();
-    
-    // Check auth first
-    const user = await checkUserSession(clonedRequest);
-    const isLoggedIn = Boolean(user);
-    const maxLanguages = isLoggedIn ? 3 : 1;
-    
-    console.log('Auth result:', { 
-      isLoggedIn,
-      userId: user?.id,
-      maxLanguages
-    });
 
     // Now process the form data from the original request
     const formData = await request.formData();
     const file = formData.get('file');
     const targetLanguagesStr = formData.get('targetLanguages');
-    
+
     if (!file || !targetLanguagesStr) {
       return new Response(JSON.stringify({ error: 'Missing file or target languages' }), { 
         status: 400,
@@ -184,23 +126,9 @@ export async function POST(request) {
     }
 
     const targetLanguages = JSON.parse(targetLanguagesStr);
-    
+
     if (!Array.isArray(targetLanguages) || targetLanguages.length === 0) {
       return new Response(JSON.stringify({ error: 'Invalid target languages format' }), { 
-        status: 400,
-        headers: { 'Content-Type': 'application/json' }
-      });
-    }
-
-    // Validate language count
-    if (targetLanguages.length > maxLanguages) {
-      const message = `Maximum ${maxLanguages} language${maxLanguages > 1 ? 's' : ''} allowed${!isLoggedIn ? '. Please sign in to translate to more languages.' : '.'}`;
-      console.log('Language limit exceeded:', {
-        selected: targetLanguages.length,
-        max: maxLanguages,
-        isLoggedIn
-      });
-      return new Response(JSON.stringify({ error: message }), { 
         status: 400,
         headers: { 'Content-Type': 'application/json' }
       });

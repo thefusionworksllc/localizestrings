@@ -39,7 +39,7 @@ async function translateText(text, targetLanguage) {
 async function checkCache(sourceText, targetLanguage, supabase) {
   try {
     const { data, error } = await supabase
-      .from('translation_cache')
+      .from('translations')
       .select('translated_text')
       .eq('source_text', sourceText)
       .eq('target_language', targetLanguage)
@@ -56,7 +56,7 @@ async function checkCache(sourceText, targetLanguage, supabase) {
 // Helper function to update translation cache
 async function updateCache(sourceText, translatedText, targetLanguage, supabase) {
   try {
-    await supabase.from('translation_cache').upsert({
+    await supabase.from('translations').upsert({
       source_text: sourceText,
       translated_text: translatedText,
       target_language: targetLanguage,

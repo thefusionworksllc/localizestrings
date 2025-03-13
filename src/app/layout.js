@@ -19,7 +19,8 @@ import {
   ExitToApp,
   Login as LoginIcon,
   Dashboard,
-  PersonAdd as PersonAddIcon
+  PersonAdd as PersonAddIcon,
+  Home as HomeIcon
 } from '@mui/icons-material';
 import Head from 'next/head';
 import PublicIcon from '@mui/icons-material/Public';
@@ -245,7 +246,7 @@ export default function RootLayout({ children }) {
               flexDirection: 'column',
             }}
           >
-            <Box sx={{ mb: 4, px: 2, display: 'flex', alignItems: 'center' }}>
+            <Box sx={{ mb: 4, px: 2, display: 'flex', alignItems: 'center',borderBottom: '1px solid rgba(255, 255, 255, 0.3)' }}>
               <PublicIcon sx={{ mr: 1, color: '#ffffff' }} />
               <Typography 
                 variant="h6" 
@@ -253,6 +254,7 @@ export default function RootLayout({ children }) {
                   fontWeight: 600,
                   color: '#ffffff',
                   letterSpacing: '-0.5px'
+                  
                 }}
               >
                 Localize Strings
@@ -268,12 +270,30 @@ export default function RootLayout({ children }) {
                   color: '#ffffff',
                   textTransform: 'uppercase',
                   fontSize: '0.75rem',
-                  fontWeight: 600
+                  fontWeight: 600,
                 }}
               >
                 Main Menu
               </Typography>
               <List sx={{ px: 1 }}>
+              <ListItem 
+                  onClick={() => handleNavigation('/')}
+                  sx={{
+                    borderRadius: '8px',
+                    mb: 1,
+                    '&:hover': {
+                      backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                    }
+                  }}
+                >
+                  <Edit sx={{ mr: 2, color: '#ffffff' }} />
+                  <ListItemText 
+                    primary="Home"
+                    primaryTypographyProps={{
+                      sx: { fontWeight: 500, color: '#ffffff' }
+                    }}
+                  />
+                </ListItem>
                 <ListItem 
                   onClick={() => handleNavigation('/xliff-online-translator')}
                   sx={{
