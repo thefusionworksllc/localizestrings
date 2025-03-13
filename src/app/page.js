@@ -39,8 +39,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 const images = [
-  '/SS_1.jpg',
-  '/SS_2.jpg',
+  '/ss_online_1.jpg',
+  '/ss_file_2.jpg',
 ];
     
 export default function Home() {
@@ -373,7 +373,7 @@ export default function Home() {
           Support Us
         </Typography>
         <Typography variant="body1" sx={{ mb: 2 }}>
-          If you appreciate our services and want to support us, consider signing up or making a donation.
+          If you appreciate our services and want to support us, consider signing up !.
         </Typography>
         <div className={styles.ctaButtons}>
           <Button 
