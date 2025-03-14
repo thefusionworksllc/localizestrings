@@ -146,7 +146,8 @@ export default function XliffOnlineTranslator() {
             background: 'linear-gradient(135deg, #7c3aed 0%, #6366f1 100%)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
-            textAlign: 'center'
+            textAlign: 'center',
+            fontWeight: 'bold'
           }}
         >
           XLIFF Online Translator
@@ -209,7 +210,7 @@ export default function XliffOnlineTranslator() {
                     }
                   }}
                 >
-                  Load Sample File
+                  Load Sample Data
                 </Button>
                 <Button
                   variant="outlined"
@@ -453,7 +454,7 @@ export default function XliffOnlineTranslator() {
                 label="Select Target Language"
                 sx={{
                   backgroundColor: 'white',
-                  borderRadius: 1
+                  borderRadius: 1,
                 }}
               />
             )}

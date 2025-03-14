@@ -94,7 +94,8 @@ export default function XliffValidator() {
             background: 'linear-gradient(135deg, #7c3aed 0%, #6366f1 100%)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
-            textAlign: 'center'
+            textAlign: 'center',
+            fontWeight: 'bold'
           }}
         >
           XLIFF Validator
