@@ -65,6 +65,7 @@ export default function Features() {
         <Button
           variant="contained"
           size="large"
+          href="/xliff-online-translator"
           sx={{
             background: 'white',
             color: '#7c3aed',
