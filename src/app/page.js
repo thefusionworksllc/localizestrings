@@ -168,7 +168,7 @@ export default function Home() {
               Explore Features
             </Button>
           </div>
-
+{/* Commented out the slideshow for now
           <div className={styles.imageContainer}>
             <Image 
               src={images[currentImageIndex]}
@@ -185,6 +185,7 @@ export default function Home() {
               </Button>             
             </div>
           </div>
+*/}
         </div>
       </section>
 
