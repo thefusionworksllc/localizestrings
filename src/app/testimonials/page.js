@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Box, Button, TextField, Typography, Alert, Avatar } from '@mui/material';
+import { Box, Button, TextField, Typography, Alert, Avatar, MenuItem, Select, FormControl, InputLabel } from '@mui/material';
 import { createBrowserClient } from '@supabase/ssr';
 import PersonIcon from '@mui/icons-material/Person';
 
@@ -9,7 +9,7 @@ export default function Testimonials() {
   const [testimonials, setTestimonials] = useState([]);
   const [name, setName] = useState('');
   const [message, setMessage] = useState('');
-  const [role, setRole] = useState('');
+  const [role, setRole] = useState('User');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
 
@@ -22,6 +22,7 @@ export default function Testimonials() {
     const { data, error } = await supabase
       .from('testimonials')
       .select('*')
+      .limit(5)
       .order('created_at', { ascending: false });
 
     if (error) {
@@ -49,7 +50,7 @@ export default function Testimonials() {
       setSuccess(true);
       setName('');
       setMessage('');
-      setRole('');
+      setRole('User');
       fetchTestimonials();
     }
   };
@@ -59,11 +60,11 @@ export default function Testimonials() {
   }, []);
 
   return (
-    <Box sx={{ padding: 4, background: '#f8f9fa', textAlign: 'center' }}>
-      <Typography variant="h4" gutterBottom>
+    <Box sx={{ padding: 4, background: '#f8f9fa', textAlign: 'center', }}>
+      <Typography variant="h4" gutterBottom sx={{ marginTop: 3,fontWeight: 'bold',color: '#6d28d9' }}>
         Testimonials
       </Typography>
-      <Box sx={{ marginBottom: 4 }}>
+      <Box sx={{ marginBottom: 4 ,width: '60%', margin: '0 auto' }}>
         <TextField
           label="Your Name"
           variant="outlined"
@@ -72,14 +73,21 @@ export default function Testimonials() {
           onChange={(e) => setName(e.target.value)}
           sx={{ marginBottom: 2 }}
         />
-        <TextField
-          label="Your Role"
-          variant="outlined"
-          fullWidth
-          value={role}
-          onChange={(e) => setRole(e.target.value)}
-          sx={{ marginBottom: 2 }}
-        />
+        <FormControl fullWidth sx={{ marginBottom: 2 }}>
+          <InputLabel id="role-label">Your Role</InputLabel>
+          <Select
+            labelId="role-label"
+            value={role}
+            onChange={(e) => setRole(e.target.value)}
+            variant="outlined"
+          >
+            <MenuItem value="User">User</MenuItem>
+            <MenuItem value="Developer">Developer</MenuItem>
+            <MenuItem value="Translator">Translator</MenuItem>
+            <MenuItem value="Project Manager">Project Manager</MenuItem>
+            <MenuItem value="Business Owner">Business Owner</MenuItem>
+          </Select>
+        </FormControl>
         <TextField
           label="Your Testimonial"
           variant="outlined"
@@ -97,10 +105,10 @@ export default function Testimonials() {
         {success && <Alert severity="success" sx={{ marginTop: 2 }}>Testimonial submitted!</Alert>}
       </Box>
 
-      <Typography variant="h5" gutterBottom>
+      <Typography variant="h5" gutterBottom sx={{ marginTop: 6,fontWeight: 'bold',color: '#6d28d9' }}>
         All Testimonials
       </Typography>
-      <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr', lg: '1fr 1fr 1fr' }, gap: 2 }}>
+      <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr', lg: '1fr 1fr 1fr' }, gap: 2 ,width: '60%', margin: '0 auto' }}>
         {testimonials.map((testimonial) => (
           <Box key={testimonial.id} sx={{ padding: 2, background: '#fff', borderRadius: 2, boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)', transition: 'transform 0.2s', '&:hover': { transform: 'scale(1.02)' } }}>
             <Avatar sx={{ bgcolor: '#6d28d9' }}>
