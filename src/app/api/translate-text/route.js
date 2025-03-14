@@ -35,6 +35,7 @@ async function translateText(text, targetLanguage) {
     throw error;
   }
 }
+
 // Helper function to check translation cache
 async function checkCache(sourceText, targetLanguage, supabase) {
   try {
@@ -69,6 +70,7 @@ async function updateCache(sourceText, translatedText, targetLanguage, supabase)
 
 export async function POST(request) {
   try {
+    // Create Supabase client for server-side operations
     const cookieStore = await cookies();
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -76,13 +78,13 @@ export async function POST(request) {
       {
         cookies: {
           get(name) {
-            return cookieStore.get(name)?.value;
+            return cookieStore.get(name)?.value; // Get cookie value
           },
           set(name, value, options) {
-            cookieStore.set({ name, value, ...options });
+            cookieStore.set({ name, value, ...options }); // Set cookie value
           },
           remove(name, options) {
-            cookieStore.delete({ name, ...options });
+            cookieStore.delete({ name, ...options }); // Remove cookie
           },
         },
       }
@@ -96,6 +98,7 @@ export async function POST(request) {
     const body = await request.json();
     const { content, targetLanguage } = body;
 
+    // Validate input fields
     if (!content || !targetLanguage) {
       return NextResponse.json(
         { error: 'Missing required fields' },
@@ -111,22 +114,22 @@ export async function POST(request) {
       ignoreDeclaration: true
     });
 
-    // Find all source elements and their corresponding target elements
+    // Function to process each node in the XLIFF document
     const processNode = async (node) => {
       if (node['source'] && node['target']) {
         const sourceText = node['source']._text;
         
-        // Check cache first
+        // Check cache first for translated text
         let translatedText = await checkCache(sourceText, targetLanguage.code, supabase);
         
         if (!translatedText) {
           // If not in cache, use Google Translate
           translatedText = await translateText(sourceText, targetLanguage.code);
-          // Update cache
+          // Update cache with new translation
           await updateCache(sourceText, translatedText, targetLanguage.code, supabase);
         }
         
-        // Update target element
+        // Update target element with translated text
         node['target']._text = translatedText;
       }
       
@@ -141,7 +144,7 @@ export async function POST(request) {
     // Process the entire XLIFF document
     await processNode(xmlObj);
 
-    // Convert back to XML
+    // Convert back to XML format
     const translatedContent = convert.js2xml(xmlObj, {
       compact: true,
       spaces: 2,
@@ -149,7 +152,7 @@ export async function POST(request) {
       ignoreDeclaration: true
     });
 
-    return NextResponse.json({ translatedContent });
+    return NextResponse.json({ translatedContent }); // Return translated content
   } catch (error) {
     console.error('Translation error:', error);
     return NextResponse.json(

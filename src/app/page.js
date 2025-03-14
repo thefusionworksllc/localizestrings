@@ -33,7 +33,7 @@ import {
   PlayArrow
 } from '@mui/icons-material';
 import { languages, popularLanguages, getLanguageName } from './utils/languages';
-import supabase from './supabaseClient'; // Import the singleton instance
+import supabase from './supabaseClient'; // Import the singleton instance for Supabase client
 import styles from './page.module.css';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -174,7 +174,7 @@ export default function Home() {
               src={images[currentImageIndex]}
               alt="Hero Image"
              // layout="responsive"
-              priority = {true}
+            //  priority = {true}
               width={750}
               height={400}
               className={`${styles.heroImage} ${fadeOut ? styles.fadeOut : ''}`}

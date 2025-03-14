@@ -7,12 +7,15 @@ import { languages, popularLanguages, getLanguageName } from '../utils/languages
 import { createBrowserClient } from '@supabase/ssr';
 
 export default function XliffFileTranslator() {
-  const [file, setFile] = useState(null);
-  const [targetLanguage, setTargetLanguage] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(false);
-  const [user, setUser] = useState(null);
+  // State variables for managing file upload, translation status, and user information
+  const [file, setFile] = useState(null); // Uploaded file
+  const [targetLanguage, setTargetLanguage] = useState(null); // Selected target language
+  const [loading, setLoading] = useState(false); // Loading state for translation
+  const [error, setError] = useState(null); // Error message state
+  const [success, setSuccess] = useState(false); // Success state for translation
+  const [user, setUser] = useState(null); // User information
+
+  // Create Supabase client for authentication and database access
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
@@ -28,7 +31,7 @@ export default function XliffFileTranslator() {
         isLoggedIn: !!session,
         email: session?.user?.email 
       });
-      setUser(session?.user || null);
+      setUser(session?.user || null); // Update user state
     });
 
     // Get initial session
@@ -37,36 +40,39 @@ export default function XliffFileTranslator() {
         isLoggedIn: !!session,
         email: session?.user?.email 
       });
-      setUser(session?.user || null);
+      setUser(session?.user || null); // Update user state
     });
 
-    return () => subscription.unsubscribe();
+    return () => subscription.unsubscribe(); // Clean up subscription on unmount
   }, []);
 
+  // Function to handle file drop
   const onDrop = useCallback((acceptedFiles) => {
     if (acceptedFiles.length > 0) {
-      setFile(acceptedFiles[0]);
-      setError(null);
+      setFile(acceptedFiles[0]); // Set the uploaded file
+      setError(null); // Clear previous errors
     }
   }, []);
 
+  // Set up dropzone for file upload
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: {
-      'application/xliff+xml': ['.xlf', '.xliff']
+      'application/xliff+xml': ['.xlf', '.xliff'] // Accept only XLIFF files
     },
-    maxFiles: 1
+    maxFiles: 1 // Limit to one file
   });
 
+  // Function to handle translation
   const handleTranslate = async () => {
     if (!file || !targetLanguage) {
-      setError('Please select a file and a target language');
+      setError('Please select a file and a target language'); // Error if file or language is not selected
       return;
     }
 
-    setLoading(true);
-    setError(null);
-    setSuccess(false);
+    setLoading(true); // Set loading state
+    setError(null); // Clear previous errors
+    setSuccess(false); // Reset success state
 
     try {
       // Get current session and token
@@ -77,20 +83,19 @@ export default function XliffFileTranslator() {
         email: session?.user?.email
       });
 
-
       // Convert selected language to full language object
       const lang = languages.find(l => l.code === targetLanguage);
       if (!lang) throw new Error(`Invalid language code: ${targetLanguage}`);
       const languageObject = { code: lang.code, name: lang.name };
 
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('targetLanguages', JSON.stringify([languageObject]));
+      const formData = new FormData(); // Create form data for file upload
+      formData.append('file', file); // Append the file
+      formData.append('targetLanguages', JSON.stringify([languageObject])); // Append target language
 
       // Make the request with auth header
       const headers = new Headers();
       if (session?.access_token) {
-        headers.append('Authorization', `Bearer ${session.access_token}`);
+        headers.append('Authorization', `Bearer ${session.access_token}`); // Add authorization token if available
       }
       console.log('Request headers:', {
         hasAuth: headers.has('Authorization'),
@@ -100,7 +105,7 @@ export default function XliffFileTranslator() {
       const response = await fetch('/api/translate', {
         method: 'POST',
         headers,
-        body: formData
+        body: formData // Send form data
       });
 
       const data = await response.json();
@@ -111,51 +116,53 @@ export default function XliffFileTranslator() {
       });
 
       if (!response.ok) {
-        throw new Error(data.error || 'Translation failed. Please try again.');
+        throw new Error(data.error || 'Translation failed. Please try again.'); // Handle errors
       }
 
       // Download each translated file
       data.translations.forEach(({ content, fileName }) => {
-        const blob = new Blob([content], { type: 'application/xml' });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
+        const blob = new Blob([content], { type: 'application/xml' }); // Create a blob for the translated content
+        const url = window.URL.createObjectURL(blob); // Create a URL for the blob
+        const a = document.createElement('a'); // Create an anchor element
         a.href = url;
 
         // Use the original file name and prefix it with the target language name
         const originalFileName = file.name.split('.').slice(0, -1).join('.'); // Remove file extension
         a.download = `${originalFileName}_${lang.name.replace(/\s+/g, '')}_translated_content.xliff`; // Updated file name
 
-        document.body.appendChild(a);
-        a.click();
-        window.URL.revokeObjectURL(url);
-        document.body.removeChild(a);
+        document.body.appendChild(a); // Append anchor to the body
+        a.click(); // Trigger download
+        window.URL.revokeObjectURL(url); // Clean up URL
+        document.body.removeChild(a); // Remove anchor from the body
       });
 
-      setSuccess(true);
+      setSuccess(true); // Set success state
     } catch (err) {
       console.error('Translation error:', err);
-      setError(err.message || 'Translation failed. Please try again.');
+      setError(err.message || 'Translation failed. Please try again.'); // Set error message
     } finally {
-      setLoading(false);
+      setLoading(false); // Reset loading state
     }
   };
 
+  // Function to handle language selection
   const handleLanguageChange = (event, newValue) => {
     if (newValue) {
-      setTargetLanguage(newValue.code);
-      setError(null);
+      setTargetLanguage(newValue.code); // Set selected language code
+      setError(null); // Clear error message
     }
   };
 
+  // Function to load a sample XLIFF file
   const loadSampleFile = async () => {
     try {
       const response = await fetch('/sample.xliff');
-      const blob = await response.blob();
-      const sampleFile = new File([blob], 'sample.xliff', { type: 'application/xliff+xml' });
-      setFile(sampleFile);
-      setError(null);
+      const blob = await response.blob(); // Get blob from response
+      const sampleFile = new File([blob], 'sample.xliff', { type: 'application/xliff+xml' }); // Create a file object
+      setFile(sampleFile); // Set the sample file
+      setError(null); // Clear previous errors
     } catch (err) {
-      setError('Error loading sample file');
+      setError('Error loading sample file'); // Set error message
     }
   };
 
@@ -198,6 +205,7 @@ export default function XliffFileTranslator() {
             mt: 1
           }}
         >
+          {/* Feature Cards */}
           <Box
             sx={{
               background: '#fff',
@@ -292,7 +300,7 @@ export default function XliffFileTranslator() {
           }}
         >
           <Box
-            {...getRootProps()}
+            {...getRootProps()} // Dropzone properties
             sx={{
               border: '2px dashed #7c3aed',
               borderRadius: 2,
@@ -306,38 +314,39 @@ export default function XliffFileTranslator() {
               }
             }}
           >
-            <input {...getInputProps()} />
+            <input {...getInputProps()} /> // Input for file selection
             <Box sx={{ textAlign: 'center' }}>
               <CloudDownload sx={{ fontSize: 48, color: '#7c3aed', mb: 2 }} />
               {isDragActive ? (
-                <Typography>Drop the XLIFF file here...</Typography>
+                <Typography>Drop the XLIFF file here...</Typography> // Message when file is dragged over
               ) : (
                 <>
                   <Typography>
                     Drag & drop an XLIFF file here, or click to select
                   </Typography>
-                  {!file && ( <Button
-                    onClick={(e) => {
-                      e.stopPropagation(); // Prevent dropzone from triggering
-                      loadSampleFile();
-                    }}
-                    variant="text"
-                    sx={{
-                      mt: 2,
-                      color: '#7c3aed',
-                      '&:hover': {
-                        background: 'rgba(124, 58, 237, 0.1)'
-                      }
-                    }}
-                  >
-                    Try a Sample File
-                  </Button>)
-                }
+                  {!file && ( 
+                    <Button
+                      onClick={(e) => {
+                        e.stopPropagation(); // Prevent dropzone from triggering
+                        loadSampleFile(); // Load sample file
+                      }}
+                      variant="text"
+                      sx={{
+                        mt: 2,
+                        color: '#7c3aed',
+                        '&:hover': {
+                          background: 'rgba(124, 58, 237, 0.1)'
+                        }
+                      }}
+                    >
+                      Try a Sample File
+                    </Button>)
+                  }
                 </>
               )}
               {file && (
                 <Typography sx={{ mt: 2,  color: '#7c3aed' ,fontWeight: 'bold' , fontSize: '1.5rem'}}>
-                  Selected file: {file.name}
+                  Selected file: {file.name} // Display selected file name
                 </Typography>
               )}
             </Box>
@@ -348,18 +357,18 @@ export default function XliffFileTranslator() {
               multiple={false}
               id="language-select"
               options={languages}
-              value={targetLanguage ? languages.find(lang => lang.code === targetLanguage) : null}
-              onChange={handleLanguageChange}
+              value={targetLanguage ? languages.find(lang => lang.code === targetLanguage) : null} // Set selected language
+              onChange={handleLanguageChange} // Handle language change
               getOptionLabel={(option) => option.name}
               isOptionEqualToValue={(option, value) => option.code === value.code}
-              disabled={loading}
+              disabled={loading} // Disable when loading
               renderInput={(params) => (
                 <TextField
                   {...params}
                   variant="outlined"
                   label={`Select Target Language`}
                   placeholder='Choose a language'
-                  error={Boolean(error)}
+                  error={Boolean(error)} // Show error if exists
                 />
               )}
               renderTags={(value, getTagProps) =>
@@ -397,7 +406,7 @@ export default function XliffFileTranslator() {
                     label={getLanguageName(code)}
                     onClick={() => {
                       if (!targetLanguage || targetLanguage !== code) {
-                        setTargetLanguage(code);
+                        setTargetLanguage(code); // Set target language on click
                       }
                     }}
                     sx={{
@@ -420,8 +429,8 @@ export default function XliffFileTranslator() {
           <Box sx={{ textAlign: 'center' }}>
             <Button
               variant="contained"
-              onClick={handleTranslate}
-              disabled={loading}
+              onClick={handleTranslate} // Trigger translation
+              disabled={loading} // Disable button while loading
               sx={{
                 mt: 1,
                 background: 'linear-gradient(135deg, #7c3aed 0%, #6366f1 100%)',
@@ -437,13 +446,13 @@ export default function XliffFileTranslator() {
 
             {error && (
               <Alert severity="error" sx={{ mt: 2 }}>
-                {error}
+                {error} // Display error message
               </Alert>
             )}
 
             {success && (
               <Alert severity="success" sx={{ mt: 2 }}>
-                Translation completed successfully! Files have been downloaded.
+                Translation completed successfully! Files have been downloaded. // Display success message
               </Alert>
             )}
           </Box>

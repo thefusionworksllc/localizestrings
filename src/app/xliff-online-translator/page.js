@@ -9,40 +9,48 @@ import { solarizedlight } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { saveAs } from 'file-saver';
 
 export default function XliffOnlineTranslator() {
-  const [sourceXliff, setSourceXliff] = useState('');
-  const [translatedXliff, setTranslatedXliff] = useState('');
-  const [targetLanguage, setTargetLanguage] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(false);
-  const [user, setUser] = useState(null);
+  // State variables for managing XLIFF content, translation status, and user information
+  const [sourceXliff, setSourceXliff] = useState(''); // Source XLIFF content
+  const [translatedXliff, setTranslatedXliff] = useState(''); // Translated XLIFF content
+  const [targetLanguage, setTargetLanguage] = useState(null); // Selected target language
+  const [loading, setLoading] = useState(false); // Loading state for translation
+  const [error, setError] = useState(null); // Error message state
+  const [success, setSuccess] = useState(false); // Success state for translation
+  const [user, setUser] = useState(null); // User information
 
+  // Create Supabase client for authentication and database access
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
   );
 
+  // Function to handle translation of the XLIFF content
   const handleTranslate = async () => {
+    // Validate input fields
     if (!sourceXliff || !targetLanguage) {
       setError('Please enter XLIFF content and select a target language');
       return;
     }
 
-    setLoading(true);
-    setError(null);
-    setSuccess(false);
+    setLoading(true); // Set loading state
+    setError(null); // Clear previous errors
+    setSuccess(false); // Reset success state
 
     try {
+      // Get the current user session
       const { data: { session } } = await supabase.auth.getSession();
 
+      // Set up headers for the API request
       const headers = new Headers({
         'Content-Type': 'application/json'
       });
       
+      // Append authorization token if available
       if (session?.access_token) {
         headers.append('Authorization', `Bearer ${session.access_token}`);
       }
 
+      // Make API call to translate the text
       const response = await fetch('/api/translate-text', {
         method: 'POST',
         headers,
@@ -57,45 +65,51 @@ export default function XliffOnlineTranslator() {
 
       const data = await response.json();
 
+      // Check for errors in the response
       if (!response.ok) {
         throw new Error(data.error || 'Translation failed. Please try again.');
       }
 
+      // Set the translated XLIFF content
       setTranslatedXliff(`<?xml version='1.0' encoding='UTF-8'?>\n${data.translatedContent}`);
-      setSuccess(true);
+      setSuccess(true); // Set success state
     } catch (err) {
       console.error('Translation error:', err);
-      setError(err.message || 'Translation failed. Please try again.');
+      setError(err.message || 'Translation failed. Please try again.'); // Set error message
     } finally {
-      setLoading(false);
+      setLoading(false); // Reset loading state
     }
   };
 
+  // Function to copy translated content to clipboard
   const handleCopy = () => {
     navigator.clipboard.writeText(translatedXliff)
       .then(() => {
-        setSuccess(true);
-        setError(null);
+        setSuccess(true); // Set success state
+        setError(null); // Clear previous errors
       })
       .catch(err => {
         console.error('Failed to copy: ', err);
-        setError('Failed to copy content.');
+        setError('Failed to copy content.'); // Set error message
       });
   };
 
+  // Function to download the translated content as a file
   const handleDownload = () => {
     const blob = new Blob([translatedXliff], { type: 'application/xml' });
-    saveAs(blob, 'translated_content.xliff');
+    saveAs(blob, 'translated_content.xliff'); // Use file-saver to download the file
   };
 
+  // Function to reset the input fields and states
   const handleReset = () => {
-    setSourceXliff('');
-    setTranslatedXliff('');
-    setTargetLanguage(null);
-    setError(null);
-    setSuccess(false);
+    setSourceXliff(''); // Clear source XLIFF
+    setTranslatedXliff(''); // Clear translated XLIFF
+    setTargetLanguage(null); // Reset target language
+    setError(null); // Clear error message
+    setSuccess(false); // Reset success state
   };
 
+  // Function to load a sample XLIFF file
   const loadSampleFile = async () => {
     try {
       const response = await fetch('/sample.xliff');
@@ -103,10 +117,10 @@ export default function XliffOnlineTranslator() {
         throw new Error('Failed to fetch sample file');
       }
       const text = await response.text();
-      setSourceXliff(text);
-      setError(null);
+      setSourceXliff(text); // Set the loaded sample as source XLIFF
+      setError(null); // Clear previous errors
     } catch (err) {
-      setError('Error loading sample file: ' + err.message);
+      setError('Error loading sample file: ' + err.message); // Set error message
     }
   };
 
