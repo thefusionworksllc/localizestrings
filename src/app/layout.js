@@ -18,10 +18,12 @@ import {
   Settings as SettingsIcon,
   ExitToApp,
   Login as LoginIcon,
-  Dashboard,
+  DashboardOutlined as Dashboard,
   PersonAdd as PersonAddIcon,
   Home as HomeIcon,
-  Translate as TranslateIcon
+  Translate as TranslateIcon,
+  CheckCircleOutlineOutlined as CheckCircle,
+  Star as StarIcon
 } from '@mui/icons-material';
 import Head from 'next/head';
 import PublicIcon from '@mui/icons-material/Public';
@@ -97,6 +99,8 @@ export default function RootLayout({ children }) {
           <Toolbar >
             <IconButton color="inherit" onClick={toggleSidebar} edge="start" sx={{ '&:hover': {
               backgroundColor: 'rgba(255, 255, 255, 0.1)',
+              transform: 'scale(1.20)',
+              transition: 'transform 0.3s',
             }}}>
               <MenuIcon />
             </IconButton>
@@ -133,6 +137,8 @@ export default function RootLayout({ children }) {
             <Button 
                 color="inherit" 
                 onClick={() => handleNavigation('/')}
+                onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.15)'}
+                onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
                 startIcon={<HomeIcon />}
                 sx={{ mr: '10px', '&:hover': {
                   backgroundColor: 'rgba(255, 255, 255, 0.1)',
@@ -145,6 +151,8 @@ export default function RootLayout({ children }) {
                 color="inherit" 
                 onClick={handleMenuClick}
                 startIcon={<TranslateIcon />}
+                onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.15)'}
+                onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
                 sx={{
                   border: '1px solid white',
                   borderRadius: '4px',
@@ -173,7 +181,7 @@ export default function RootLayout({ children }) {
                   onClick={() => { handleNavigation('/xliff-file-translator'); handleMenuClose(); }}
                   sx={{ '&:hover': { background: 'linear-gradient(135deg, rgba(80, 74, 194, 0.9), rgba(147, 51, 234, 0.90))', color: 'white' } }}
                 >
-                  <Edit sx={{ mr: 1 }} />
+                  <Dashboard sx={{ mr: 1 }} />
                   XLIFF File Translator
                 </MenuItem>
                 <MenuItem 
@@ -183,11 +191,20 @@ export default function RootLayout({ children }) {
                   <TranslateIcon sx={{ mr: 1 }} />
                   XLIFF Online Translator
                 </MenuItem>
+                <MenuItem 
+                  onClick={() => { handleNavigation('/xliff-validator'); handleMenuClose(); }}
+                  sx={{ '&:hover': { background: 'linear-gradient(135deg, rgba(80, 74, 194, 0.9), rgba(147, 51, 234, 0.90))', color: 'white' } }}
+                >
+                  <CheckCircle sx={{ mr: 1 }} />
+                  XLIFF Validator
+                </MenuItem>
               </Menu>
               <Button 
                 color="inherit" 
                 onClick={() => handleNavigation('/about')}
                 startIcon={<Info />}
+                onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.15)'}
+                onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
                 sx={{ ml: '10px' , '&:hover': {
                   backgroundColor: 'rgba(255, 255, 255, 0.1)',
                 }}}  
@@ -195,6 +212,7 @@ export default function RootLayout({ children }) {
               >
                 About Us
               </Button>
+                       
               {user ? (
                 <>
                   <Avatar sx={{ bgcolor: '#6d28d9' }}>
@@ -205,6 +223,8 @@ export default function RootLayout({ children }) {
                   </Typography>
                   <Button 
                     onClick={handleLogout}
+                    onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.15)'}
+                    onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
                     sx={{
                       color: 'white',
                       textTransform: 'none',
@@ -225,7 +245,9 @@ export default function RootLayout({ children }) {
                     color="inherit"
                     onClick={() => handleNavigation('/login')}
                     startIcon={<LoginIcon />}
-                    sx={{ ml: '10px' , '&:hover': {
+                    onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.15)'}
+                    onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                      sx={{ ml: '10px' , '&:hover': {
                       backgroundColor: 'rgba(255, 255, 255, 0.1)',
                     }}}
                   >
@@ -235,7 +257,9 @@ export default function RootLayout({ children }) {
                     color="inherit"
                     onClick={() => handleNavigation('/signup')}
                     startIcon={<PersonAddIcon />}
-                    sx={{ ml: '10px' , '&:hover': {
+                    onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.15)'}
+                    onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                    sx={{ ml: '10px' , '&:hover': { 
                       backgroundColor: 'rgba(255, 255, 255, 0.1)',
                     }}}
                   >
@@ -325,7 +349,7 @@ export default function RootLayout({ children }) {
                     }
                   }}
                 >
-                  <Edit sx={{ mr: 2, color: '#ffffff' }} />
+                  <TranslateIcon sx={{ mr: 2, color: '#ffffff' }} />
                   <ListItemText 
                     primary="XLIFF Online Translator"
                     primaryTypographyProps={{
@@ -346,6 +370,24 @@ export default function RootLayout({ children }) {
                   <Dashboard sx={{ mr: 2, color: '#ffffff' }} />
                   <ListItemText 
                     primary="XLIFF File Translator"
+                    primaryTypographyProps={{
+                      sx: { fontWeight: 500, color: '#ffffff' }
+                    }}
+                  />
+                </ListItem>
+                <ListItem 
+                  onClick={() => handleNavigation('/xliff-validator')}
+                  sx={{
+                    borderRadius: '8px',
+                    mb: 1,
+                    '&:hover': {
+                      backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                    }
+                  }}
+                >
+                  <CheckCircle sx={{ mr: 2, color: '#ffffff' }} />
+                  <ListItemText 
+                    primary="XLIFF Validator"
                     primaryTypographyProps={{
                       sx: { fontWeight: 500, color: '#ffffff' }
                     }}
@@ -399,6 +441,24 @@ export default function RootLayout({ children }) {
                   <ContactMail sx={{ mr: 2, color: '#ffffff' }} />
                   <ListItemText 
                     primary="Contact Us"
+                    primaryTypographyProps={{
+                      sx: { fontWeight: 500, color: '#ffffff' }
+                    }}
+                  />
+                </ListItem>
+                <ListItem 
+                  onClick={() => handleNavigation('/testimonials')}
+                  sx={{
+                    borderRadius: '8px',
+                    mb: 1,
+                    '&:hover': {
+                      backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                    }
+                  }}
+                >
+                  <StarIcon sx={{ mr: 2, color: '#ffffff' }} />
+                  <ListItemText 
+                    primary="Testimonials"
                     primaryTypographyProps={{
                       sx: { fontWeight: 500, color: '#ffffff' }
                     }}

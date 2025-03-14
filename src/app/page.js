@@ -442,6 +442,7 @@ export default function Home() {
             <ul className={styles.footerLinks}>
               <li><Link href="/features">Features</Link></li>
               <li><Link href="/support">Support</Link></li>
+              <li><Link href="/testimonials">Testimonials</Link></li>
               <li><Link href="/about">About Us</Link></li>
               <li><Link href="/contact">Contact Us</Link></li>
             </ul>

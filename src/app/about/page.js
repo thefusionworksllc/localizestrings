@@ -14,7 +14,7 @@ export default function About() {
     {
       icon: <Speed sx={{ fontSize: 40 }} />,
       title: 'Lightning Fast',
-      description: 'Get instant translations for your XLIFF files with our optimized processing engine.'
+      description: 'Get instant translations for your language files with our optimized processing engine.'
     },
     {
       icon: <Security sx={{ fontSize: 40 }} />,
@@ -23,17 +23,17 @@ export default function About() {
     },
     {
       icon: <Code sx={{ fontSize: 40 }} />,
-      title: 'XLIFF Support',
-      description: 'Full support for XLIFF file format, maintaining all your translation memory and metadata.'
+      title: 'Language Support',
+      description: 'Full support for all languages, maintaining all your translation memory and metadata.'
     }
   ];
 
   return (
     <div className={sharedStyles.pageContainer}>
       <Box sx={{ maxWidth: '1200px', width: '100%', mx: 'auto', px: 3 }}>
-        <h1 className={sharedStyles.title} style={{ textAlign: 'center' }}>About XLIFF Translator</h1>
+        <h1 className={sharedStyles.title} style={{ textAlign: 'center' }}>About LocalizeStrings.com</h1>
         <p className={sharedStyles.subtitle} style={{ maxWidth: '800px', margin: '0 auto 3rem' }}>
-          We're dedicated to making XLIFF file translation simple and efficient for developers and content managers worldwide.
+          We're dedicated to making language translation simple and efficient for developers and content managers worldwide.
           Our platform combines powerful technology with an easy-to-use interface.
         </p>
 
@@ -104,7 +104,7 @@ export default function About() {
             Ready to Get Started?
           </Typography>
           <Typography sx={{ color: '#6b7280', maxWidth: '600px', mx: 'auto' }}>
-            Join our community of developers who trust XLIFF Translator for their localization needs.
+            Join our community of developers who trust our language translation tool for their localization needs.
             Sign up now and experience the easiest way to manage your translations.
           </Typography>
         </Box>
