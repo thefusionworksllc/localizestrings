@@ -410,7 +410,7 @@ export default function Home() {
           Ready to Simplify Your Localization Workflow?
         </Typography>
         <Typography variant="body1" sx={{ color: 'white', mb: 4 }}>
-          Join thousands of developers, translators, and businesses who trust LocalizeStrings.com for their translation needs.
+          Join our community of developers, translators, and businesses who trust LocalizeStrings.com for their translation needs.
         </Typography>
         <Button
           variant="contained"
@@ -441,7 +441,7 @@ export default function Home() {
             <Typography variant="h6" sx={{ color: 'white', mb: 2 }}>Links</Typography>
             <ul className={styles.footerLinks}>
               <li><Link href="/features">Features</Link></li>
-              <li><Link href="/pricing">Pricing</Link></li>
+              <li><Link href="/support">Support</Link></li>
               <li><Link href="/about">About Us</Link></li>
               <li><Link href="/contact">Contact Us</Link></li>
             </ul>

@@ -104,7 +104,7 @@ export default function About() {
             Ready to Get Started?
           </Typography>
           <Typography sx={{ color: '#6b7280', maxWidth: '600px', mx: 'auto' }}>
-            Join thousands of developers who trust XLIFF Translator for their localization needs.
+            Join our community of developers who trust XLIFF Translator for their localization needs.
             Sign up now and experience the easiest way to manage your translations.
           </Typography>
         </Box>

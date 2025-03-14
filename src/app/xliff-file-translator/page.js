@@ -346,7 +346,7 @@ export default function XliffFileTranslator() {
               )}
               {file && (
                 <Typography sx={{ mt: 2,  color: '#7c3aed' ,fontWeight: 'bold' , fontSize: '1.5rem'}}>
-                  Selected file: {file.name} // Display selected file name
+                  Selected file: {file.name}
                 </Typography>
               )}
             </Box>
