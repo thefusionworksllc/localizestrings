@@ -9,16 +9,11 @@ import {
   Alert,
   CircularProgress
 } from '@mui/material';
-import { createClient } from '@supabase/supabase-js';
+import supabase from '../supabaseClient';
 import { useRouter } from 'next/navigation';
 import { useColorMode } from '../contexts/ThemeContext';
 import sharedStyles from '../styles/shared.module.css';
 import styles from './page.module.css';
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-);
 
 export default function Signup() {
   const [email, setEmail] = useState('');

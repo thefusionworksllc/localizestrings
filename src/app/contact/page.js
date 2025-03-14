@@ -9,6 +9,7 @@ import {
   Alert,
   CircularProgress
 } from '@mui/material';
+import supabase from '../supabaseClient'; // Importing the Supabase client
 import { useColorMode } from '../contexts/ThemeContext';
 import sharedStyles from '../styles/shared.module.css';
 import styles from './page.module.css';
@@ -63,75 +64,83 @@ export default function ContactUs() {
         </Typography>
         
         <Box component="form" onSubmit={handleSubmit} className={styles.form}>
-          <TextField
-            required
-            fullWidth
-            id="name"
-            label="Name"
-            name="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            sx={{
-              '& .MuiOutlinedInput-root': {
-                '& fieldset': {
-                  borderColor: 'rgba(124, 58, 237, 0.2)',
+          <div className={sharedStyles.formField}>
+            <TextField
+              required
+              fullWidth
+              id="name"
+              label="Your Name"
+              name="name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  '& fieldset': {
+                    borderColor: 'rgba(124, 58, 237, 0.2)',
+                  },
+                  '&:hover fieldset': {
+                    borderColor: 'rgba(124, 58, 237, 0.3)',
+                  },
+                  '&.Mui-focused fieldset': {
+                    borderColor: '#7C3AED',
+                  },
                 },
-                '&:hover fieldset': {
-                  borderColor: 'rgba(124, 58, 237, 0.3)',
+              }}
+            />
+          </div>
+
+          <div className={sharedStyles.formField}>
+            <TextField
+              required
+              fullWidth
+              id="email"
+              label="Email Address"
+              name="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  '& fieldset': {
+                    borderColor: 'rgba(124, 58, 237, 0.2)',
+                  },
+                  '&:hover fieldset': {
+                    borderColor: 'rgba(124, 58, 237, 0.3)',
+                  },
+                  '&.Mui-focused fieldset': {
+                    borderColor: '#7C3AED',
+                  },
                 },
-                '&.Mui-focused fieldset': {
-                  borderColor: '#7C3AED',
+              }}
+            />
+          </div>
+
+          <div className={sharedStyles.formField}>
+            <TextField
+              required
+              fullWidth
+              id="message"
+              label="Your Message"
+              name="message"
+              multiline
+              rows={4}
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  '& fieldset': {
+                    borderColor: 'rgba(124, 58, 237, 0.2)',
+                  },
+                  '&:hover fieldset': {
+                    borderColor: 'rgba(124, 58, 237, 0.3)',
+                  },
+                  '&.Mui-focused fieldset': {
+                    borderColor: '#7C3AED',
+                  },
                 },
-              },
-            }}
-          />
-          <TextField
-            required
-            fullWidth
-            id="email"
-            label="Email Address"
-            name="email"
-            autoComplete="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            sx={{
-              '& .MuiOutlinedInput-root': {
-                '& fieldset': {
-                  borderColor: 'rgba(124, 58, 237, 0.2)',
-                },
-                '&:hover fieldset': {
-                  borderColor: 'rgba(124, 58, 237, 0.3)',
-                },
-                '&.Mui-focused fieldset': {
-                  borderColor: '#7C3AED',
-                },
-              },
-            }}
-          />
-          <TextField
-            required
-            fullWidth
-            id="message"
-            label="Message"
-            name="message"
-            multiline
-            rows={4}
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            sx={{
-              '& .MuiOutlinedInput-root': {
-                '& fieldset': {
-                  borderColor: 'rgba(124, 58, 237, 0.2)',
-                },
-                '&:hover fieldset': {
-                  borderColor: 'rgba(124, 58, 237, 0.3)',
-                },
-                '&.Mui-focused fieldset': {
-                  borderColor: '#7C3AED',
-                },
-              },
-            }}
-          />
+              }}
+            />
+          </div>
           
           {error && (
             <Alert severity="error" sx={{ mt: 2 }}>

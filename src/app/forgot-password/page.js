@@ -9,16 +9,11 @@ import {
   Alert,
   CircularProgress
 } from '@mui/material';
-import { createClient } from '@supabase/supabase-js';
+import supabase from '../supabaseClient';
 import { useRouter } from 'next/navigation';
 import { useColorMode } from '../contexts/ThemeContext';
 import sharedStyles from '../styles/shared.module.css';
 import styles from './page.module.css';
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-);
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState('');
@@ -66,45 +61,42 @@ export default function ForgotPassword() {
     <Box className={`${styles.root} ${isDarkMode ? styles.darkTheme : ''}`}>
       <Box className={styles.container}>
         <Typography variant="h4" className={styles.title}>
-          Reset Password
-        </Typography>
-
-        <Typography variant="body1" className={styles.description}>
-          Enter your email address and we'll send you a link to reset your password.
+          Forgot Password
         </Typography>
         
         <Box component="form" onSubmit={handleResetPassword} className={styles.form}>
-          <TextField
-            required
-            fullWidth
-            id="email"
-            label="Email Address"
-            name="email"
-            autoComplete="email"
-            autoFocus
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            sx={{
-              '& .MuiOutlinedInput-root': {
-                '& fieldset': {
-                  borderColor: 'rgba(124, 58, 237, 0.2)',
+          <div className={sharedStyles.formField}>
+            <TextField
+              required
+              fullWidth
+              id="email"
+              label="Email Address"
+              name="email"
+              autoComplete="email"
+              autoFocus
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  '& fieldset': {
+                    borderColor: 'rgba(124, 58, 237, 0.2)',
+                  },
+                  '&:hover fieldset': {
+                    borderColor: 'rgba(124, 58, 237, 0.3)',
+                  },
+                  '&.Mui-focused fieldset': {
+                    borderColor: '#7C3AED',
+                  },
                 },
-                '&:hover fieldset': {
-                  borderColor: 'rgba(124, 58, 237, 0.3)',
-                },
-                '&.Mui-focused fieldset': {
-                  borderColor: '#7C3AED',
-                },
-              },
-            }}
-          />
-          
+              }}
+            />
+          </div>
+
           {error && (
             <Alert severity="error" sx={{ mt: 2 }}>
               {error}
             </Alert>
           )}
-
           {success && (
             <Alert severity="success" sx={{ mt: 2 }}>
               {success}
@@ -129,7 +121,7 @@ export default function ForgotPassword() {
               onClick={navigateToLogin}
               className={styles.link}
             >
-              Back to Sign In
+              Remembered your password? Sign In
             </Button>
           </Box>
         </Box>

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Box, Button, TextField, Typography, Alert, Avatar, MenuItem, Select, FormControl, InputLabel } from '@mui/material';
-import { createBrowserClient } from '@supabase/ssr';
+import supabase from '../supabaseClient';
 import PersonIcon from '@mui/icons-material/Person';
 
 export default function Testimonials() {
@@ -12,11 +12,6 @@ export default function Testimonials() {
   const [role, setRole] = useState('User');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
-
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-  );
 
   const fetchTestimonials = async () => {
     const { data, error } = await supabase

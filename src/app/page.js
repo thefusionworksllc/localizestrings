@@ -33,7 +33,7 @@ import {
   PlayArrow
 } from '@mui/icons-material';
 import { languages, popularLanguages, getLanguageName } from './utils/languages';
-import supabase from './supabaseClient'; // Import the singleton instance for Supabase client
+import supabase from './supabaseClient'; // Importing the Supabase client
 import styles from './page.module.css';
 import Image from 'next/image';
 import Link from 'next/link';

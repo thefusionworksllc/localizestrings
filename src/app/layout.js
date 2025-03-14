@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { createClient } from '@supabase/supabase-js';
+import supabase from '../../src/app/supabaseClient';
 import { useRouter } from 'next/navigation';
 import { Inter } from 'next/font/google';
 import { ThemeProvider } from './contexts/ThemeContext';
@@ -29,11 +29,6 @@ import Head from 'next/head';
 import PublicIcon from '@mui/icons-material/Public';
 
 const inter = Inter({ subsets: ['latin'] });
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-);
 
 export default function RootLayout({ children }) {
   const [user, setUser] = useState(null);
@@ -177,6 +172,13 @@ export default function RootLayout({ children }) {
                 }}
                 sx={{ mt: '2px', }}
               >
+                  <MenuItem 
+                  onClick={() => { handleNavigation('/xliff-online-translator'); handleMenuClose(); }}
+                  sx={{ '&:hover': { background: 'linear-gradient(135deg, rgba(80, 74, 194, 0.9), rgba(147, 51, 234, 0.90))', color: 'white' } }}
+                >
+                  <TranslateIcon sx={{ mr: 1 }} />
+                  XLIFF Online Translator
+                </MenuItem>
                 <MenuItem 
                   onClick={() => { handleNavigation('/xliff-file-translator'); handleMenuClose(); }}
                   sx={{ '&:hover': { background: 'linear-gradient(135deg, rgba(80, 74, 194, 0.9), rgba(147, 51, 234, 0.90))', color: 'white' } }}
@@ -184,13 +186,7 @@ export default function RootLayout({ children }) {
                   <Dashboard sx={{ mr: 1 }} />
                   XLIFF File Translator
                 </MenuItem>
-                <MenuItem 
-                  onClick={() => { handleNavigation('/xliff-online-translator'); handleMenuClose(); }}
-                  sx={{ '&:hover': { background: 'linear-gradient(135deg, rgba(80, 74, 194, 0.9), rgba(147, 51, 234, 0.90))', color: 'white' } }}
-                >
-                  <TranslateIcon sx={{ mr: 1 }} />
-                  XLIFF Online Translator
-                </MenuItem>
+              
                 <MenuItem 
                   onClick={() => { handleNavigation('/xliff-validator'); handleMenuClose(); }}
                   sx={{ '&:hover': { background: 'linear-gradient(135deg, rgba(80, 74, 194, 0.9), rgba(147, 51, 234, 0.90))', color: 'white' } }}

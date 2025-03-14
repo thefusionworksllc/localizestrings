@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Box, Button, Typography, CircularProgress, Alert, TextField, Autocomplete, Chip } from '@mui/material';
 import { Translate, FileCopy, Download, Refresh, CloudUpload ,SimCardDownloadOutlined} from '@mui/icons-material';
 import { languages, popularLanguages, getLanguageName } from '../utils/languages';   
-import { createBrowserClient } from '@supabase/ssr';
+import supabase from '../supabaseClient';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { solarizedlight } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { saveAs } from 'file-saver';
@@ -17,12 +17,6 @@ export default function XliffOnlineTranslator() {
   const [error, setError] = useState(null); // Error message state
   const [success, setSuccess] = useState(false); // Success state for translation
   const [user, setUser] = useState(null); // User information
-
-  // Create Supabase client for authentication and database access
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-  );
 
   // Function to handle translation of the XLIFF content
   const handleTranslate = async () => {

@@ -4,7 +4,7 @@ import { useDropzone } from 'react-dropzone';
 import { Box, Button, Typography, CircularProgress, Alert, TextField, Autocomplete, Chip } from '@mui/material';
 import { Language, Speed, Security, CloudUpload, Translate, CloudDownload } from '@mui/icons-material';
 import { languages, popularLanguages, getLanguageName } from '../utils/languages';
-import { createBrowserClient } from '@supabase/ssr';
+import supabase from '../supabaseClient'; // Importing the Supabase client
 
 export default function XliffFileTranslator() {
   // State variables for managing file upload, translation status, and user information
@@ -14,12 +14,6 @@ export default function XliffFileTranslator() {
   const [error, setError] = useState(null); // Error message state
   const [success, setSuccess] = useState(false); // Success state for translation
   const [user, setUser] = useState(null); // User information
-
-  // Create Supabase client for authentication and database access
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-  );
 
   // Update user state when session changes
   useEffect(() => {
@@ -302,11 +296,11 @@ export default function XliffFileTranslator() {
           <Box
             {...getRootProps()} // Dropzone properties
             sx={{
-              border: '2px dashed #7c3aed',
+              border: '4px dashed #7c3aed',
               borderRadius: 2,
               padding: 4,
               marginBottom: 3,
-              cursor: 'pointer',
+              cursor: 'pointer',             
               transition: '0.2s ease-in-out',
               '&:hover': {
                 transform: 'translateY(-2px)',
@@ -314,9 +308,9 @@ export default function XliffFileTranslator() {
               }
             }}
           >
-            <input {...getInputProps()} /> // Input for file selection
+            <input {...getInputProps()} /> 
             <Box sx={{ textAlign: 'center' }}>
-              <CloudDownload sx={{ fontSize: 48, color: '#7c3aed', mb: 2 }} />
+              <CloudUpload sx={{ fontSize: 48, color: '#7c3aed', mb: 2 }} />
               {isDragActive ? (
                 <Typography>Drop the XLIFF file here...</Typography> // Message when file is dragged over
               ) : (
@@ -345,7 +339,7 @@ export default function XliffFileTranslator() {
                 </>
               )}
               {file && (
-                <Typography sx={{ mt: 2,  color: '#7c3aed' ,fontWeight: 'bold' , fontSize: '1.5rem'}}>
+                <Typography sx={{ mt: 2, color: '#7c3aed', fontWeight: 'bold', fontSize: '1.5rem' }}>
                   Selected file: {file.name}
                 </Typography>
               )}
