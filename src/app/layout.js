@@ -23,7 +23,9 @@ import {
   Home as HomeIcon,
   Translate as TranslateIcon,
   CheckCircleOutlineOutlined as CheckCircle,
-  Star as StarIcon
+  Star as StarIcon,
+  ArrowDropDown,
+  ArrowDropUp
 } from '@mui/icons-material';
 import Head from 'next/head';
 import PublicIcon from '@mui/icons-material/Public';
@@ -85,10 +87,11 @@ export default function RootLayout({ children }) {
           <title>Localize Strings</title>
         </Head>
         <AppBar 
-          position="static" 
+          position="fixed"
           sx={{ 
             background: 'linear-gradient(90deg, #4f46e5, #9333ea)',
-            boxShadow: 'none'
+            boxShadow: 'none',
+            zIndex: 1201,            
           }}
         >
           <Toolbar >
@@ -128,32 +131,35 @@ export default function RootLayout({ children }) {
                 Localize Strings
               </Typography>
             </Box>
-            <Box sx={{ ml: 'auto', display: 'flex', alignItems: 'center' }}>
-            <Button 
+            <Box sx={{ ml: 'auto', display: 'flex', alignItems: 'center', display: { xs: 'none', md: 'flex' } }}>
+              <Button 
                 color="inherit" 
                 onClick={() => handleNavigation('/')}
                 onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.15)'}
                 onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
                 startIcon={<HomeIcon />}
-                sx={{ mr: '10px', '&:hover': {
-                  backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                }}}  
-               
+                sx={{ 
+                    mr: '10px', 
+                    '&:hover': {
+                        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                    },
+                    textTransform: 'none'
+                }}  
               >
                 Home
               </Button>
               <Button 
                 color="inherit" 
                 onClick={handleMenuClick}
-                startIcon={<TranslateIcon />}
+                startIcon={<ArrowDropDown />}
                 onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.15)'}
                 onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
                 sx={{
-                  border: '1px solid white',
-                  borderRadius: '4px',
-                  '&:hover': {
-                    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                  }
+                    borderRadius: '4px',
+                    '&:hover': {
+                        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                    },
+                    textTransform: 'none'
                 }}
               >
                 XLIFF Menu
@@ -201,9 +207,13 @@ export default function RootLayout({ children }) {
                 startIcon={<Info />}
                 onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.15)'}
                 onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
-                sx={{ ml: '10px' , '&:hover': {
-                  backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                }}}  
+                sx={{ 
+                    ml: '10px', 
+                    '&:hover': {
+                        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                    },
+                    textTransform: 'none'
+                }}  
                
               >
                 About Us
@@ -243,8 +253,10 @@ export default function RootLayout({ children }) {
                     startIcon={<LoginIcon />}
                     onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.15)'}
                     onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
-                      sx={{ ml: '10px' , '&:hover': {
+                    sx={{ ml: '10px', textTransform: 'none', '&:hover': { 
                       backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                      textTransform: 'none'
+                      
                     }}}
                   >
                     Login
@@ -255,8 +267,9 @@ export default function RootLayout({ children }) {
                     startIcon={<PersonAddIcon />}
                     onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.15)'}
                     onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
-                    sx={{ ml: '10px' , '&:hover': { 
+                    sx={{ ml: '10px', textTransform: 'none', '&:hover': { 
                       backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                      textTransform: 'none'
                     }}}
                   >
                     Signup
@@ -273,7 +286,7 @@ export default function RootLayout({ children }) {
           onClose={toggleSidebar}
           PaperProps={{
             sx: {
-              width: 380,
+              width: 310,
               background: 'linear-gradient(135deg, rgba(79, 70, 229, 0.90), rgba(147, 51, 234, 0.90))',
               borderRadius: '0 16px 16px 0',
               padding: '24px 16px',
@@ -285,6 +298,7 @@ export default function RootLayout({ children }) {
               height: '100%',
               display: 'flex',
               flexDirection: 'column',
+              marginBottom: '20px'
             }}
           >
             <Box sx={{ mb: 4, px: 2, display: 'flex', alignItems: 'center',borderBottom: '1px solid rgba(255, 255, 255, 0.3)' }}>
@@ -545,7 +559,9 @@ export default function RootLayout({ children }) {
           </Box>
         </Drawer>
 
-        {children}
+        <Box sx={{ mt: '64px' }}>
+          {children}
+        </Box>
       </>
     );
   };

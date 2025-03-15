@@ -6,7 +6,7 @@
 /* Hero Section */
 .heroSection {
   padding: 2rem 1rem;
-  background: linear-gradient(135deg, rgba(124, 58, 237, 0.05) 0%, rgba(99, 102, 241, 0.05) 100%);
+  background: linear-gradient(135deg, #f8f9ff 0%, #f0f4ff 100%);
   text-align: center;
   position: relative;
   overflow: hidden;
@@ -25,7 +25,7 @@
   color: #1a1a1a;
   margin-bottom: 2rem;
   line-height: 1.3;
-  background: linear-gradient(135deg, #7c3aed 0%, #6366f1 100%);
+  background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -119,13 +119,28 @@
   padding: 1.25rem;
   background: white;
   border-radius: 8px;
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  border: 2px solid rgba(0, 0, 0, 0.05);
   transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);  
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+  padding: 2rem;
 }
 
 .advantageCard:hover {
   transform: translateY(-4px);
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.05);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; 
+  align-items: center;
+  text-align: center;
+  padding: 2rem;
 }
 
 /* Use Cases Section */
@@ -148,6 +163,7 @@
   padding: 4rem 2rem;
   background: white;
   text-align: center;
+  height: 100%;
 }
 
 .stepsGrid {
@@ -155,7 +171,8 @@
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 1.5rem;
   max-width: 1200px;
-  margin: 0 auto;
+  margin: 0 auto;   
+  height: 100%;
 }
 
 /* Testimonials Section */
@@ -216,7 +233,7 @@
 
 /* Call-to-Action Section */
 .ctaSection {
-  padding: 4rem 2rem;
+  padding: 6rem 2rem;
   background: linear-gradient(135deg, #7c3aed 0%, #6366f1 100%);
   color: white;
   text-align: center;
@@ -232,7 +249,7 @@
 .footerGrid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 2rem;
+  gap: 1rem;
   max-width: 1200px;
   margin: 0 auto;
 }
@@ -307,4 +324,13 @@
   align-items: center;
   justify-content: center;
   margin-top: 0.5rem;
+}
+.footerDivider {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  margin: 2rem 0 !important;
+}
+.copyright {
+  text-align: center;
+  font-size: 0.875rem;
+  color: #9ca3af;
 }

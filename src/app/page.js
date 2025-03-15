@@ -12,7 +12,8 @@ import {
   Chip,
   Card,
   CardContent,
-  Avatar
+  Avatar,
+  Divider
 } from '@mui/material';
 import {
   Language,
@@ -30,7 +31,8 @@ import {
   LinkedIn,
   GitHub,
   Pause,
-  PlayArrow
+  PlayArrow,
+  ArrowForward
 } from '@mui/icons-material';
 import { languages, popularLanguages, getLanguageName } from './utils/languages';
 import supabase from './supabaseClient'; // Importing the Supabase client
@@ -129,7 +131,7 @@ export default function Home() {
           <Typography
             variant="h3"
             className={styles.heroTitle}
-            sx={{ fontWeight: 600 }}
+            sx={{ fontWeight: 700 }}
           >
             Your Ultimate Tool for Seamless Translation and Localization
           </Typography>
@@ -148,12 +150,15 @@ export default function Home() {
               href="/xliff-online-translator"
               sx={{
                 textTransform: 'none',
-                fontSize: '1rem',
+                fontSize: '1.2rem',
                 minWidth: '140px',
-                fontWeight: 600
+                fontWeight: 600,
+                display: 'flex',
+                alignItems: 'center',
               }}
             >
               Get Started
+              <ArrowForward sx={{ ml: 1 , fontSize: '1.75rem'}} />
             </Button>
             <Button 
               variant="outlined" 
@@ -161,7 +166,7 @@ export default function Home() {
               href="/features"
               sx={{
                 textTransform: 'none',
-                fontSize: '1rem',
+                fontSize: '1.2rem',
                 minWidth: '140px'
               }}
             >
@@ -201,23 +206,23 @@ export default function Home() {
         <div className={styles.advantagesGrid}>
           {[
             {
-              icon: <Language sx={{ fontSize: 28 }} />,
+              icon: <Language sx={{ fontSize: 35   }} />,
               title: 'Multi Language Support',
               description: 'Support for over 100 languages with high accuracy translations'
             },
             
             {
-              icon: <Timeline sx={{ fontSize: 28 }} />,
+              icon: <Timeline sx={{ fontSize: 35 }} />,
               title: 'Translation Memory',
               description: 'Save time with reusable translations and consistent terminology.'
             },
             {
-              icon: <CheckCircle sx={{ fontSize: 28 }} />,
+              icon: <CheckCircle sx={{ fontSize: 35 }} />,
               title: 'Quality Assurance',
               description: 'Automated QA checks to ensure accurate and consistent translations.'
             },
             {
-              icon: <Speed sx={{ fontSize: 28 }} />,
+                icon: <Speed sx={{ fontSize: 35 }} />,
               title: 'Lightning Fast',
               description: 'Get instant translations for your files with our optimized processing engine'
             }
@@ -244,27 +249,27 @@ export default function Home() {
           className={styles.sectionTitle}
           sx={{ fontWeight: 700 }}
         >
-          Who Can Benefit from LocalizeStrings.com?
+          Who Can Use?
         </Typography>
         <div className={styles.useCasesGrid}>
           {[
             {
-              icon: <Code sx={{ fontSize: 28 }} />,
+              icon: <Code sx={{ fontSize: 35 }} />,
               title: 'Developers',
               description: 'Localize your apps with support for XLIFF, JSON, and strings.xml.'
             },
             {
-              icon: <Language sx={{ fontSize: 28 }} />,
+              icon: <Language sx={{ fontSize: 35 }} />,
               title: 'Translators',
               description: 'Simplify your workflow with real-time collaboration and translation memory.'
             },
             {
-              icon: <Business sx={{ fontSize: 28 }} />,
+              icon: <Business sx={{ fontSize: 35 }} />,
               title: 'Businesses',
               description: 'Expand your global reach with accurate and consistent translations.'
             },
             {
-              icon: <Create sx={{ fontSize: 28 }} />,
+              icon: <Create sx={{ fontSize: 35 }} />,
               title: 'Content Creators',
               description: 'Localize your content for a global audience with ease.'
             }
@@ -291,7 +296,7 @@ export default function Home() {
           className={styles.sectionTitle}
           sx={{ fontWeight: 700 }}
         >
-          How LocalizeStrings.com Works
+          How it Works
         </Typography>
         <div className={styles.stepsGrid}>
           {[
@@ -302,7 +307,7 @@ export default function Home() {
             },
             {
               step: 2,
-              title: 'Select Languages',
+              title: 'Select Language',
               description: 'Choose the source and target languages.'
             },
             {
@@ -322,7 +327,7 @@ export default function Home() {
                   variant="h1"
                   sx={{
                     color: '#7c3aed',
-                    opacity: 0.6,
+                    opacity: 0.8,
                     mb: 2,
                     fontSize: '2.5rem',
                     fontWeight: 800
@@ -353,7 +358,7 @@ export default function Home() {
               <CardContent>
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                   <Avatar //src={testimonial.avatar} 
-                  sx={{ mr: 2 , color: '#7c3aed',opacity: 0.6}} />
+                  sx={{ mr: 2 , color: '#7c3aed',opacity: 0.8}} />
                   <Box>
                     <Typography variant="h6">{testimonial.name}</Typography>
                     <Typography variant="body2" color="text.secondary">
@@ -439,6 +444,14 @@ export default function Home() {
             </Typography>
           </div>
           <div>
+            <Typography variant="h6" sx={{ color: 'white', mb: 2 }}>Services</Typography>
+            <ul className={styles.footerLinks}>
+              <li><Link href="/xliff-online-translator">XLIFF Translator</Link></li>
+              <li><Link href="/xliff-file-translator">XLIFF File Translator</Link></li>
+              <li><Link href="/xliff-validator">XLIFF Validator</Link></li>
+            </ul>
+          </div>
+          <div>
             <Typography variant="h6" sx={{ color: 'white', mb: 2 }}>Links</Typography>
             <ul className={styles.footerLinks}>
               <li><Link href="/features">Features</Link></li>
@@ -455,37 +468,7 @@ export default function Home() {
               <li><Link href="/terms-of-service">Terms of Service</Link></li>
             </ul>
           </div>
-          <div>
-            <Typography variant="h6" sx={{ color: 'white', mb: 2 }}>Newsletter</Typography>
-            <Typography variant="body2" sx={{ color: '#9ca3af', mb: 2 }}>
-              Subscribe to our newsletter for updates and tips on localization.
-            </Typography>
-            <div className={styles.newsletterForm}>
-              <TextField
-                variant="outlined"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                sx={{
-                  input: { color: 'white' },
-                  '& .MuiOutlinedInput-root': {
-                    '& fieldset': { borderColor: '#4b5563' },
-                    '&:hover fieldset': { borderColor: '#6b7280' },
-                    '&.Mui-focused fieldset': { borderColor: '#7c3aed' }
-                  }
-                }}
-              />
-              <Button
-                variant="contained"
-                sx={{
-                  background: '#7c3aed',
-                  '&:hover': { background: '#6d28d9' }
-                }}
-              >
-                Subscribe
-              </Button>
-            </div>
-          </div>
+
         </div>
         <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center', gap: 2 }}>
           <Facebook sx={{ color: '#9ca3af', cursor: 'pointer' }} />
@@ -493,6 +476,11 @@ export default function Home() {
           <LinkedIn sx={{ color: '#9ca3af', cursor: 'pointer' }} />
           <GitHub sx={{ color: '#9ca3af', cursor: 'pointer' }} />
         </Box>
+        <Divider className={styles.footerDivider} />
+          
+          <Typography variant="body2" className={styles.copyright}>
+            © {new Date().getFullYear()} LocalizeStrings.com. All rights reserved.
+          </Typography>
       </footer>
     </div>
   );
