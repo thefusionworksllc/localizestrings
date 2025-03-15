@@ -5,8 +5,11 @@ import { Box, Button, Typography, CircularProgress, Alert, TextField, Autocomple
 import { Language, Speed, Security, CloudUpload, Translate, CloudDownload } from '@mui/icons-material';
 import { languages, popularLanguages, getLanguageName } from '../utils/languages';
 import supabase from '../supabaseClient'; // Importing the Supabase client
+import { useTranslation } from 'react-i18next';
+import '../i18n'; // Import the i18n configuration
 
 export default function XliffFileTranslator() {
+  const { t } = useTranslation('common');
   // State variables for managing file upload, translation status, and user information
   const [file, setFile] = useState(null); // Uploaded file
   const [targetLanguage, setTargetLanguage] = useState(null); // Selected target language
@@ -186,7 +189,7 @@ export default function XliffFileTranslator() {
             textAlign: 'center'
           }}
         >
-          XLIFF File Translator
+          {t('xliffFileTranslator.title')}
         </Typography>
         
         {/* Features Section */}
@@ -220,10 +223,10 @@ export default function XliffFileTranslator() {
           >
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 0.5 }}>
               <Speed sx={{ fontSize: 28, color: '#7c3aed', mr: 1 }} />
-              <Typography variant="h6" sx={{ fontSize: '1rem', fontWeight: 600 }}>Lightning Fast</Typography>
+              <Typography variant="h6" sx={{ fontSize: '1rem', fontWeight: 600 }}>{t('xliffFileTranslator.featureCards.lightningFast')}</Typography>
             </Box>
             <Typography variant="body2" sx={{ color: '#6b7280', fontSize: '0.875rem', lineHeight: 1.4 }}>
-              Get instant translations in multiple languages with high accuracy.
+              {t('xliffFileTranslator.featureCards.lightningFastDescription')}
             </Typography>
           </Box>
 
@@ -247,10 +250,10 @@ export default function XliffFileTranslator() {
           >
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 0.5 }}>
               <Language sx={{ fontSize: 28, color: '#7c3aed', mr: 1 }} />
-              <Typography variant="h6" sx={{ fontSize: '1rem', fontWeight: 600 }}>Multiple Languages</Typography>
+              <Typography variant="h6" sx={{ fontSize: '1rem', fontWeight: 600 }}>{t('xliffFileTranslator.featureCards.multipleLanguages')}</Typography>
             </Box>
             <Typography variant="body2" sx={{ color: '#6b7280', fontSize: '0.875rem', lineHeight: 1.4 }}>
-              Support for over 100 languages with high accuracy translation.
+              {t('xliffFileTranslator.featureCards.multipleLanguagesDescription')}
             </Typography>
           </Box>
 
@@ -274,10 +277,10 @@ export default function XliffFileTranslator() {
           >
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 0.5 }}>
               <Security sx={{ fontSize: 28, color: '#7c3aed', mr: 1 }} />
-              <Typography variant="h6" sx={{ fontSize: '1rem', fontWeight: 600 }}>Secure & Reliable</Typography>
+              <Typography variant="h6" sx={{ fontSize: '1rem', fontWeight: 600 }}>{t('xliffFileTranslator.featureCards.secureReliable')}</Typography>
             </Box>
             <Typography variant="body2" sx={{ color: '#6b7280', fontSize: '0.875rem', lineHeight: 1.4 }}>
-              Your files are processed securely and never stored on our servers.
+              {t('xliffFileTranslator.featureCards.secureReliableDescription')}
             </Typography>
           </Box>
         </Box>
@@ -312,11 +315,11 @@ export default function XliffFileTranslator() {
             <Box sx={{ textAlign: 'center' }}>
               <CloudUpload sx={{ fontSize: 48, color: '#7c3aed', mb: 2 }} />
               {isDragActive ? (
-                <Typography>Drop the XLIFF file here...</Typography> // Message when file is dragged over
+                <Typography>{t('xliffFileTranslator.dropzone.dropHere')}</Typography> // Message when file is dragged over
               ) : (
                 <>
                   <Typography>
-                    Drag & drop an XLIFF file here, or click to select
+                    {t('xliffFileTranslator.dropzone.dragDrop')}
                   </Typography>
                   {!file && ( 
                     <Button
@@ -333,14 +336,14 @@ export default function XliffFileTranslator() {
                         }
                       }}
                     >
-                      Try a Sample File
+                      {t('xliffFileTranslator.dropzone.trySample')}
                     </Button>)
                   }
                 </>
               )}
               {file && (
                 <Typography sx={{ mt: 2, color: '#7c3aed', fontWeight: 'bold', fontSize: '1.5rem' }}>
-                  Selected file: {file.name}
+                  {t('xliffFileTranslator.dropzone.selectedFile')} {file.name}
                 </Typography>
               )}
             </Box>
@@ -360,8 +363,8 @@ export default function XliffFileTranslator() {
                 <TextField
                   {...params}
                   variant="outlined"
-                  label={`Select Target Language`}
-                  placeholder='Choose a language'
+                  label={t('xliffFileTranslator.languageSelect.selectTargetLanguage')}
+                  placeholder={t('xliffFileTranslator.languageSelect.chooseLanguage')}
                   error={Boolean(error)} // Show error if exists
                 />
               )}
@@ -391,7 +394,7 @@ export default function XliffFileTranslator() {
               }}
             >
               <Typography variant="h6" sx={{ mb: 1, fontWeight: 'bold', color: '#4b5563' }}>
-                Popular Languages:
+                {t('xliffFileTranslator.languageSelect.popularLanguages')}
               </Typography>
               <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, justifyContent: 'center' }}>
                 {popularLanguages.map(code => (
@@ -435,7 +438,7 @@ export default function XliffFileTranslator() {
                 }
               }}
             >
-              {loading ? <CircularProgress size={24} color="inherit" /> : <><Translate sx={{ mr: 1 }} /> Translate Now</>}
+              {loading ? <CircularProgress size={24} color="inherit" /> : <><Translate sx={{ mr: 1 }} /> {t('xliffFileTranslator.translateNow')}</>}
             </Button>
 
             {error && (
@@ -446,7 +449,7 @@ export default function XliffFileTranslator() {
 
             {success && (
               <Alert severity="success" sx={{ mt: 2 }}>
-                Translation completed successfully! Files have been downloaded. // Display success message
+                {t('xliffFileTranslator.translationCompleted')} // Display success message
               </Alert>
             )}
           </Box>

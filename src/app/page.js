@@ -39,6 +39,8 @@ import supabase from './supabaseClient'; // Importing the Supabase client
 import styles from './page.module.css';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useTranslation } from 'react-i18next';
+import './i18n'; // Import the i18n configuration
 
 const images = [
   '/ss_online_1.jpg',
@@ -46,6 +48,7 @@ const images = [
 ];
     
 export default function Home() {
+  const { t } = useTranslation('common');
   const [file, setFile] = useState(null);
   const [targetLanguages, setTargetLanguages] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -105,19 +108,19 @@ export default function Home() {
   const testimonials = [
     {
       name: 'John D.',
-      role: 'Developer',
+      role: t('developers'),
       quote: 'LocalizeStrings.com has made app localization so much easier. The multi-format support is a game-changer!',
       avatar: '/avatars/john.jpg'
     },
     {
       name: 'Maria S.',
-      role: 'Translator',
+      role: t('translators'),
       quote: 'The real-time collaboration feature has saved me so much time. Highly recommend it!',
       avatar: '/avatars/maria.jpg'
     },
     {
       name: 'Alex T.',
-      role: 'Business Owner',
+      role: t('businesses'),
       quote: 'Expanding our business globally has never been easier. The translation memory ensures consistency across all our content.',
       avatar: '/avatars/alex.jpg'
     }
@@ -133,15 +136,14 @@ export default function Home() {
             className={styles.heroTitle}
             sx={{ fontWeight: 700 }}
           >
-            Your Ultimate Tool for Seamless Translation and Localization
+            {t('heroTitle')}
           </Typography>
           <Typography
             variant="h5"
             className={styles.heroSubtitle}
             sx={{ fontWeight: 400 ,mb: 2}}
           >
-            Translate and localize your content effortlessly, powered by Google Translate API.<br />
-            Perfect for developers, translators, content creators and businesses.
+            {t('heroSubtitle')}
           </Typography>
           <div className={styles.ctaButtons}>
             <Button 
@@ -157,7 +159,7 @@ export default function Home() {
                 alignItems: 'center',
               }}
             >
-              Get Started
+              {t('getStarted')}
               <ArrowForward sx={{ ml: 1 , fontSize: '1.75rem'}} />
             </Button>
             <Button 
@@ -170,7 +172,7 @@ export default function Home() {
                 minWidth: '140px'
               }}
             >
-              Explore Features
+              {t('exploreFeatures')}
             </Button>
           </div>
 {/* Commented out the slideshow for now
@@ -201,30 +203,30 @@ export default function Home() {
           className={styles.sectionTitle}
           sx={{ fontWeight: 700 }}
         >
-          Why Choose LocalizeStrings.com?
+          {t('whyChooseUs')}
         </Typography>
         <div className={styles.advantagesGrid}>
           {[
             {
               icon: <Language sx={{ fontSize: 35   }} />,
-              title: 'Multi Language Support',
-              description: 'Support for over 100 languages with high accuracy translations'
+              title: t('multiLanguageSupport'),
+              description: t('multiLanguageSupportDesc')
             },
             
             {
               icon: <Timeline sx={{ fontSize: 35 }} />,
-              title: 'Translation Memory',
-              description: 'Save time with reusable translations and consistent terminology.'
+              title: t('translationMemory'),
+              description: t('translationMemoryDesc')
             },
             {
               icon: <CheckCircle sx={{ fontSize: 35 }} />,
-              title: 'Quality Assurance',
-              description: 'Automated QA checks to ensure accurate and consistent translations.'
+              title: t('qualityAssurance'),
+              description: t('qualityAssuranceDesc')
             },
             {
                 icon: <Speed sx={{ fontSize: 35 }} />,
-              title: 'Lightning Fast',
-              description: 'Get instant translations for your files with our optimized processing engine'
+              title: t('lightningFast'),
+              description: t('lightningFastDesc')
             }
           ].map((advantage, index) => (
             <Card key={index} className={styles.advantageCard} elevation={0}>
@@ -249,29 +251,29 @@ export default function Home() {
           className={styles.sectionTitle}
           sx={{ fontWeight: 700 }}
         >
-          Who Can Use?
+          {t('whoCanUse')}
         </Typography>
         <div className={styles.useCasesGrid}>
           {[
             {
               icon: <Code sx={{ fontSize: 35 }} />,
-              title: 'Developers',
-              description: 'Localize your apps with support for XLIFF, JSON, and strings.xml.'
+              title: t('developers'),
+              description: t('developersDesc')
             },
             {
               icon: <Language sx={{ fontSize: 35 }} />,
-              title: 'Translators',
-              description: 'Simplify your workflow with real-time collaboration and translation memory.'
+              title: t('translators'),
+              description: t('translatorsDesc')
             },
             {
               icon: <Business sx={{ fontSize: 35 }} />,
-              title: 'Businesses',
-              description: 'Expand your global reach with accurate and consistent translations.'
+              title: t('businesses'),
+              description: t('businessesDesc')
             },
             {
               icon: <Create sx={{ fontSize: 35 }} />,
-              title: 'Content Creators',
-              description: 'Localize your content for a global audience with ease.'
+              title: t('contentCreators'),
+              description: t('contentCreatorsDesc')
             }
           ].map((useCase, index) => (
             <Card key={index} className={styles.advantageCard} elevation={0}>
@@ -296,29 +298,29 @@ export default function Home() {
           className={styles.sectionTitle}
           sx={{ fontWeight: 700 }}
         >
-          How it Works
+          {t('howItWorks')}
         </Typography>
         <div className={styles.stepsGrid}>
           {[
             {
               step: 1,
-              title: 'Upload Your File',
-              description: 'Upload your XLIFF, JSON, or strings.xml file.'
+              title: t('uploadYourFile'),
+              description: t('uploadYourFileDesc')
             },
             {
               step: 2,
-              title: 'Select Language',
-              description: 'Choose the source and target languages.'
+              title: t('selectLanguage'),
+              description: t('selectLanguageDesc')
             },
             {
               step: 3,
-              title: 'Translate',
-              description: 'Use our powerful translation tools to localize your content.'
+              title: t('translate'),
+              description: t('translateDesc')
             },
             {
               step: 4,
-              title: 'Download',
-              description: 'Download the translated file and integrate it into your project.'
+              title: t('download'),
+              description: t('downloadDesc')
             }
           ].map((step, index) => (
             <Card key={index} className={styles.advantageCard} elevation={0}>
@@ -350,7 +352,7 @@ export default function Home() {
       {/* Testimonials Section */}
       <section className={styles.testimonialsSection}>
         <Typography variant="h4" className={styles.sectionTitle} sx={{ fontWeight: 700 }}>
-          What Our Users Are Saying
+          {t('testimonials')}
         </Typography>
         <div className={styles.testimonialGrid}>
           {testimonials.map((testimonial, index) => (
@@ -376,10 +378,10 @@ export default function Home() {
       {/* Support Us Section */}
       <section className={styles.supportUsSection}>
         <Typography variant="h4" className={styles.sectionTitle}>
-          Support Us
+          {t('supportUs')}
         </Typography>
         <Typography variant="body1" sx={{ mb: 2 }}>
-          If you appreciate our services and want to support us, consider signing up !.
+          {t('supportUsDesc')}
         </Typography>
         <div className={styles.ctaButtons}>
           <Button 
@@ -392,7 +394,7 @@ export default function Home() {
               minWidth: '140px'
             }}
           >
-            Sign Up
+            {t('signup')}
           </Button>
           <Link href="/support" passHref>
             <Button 
@@ -404,7 +406,7 @@ export default function Home() {
                 minWidth: '140px'
               }}
             >
-              Support Us
+              {t('supportUs')}
             </Button>
           </Link>
         </div>
@@ -413,10 +415,10 @@ export default function Home() {
       {/* Call-to-Action Section */}
       <section className={styles.ctaSection}>
         <Typography variant="h4" sx={{ color: 'white', mb: 2 }}>
-          Ready to Simplify Your Localization Workflow?
+          {t('ctaTitle')}
         </Typography>
         <Typography variant="body1" sx={{ color: 'white', mb: 4 }}>
-          Join our community of developers, translators, and businesses who trust LocalizeStrings.com for their translation needs.
+          {t('ctaDesc')}
         </Typography>
         <Button
           variant="contained"
@@ -428,7 +430,7 @@ export default function Home() {
             '&:hover': { background: '#f3f4f6' }
           }}
         >
-          Get Started for Free
+          {t('getStartedFree')}
         </Button>
       </section>
 
@@ -444,28 +446,28 @@ export default function Home() {
             </Typography>
           </div>
           <div>
-            <Typography variant="h6" sx={{ color: 'white', mb: 2 }}>Services</Typography>
+            <Typography variant="h6" sx={{ color: 'white', mb: 2 }}>{t('services')}</Typography>
             <ul className={styles.footerLinks}>
-              <li><Link href="/xliff-online-translator">XLIFF Translator</Link></li>
-              <li><Link href="/xliff-file-translator">XLIFF File Translator</Link></li>
-              <li><Link href="/xliff-validator">XLIFF Validator</Link></li>
+              <li><Link href="/xliff-online-translator">{t('xliffOnlineTranslator')}</Link></li>
+              <li><Link href="/xliff-file-translator">{t('xliffFileTranslator')}</Link></li>
+              <li><Link href="/xliff-validator">{t('xliffValidator')}</Link></li>
             </ul>
           </div>
           <div>
-            <Typography variant="h6" sx={{ color: 'white', mb: 2 }}>Links</Typography>
+            <Typography variant="h6" sx={{ color: 'white', mb: 2 }}>{t('links')}</Typography>
             <ul className={styles.footerLinks}>
-              <li><Link href="/features">Features</Link></li>
-              <li><Link href="/support">Support</Link></li>
-              <li><Link href="/testimonials">Testimonials</Link></li>
-              <li><Link href="/about">About Us</Link></li>
-              <li><Link href="/contact">Contact Us</Link></li>
+              <li><Link href="/features">{t('features')}</Link></li>
+              <li><Link href="/support">{t('support')}</Link></li>
+              <li><Link href="/testimonials">{t('testimonials')}</Link></li>
+              <li><Link href="/about">{t('aboutUs')}</Link></li>
+              <li><Link href="/contact">{t('contactUs')}</Link></li>
             </ul>
           </div>
           <div>
-            <Typography variant="h6" sx={{ color: 'white', mb: 2 }}>Legal</Typography>
+            <Typography variant="h6" sx={{ color: 'white', mb: 2 }}>{t('legal')}</Typography>
             <ul className={styles.footerLinks}>
-              <li><Link href="/privacy-policy">Privacy Policy</Link></li>
-              <li><Link href="/terms-of-service">Terms of Service</Link></li>
+              <li><Link href="/privacy-policy">{t('privacyPolicy')}</Link></li>
+              <li><Link href="/terms-of-service">{t('termsOfService')}</Link></li>
             </ul>
           </div>
 
@@ -479,7 +481,7 @@ export default function Home() {
         <Divider className={styles.footerDivider} />
           
           <Typography variant="body2" className={styles.copyright}>
-            © {new Date().getFullYear()} LocalizeStrings.com. All rights reserved.
+            {t('copyright', { year: new Date().getFullYear() })}
           </Typography>
       </footer>
     </div>

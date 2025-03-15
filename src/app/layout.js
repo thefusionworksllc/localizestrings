@@ -29,6 +29,9 @@ import {
 } from '@mui/icons-material';
 import Head from 'next/head';
 import PublicIcon from '@mui/icons-material/Public';
+import LanguageSwitcher from './components/LanguageSwitcher';
+import { useTranslation } from 'react-i18next';
+import './i18n'; // Import the i18n configuration
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -37,7 +40,9 @@ export default function RootLayout({ children }) {
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [jsonMenuAnchorEl, setJsonMenuAnchorEl] = useState(null);
+  const [xliffMenuAnchorEl, setXliffMenuAnchorEl] = useState(null);
+  const { t } = useTranslation('common');
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -68,12 +73,17 @@ export default function RootLayout({ children }) {
     setSidebarOpen(!sidebarOpen);
   };
 
-  const handleMenuClick = (event) => {
-    setAnchorEl(event.currentTarget);
+  const handleJsonMenuClick = (event) => {
+    setJsonMenuAnchorEl(event.currentTarget);
+  };
+
+  const handleXliffMenuClick = (event) => {
+    setXliffMenuAnchorEl(event.currentTarget);
   };
 
   const handleMenuClose = () => {
-    setAnchorEl(null);
+    setJsonMenuAnchorEl(null);
+    setXliffMenuAnchorEl(null);
   };
 
   const renderContent = () => {
@@ -146,11 +156,11 @@ export default function RootLayout({ children }) {
                     textTransform: 'none'
                 }}  
               >
-                Home
+                {t('home')}
               </Button>
               <Button 
                 color="inherit" 
-                onClick={handleMenuClick}
+                onClick={handleXliffMenuClick}
                 startIcon={<ArrowDropDown />}
                 onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.15)'}
                 onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
@@ -162,11 +172,11 @@ export default function RootLayout({ children }) {
                     textTransform: 'none'
                 }}
               >
-                XLIFF Menu
+                {t('xliffMenu')}
               </Button>
               <Menu
-                anchorEl={anchorEl}
-                open={Boolean(anchorEl)}
+                anchorEl={xliffMenuAnchorEl}
+                open={Boolean(xliffMenuAnchorEl)}
                 onClose={handleMenuClose}
                 anchorOrigin={{
                   vertical: 'bottom',
@@ -183,14 +193,14 @@ export default function RootLayout({ children }) {
                   sx={{ '&:hover': { background: 'linear-gradient(135deg, rgba(80, 74, 194, 0.9), rgba(147, 51, 234, 0.90))', color: 'white' } }}
                 >
                   <TranslateIcon sx={{ mr: 1 }} />
-                  XLIFF Online Translator
+                  {t('xliffOnlineTranslator.title')}
                 </MenuItem>
                 <MenuItem 
                   onClick={() => { handleNavigation('/xliff-file-translator'); handleMenuClose(); }}
                   sx={{ '&:hover': { background: 'linear-gradient(135deg, rgba(80, 74, 194, 0.9), rgba(147, 51, 234, 0.90))', color: 'white' } }}
                 >
                   <Dashboard sx={{ mr: 1 }} />
-                  XLIFF File Translator
+                  {t('xliffFileTranslator.title')}
                 </MenuItem>
               
                 <MenuItem 
@@ -198,9 +208,58 @@ export default function RootLayout({ children }) {
                   sx={{ '&:hover': { background: 'linear-gradient(135deg, rgba(80, 74, 194, 0.9), rgba(147, 51, 234, 0.90))', color: 'white' } }}
                 >
                   <CheckCircle sx={{ mr: 1 }} />
-                  XLIFF Validator
+                  {t('xliffValidator.title')}
                 </MenuItem>
               </Menu>
+              
+              {/* JSON Menu */}
+              <Button 
+                color="inherit" 
+                onClick={handleJsonMenuClick}
+                startIcon={<ArrowDropDown />}
+                onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.15)'}
+                onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                sx={{
+                    borderRadius: '4px',
+                    ml: '10px',
+                    '&:hover': {
+                        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                    },
+                    textTransform: 'none'
+                }}
+              >
+                {t('jsonMenu')}
+              </Button>
+              <Menu
+                anchorEl={jsonMenuAnchorEl}
+                open={Boolean(jsonMenuAnchorEl)}
+                onClose={handleMenuClose}
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'left',
+                }}
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'left',
+                }}
+                sx={{ mt: '2px', }}
+              >
+                <MenuItem 
+                  onClick={() => { handleNavigation('/json-online-translator'); handleMenuClose(); }}
+                  sx={{ '&:hover': { background: 'linear-gradient(135deg, rgba(80, 74, 194, 0.9), rgba(147, 51, 234, 0.90))', color: 'white' } }}
+                >
+                  <TranslateIcon sx={{ mr: 1 }} />
+                  {t('jsonOnlineTranslator.title')}
+                </MenuItem>
+                <MenuItem 
+                  onClick={() => { handleNavigation('/json-validator'); handleMenuClose(); }}
+                  sx={{ '&:hover': { background: 'linear-gradient(135deg, rgba(80, 74, 194, 0.9), rgba(147, 51, 234, 0.90))', color: 'white' } }}
+                >
+                  <CheckCircle sx={{ mr: 1 }} />
+                  {t('jsonValidator.title')}
+                </MenuItem>
+              </Menu>
+              
               <Button 
                 color="inherit" 
                 onClick={() => handleNavigation('/about')}
@@ -216,8 +275,10 @@ export default function RootLayout({ children }) {
                 }}  
                
               >
-                About Us
+                {t('aboutUs')}
               </Button>
+              
+              <LanguageSwitcher />
                        
               {user ? (
                 <>
@@ -242,7 +303,7 @@ export default function RootLayout({ children }) {
                     }}
                   >
                     <ExitToApp sx={{ mr: 1 }} />
-                    Logout
+                    {t('logout')}
                   </Button>
                 </>
               ) : (
@@ -259,7 +320,7 @@ export default function RootLayout({ children }) {
                       
                     }}}
                   >
-                    Login
+                    {t('login')}
                   </Button>
                   <Button
                     color="inherit"
@@ -272,7 +333,7 @@ export default function RootLayout({ children }) {
                       textTransform: 'none'
                     }}}
                   >
-                    Signup
+                    {t('signup')}
                   </Button>
                 </>
               )}
@@ -343,7 +404,7 @@ export default function RootLayout({ children }) {
                 >
                   <Home sx={{ mr: 2, color: '#ffffff' }} />
                   <ListItemText 
-                    primary="Home"
+                    primary={t('home')}
                     primaryTypographyProps={{
                       sx: { fontWeight: 500, color: '#ffffff' }
                     }}
@@ -361,7 +422,7 @@ export default function RootLayout({ children }) {
                 >
                   <TranslateIcon sx={{ mr: 2, color: '#ffffff' }} />
                   <ListItemText 
-                    primary="XLIFF Online Translator"
+                    primary={t('xliffOnlineTranslator.title')}
                     primaryTypographyProps={{
                       sx: { fontWeight: 500, color: '#ffffff' }
                     }}
@@ -379,7 +440,7 @@ export default function RootLayout({ children }) {
                 >
                   <Dashboard sx={{ mr: 2, color: '#ffffff' }} />
                   <ListItemText 
-                    primary="XLIFF File Translator"
+                    primary={t('xliffFileTranslator.title')}
                     primaryTypographyProps={{
                       sx: { fontWeight: 500, color: '#ffffff' }
                     }}
@@ -397,7 +458,45 @@ export default function RootLayout({ children }) {
                 >
                   <CheckCircle sx={{ mr: 2, color: '#ffffff' }} />
                   <ListItemText 
-                    primary="XLIFF Validator"
+                    primary={t('xliffValidator.title')}
+                    primaryTypographyProps={{
+                      sx: { fontWeight: 500, color: '#ffffff' }
+                    }}
+                  />
+                </ListItem>
+                
+                {/* JSON Menu Items in Sidebar */}
+                <ListItem 
+                  onClick={() => handleNavigation('/json-online-translator')}
+                  sx={{
+                    borderRadius: '8px',
+                    mb: 1,
+                    '&:hover': {
+                      backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                    }
+                  }}
+                >
+                  <TranslateIcon sx={{ mr: 2, color: '#ffffff' }} />
+                  <ListItemText 
+                    primary={t('jsonOnlineTranslator.title')}
+                    primaryTypographyProps={{
+                      sx: { fontWeight: 500, color: '#ffffff' }
+                    }}
+                  />
+                </ListItem>
+                <ListItem 
+                  onClick={() => handleNavigation('/json-validator')}
+                  sx={{
+                    borderRadius: '8px',
+                    mb: 1,
+                    '&:hover': {
+                      backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                    }
+                  }}
+                >
+                  <CheckCircle sx={{ mr: 2, color: '#ffffff' }} />
+                  <ListItemText 
+                    primary={t('jsonValidator.title')}
                     primaryTypographyProps={{
                       sx: { fontWeight: 500, color: '#ffffff' }
                     }}
@@ -417,7 +516,7 @@ export default function RootLayout({ children }) {
                   fontWeight: 600
                 }}
               >
-                Support
+                {t('support')}
               </Typography>
               <List sx={{ px: 1 }}>
                 <ListItem 
@@ -432,7 +531,7 @@ export default function RootLayout({ children }) {
                 >
                   <Info sx={{ mr: 2, color: '#ffffff' }} />
                   <ListItemText 
-                    primary="About Us"
+                    primary={t('aboutUs')}
                     primaryTypographyProps={{
                       sx: { fontWeight: 500, color: '#ffffff' }
                     }}
@@ -450,7 +549,7 @@ export default function RootLayout({ children }) {
                 >
                   <ContactMail sx={{ mr: 2, color: '#ffffff' }} />
                   <ListItemText 
-                    primary="Contact Us"
+                    primary={t('contactUs')}
                     primaryTypographyProps={{
                       sx: { fontWeight: 500, color: '#ffffff' }
                     }}
@@ -468,13 +567,32 @@ export default function RootLayout({ children }) {
                 >
                   <StarIcon sx={{ mr: 2, color: '#ffffff' }} />
                   <ListItemText 
-                    primary="Testimonials"
+                    primary={t('testimonials')}
                     primaryTypographyProps={{
                       sx: { fontWeight: 500, color: '#ffffff' }
                     }}
                   />
                 </ListItem>
               </List>
+            </Box>
+
+            {/* Language Switcher Section in Sidebar */}
+            <Box sx={{ mt: 2, px: 2 }}>
+              <Typography 
+                variant="subtitle2" 
+                sx={{ 
+                  mb: 1, 
+                  color: '#ffffff',
+                  textTransform: 'uppercase',
+                  fontSize: '0.75rem',
+                  fontWeight: 600
+                }}
+              >
+                {t('language')}
+              </Typography>
+              <Box sx={{ px: 1 , color: '#ffffff'}}>
+                <LanguageSwitcher />
+              </Box>
             </Box>
 
             <Box sx={{ mt: 'auto', pt: 2, borderTop: '1px solid rgba(255, 255, 255, 0.1)' }}>
@@ -509,7 +627,7 @@ export default function RootLayout({ children }) {
                   >
                     <ExitToApp sx={{ mr: 2, color: '#ffffff' }} />
                     <ListItemText 
-                      primary="Logout"
+                      primary={t('logout')}
                       primaryTypographyProps={{
                         sx: { fontWeight: 500, color: '#ffffff' }
                       }}
@@ -529,7 +647,7 @@ export default function RootLayout({ children }) {
                 >
                   <LoginIcon sx={{ mr: 2, color: '#ffffff' }} />
                   <ListItemText 
-                    primary="Login"
+                    primary={t('login')}
                     primaryTypographyProps={{
                       sx: { fontWeight: 500, color: '#ffffff' }
                     }}
@@ -546,7 +664,7 @@ export default function RootLayout({ children }) {
                >
                  <PersonAddIcon sx={{ mr: 2, color: '#ffffff' }} />
                  <ListItemText 
-                   primary="Signup"
+                   primary={t('signup')}
                    primaryTypographyProps={{
                      sx: { fontWeight: 500, color: '#ffffff' }
                    }}

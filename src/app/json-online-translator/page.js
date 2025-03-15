@@ -10,22 +10,30 @@ import { saveAs } from 'file-saver';
 import { useTranslation } from 'react-i18next';
 import '../i18n'; // Import the i18n configuration
 
-export default function XliffOnlineTranslator() {
+export default function JsonOnlineTranslator() {
   const { t } = useTranslation('common');
-  // State variables for managing XLIFF content, translation status, and user information
-  const [sourceXliff, setSourceXliff] = useState(''); // Source XLIFF content
-  const [translatedXliff, setTranslatedXliff] = useState(''); // Translated XLIFF content
+  // State variables for managing JSON content, translation status, and user information
+  const [sourceJson, setSourceJson] = useState(''); // Source JSON content
+  const [translatedJson, setTranslatedJson] = useState(''); // Translated JSON content
   const [targetLanguage, setTargetLanguage] = useState(null); // Selected target language
   const [loading, setLoading] = useState(false); // Loading state for translation
   const [error, setError] = useState(null); // Error message state
   const [success, setSuccess] = useState(false); // Success state for translation
   const [user, setUser] = useState(null); // User information
 
-  // Function to handle translation of the XLIFF content
+  // Function to handle translation of the JSON content
   const handleTranslate = async () => {
     // Validate input fields
-    if (!sourceXliff || !targetLanguage) {
-      setError('Please enter XLIFF content and select a target language');
+    if (!sourceJson || !targetLanguage) {
+      setError('Please enter JSON content and select a target language');
+      return;
+    }
+
+    // Validate JSON format
+    try {
+      JSON.parse(sourceJson);
+    } catch (e) {
+      setError('Invalid JSON format. Please check your input.');
       return;
     }
 
@@ -48,11 +56,11 @@ export default function XliffOnlineTranslator() {
       }
 
       // Make API call to translate the text
-      const response = await fetch('/api/translate-text', {
+      const response = await fetch('/api/translate-json', {
         method: 'POST',
         headers,
         body: JSON.stringify({
-          content: sourceXliff,
+          content: sourceJson,
           targetLanguage: {
             code: targetLanguage.code,
             name: targetLanguage.name
@@ -67,8 +75,8 @@ export default function XliffOnlineTranslator() {
         throw new Error(data.error || 'Translation failed. Please try again.');
       }
 
-      // Set the translated XLIFF content
-      setTranslatedXliff(`<?xml version='1.0' encoding='UTF-8'?>\n${data.translatedContent}`);
+      // Set the translated JSON content
+      setTranslatedJson(JSON.stringify(data.translatedContent, null, 2));
       setSuccess(true); // Set success state
     } catch (err) {
       console.error('Translation error:', err);
@@ -80,7 +88,7 @@ export default function XliffOnlineTranslator() {
 
   // Function to copy translated content to clipboard
   const handleCopy = () => {
-    navigator.clipboard.writeText(translatedXliff)
+    navigator.clipboard.writeText(translatedJson)
       .then(() => {
         setSuccess(true); // Set success state
         setError(null); // Clear previous errors
@@ -93,32 +101,42 @@ export default function XliffOnlineTranslator() {
 
   // Function to download the translated content as a file
   const handleDownload = () => {
-    const blob = new Blob([translatedXliff], { type: 'application/xml' });
-    saveAs(blob, 'translated_content.xliff'); // Use file-saver to download the file
+    const blob = new Blob([translatedJson], { type: 'application/json' });
+    saveAs(blob, 'translated_content.json'); // Use file-saver to download the file
   };
 
   // Function to reset the input fields and states
   const handleReset = () => {
-    setSourceXliff(''); // Clear source XLIFF
-    setTranslatedXliff(''); // Clear translated XLIFF
+    setSourceJson(''); // Clear source JSON
+    setTranslatedJson(''); // Clear translated JSON
     setTargetLanguage(null); // Reset target language
     setError(null); // Clear error message
     setSuccess(false); // Reset success state
   };
 
-  // Function to load a sample XLIFF file
-  const loadSampleFile = async () => {
-    try {
-      const response = await fetch('/sample.xliff');
-      if (!response.ok) {
-        throw new Error('Failed to fetch sample file');
+  // Function to load a sample JSON file
+  const loadSampleFile = () => {
+    const sampleJson = JSON.stringify({
+      "app": {
+        "title": "Sample Application",
+        "description": "This is a sample JSON file for translation",
+        "version": "1.0.0"
+      },
+      "navigation": {
+        "home": "Home",
+        "about": "About",
+        "contact": "Contact",
+        "settings": "Settings"
+      },
+      "messages": {
+        "welcome": "Welcome to our application",
+        "goodbye": "Thank you for using our application",
+        "error": "An error occurred"
       }
-      const text = await response.text();
-      setSourceXliff(text); // Set the loaded sample as source XLIFF
-      setError(null); // Clear previous errors
-    } catch (err) {
-      setError('Error loading sample file: ' + err.message); // Set error message
-    }
+    }, null, 2);
+    
+    setSourceJson(sampleJson);
+    setError(null); // Clear previous errors
   };
 
   return (
@@ -147,7 +165,7 @@ export default function XliffOnlineTranslator() {
             fontWeight: 'bold'
           }}
         >
-          {t('xliffOnlineTranslator.title')}
+          {t('jsonOnlineTranslator.title')}
         </Typography>
 
         {/* Main Editor Container */}
@@ -191,7 +209,7 @@ export default function XliffOnlineTranslator() {
                   color: '#4a5568'
                 }}
               >
-                {t('xliffOnlineTranslator.sourceXliff')}
+                {t('jsonOnlineTranslator.sourceJson')}
               </Typography>
               <Box sx={{ display: 'flex', gap: 1 }}>
                 <Button
@@ -207,7 +225,7 @@ export default function XliffOnlineTranslator() {
                     }
                   }}
                 >
-                  {t('xliffOnlineTranslator.loadSampleData')}
+                  {t('jsonOnlineTranslator.loadSampleData')}
                 </Button>
                 <Button
                   variant="outlined"
@@ -223,7 +241,7 @@ export default function XliffOnlineTranslator() {
                     }
                   }}
                 >
-                  {t('xliffOnlineTranslator.reset')}
+                  {t('jsonOnlineTranslator.reset')}
                 </Button>
               </Box>
             </Box>
@@ -238,12 +256,12 @@ export default function XliffOnlineTranslator() {
               }}
             >
               <TextField
-                id="source-xliff-input"
+                id="source-json-input"
                 multiline
                 fullWidth
-                value={sourceXliff}
-                onChange={(e) => setSourceXliff(e.target.value)}
-                placeholder={t('xliffOnlineTranslator.pasteXliffContentHere')}
+                value={sourceJson}
+                onChange={(e) => setSourceJson(e.target.value)}
+                placeholder={t('jsonOnlineTranslator.pasteJsonContentHere')}
                 sx={{
                   height: '100%',
                   padding: '8px',
@@ -296,7 +314,7 @@ export default function XliffOnlineTranslator() {
                   color: '#4a5568'
                 }}
               >
-                {t('xliffOnlineTranslator.translatedXliff')}
+                {t('jsonOnlineTranslator.translatedJson')}
               </Typography>
               <Box sx={{ display: 'flex', gap: 1 }}>
                 <Button
@@ -313,7 +331,7 @@ export default function XliffOnlineTranslator() {
                     }
                   }}
                 >
-                  {t('xliffOnlineTranslator.copy')}
+                  {t('jsonOnlineTranslator.copy')}
                 </Button>
                 <Button
                   size="small"
@@ -329,7 +347,7 @@ export default function XliffOnlineTranslator() {
                     }
                   }}
                 >
-                  {t('xliffOnlineTranslator.download')}
+                  {t('jsonOnlineTranslator.download')}
                 </Button>
               </Box>
             </Box>
@@ -354,7 +372,7 @@ export default function XliffOnlineTranslator() {
                 }}
               >
                 <SyntaxHighlighter 
-                  language="xml" 
+                  language="json" 
                   style={solarizedlight} 
                   showLineNumbers
                   customStyle={{
@@ -364,7 +382,7 @@ export default function XliffOnlineTranslator() {
                     backgroundColor: '#ffffff'
                   }}
                 >
-                  {translatedXliff || t('xliffOnlineTranslator.translatedContentWillAppearHere')}
+                  {translatedJson || t('jsonOnlineTranslator.translatedContentWillAppearHere')}
                 </SyntaxHighlighter>
               </Box>
             </Box>
@@ -401,7 +419,7 @@ export default function XliffOnlineTranslator() {
             }}
           >
             <Typography variant="h6" sx={{ mb: 0, fontWeight: 'bold', color: '#4b5563', mr: 2 }}>
-              {t('xliffOnlineTranslator.popularLanguages')}
+              {t('jsonOnlineTranslator.popularLanguages')}
             </Typography>
             {popularLanguages.map(code => (
               <Chip
@@ -448,7 +466,7 @@ export default function XliffOnlineTranslator() {
             renderInput={(params) => (
               <TextField
                 {...params}
-                label={t('xliffOnlineTranslator.selectTargetLanguage')}
+                label={t('jsonOnlineTranslator.selectTargetLanguage')}
                 sx={{
                   backgroundColor: 'white',
                   borderRadius: 1,
@@ -475,7 +493,7 @@ export default function XliffOnlineTranslator() {
                 }
               }}
             >
-              {loading ? t('xliffOnlineTranslator.translating') : t('xliffOnlineTranslator.translateNow')}
+              {loading ? t('jsonOnlineTranslator.translating') : t('jsonOnlineTranslator.translateNow')}
             </Button>
 
             <Button
@@ -492,7 +510,7 @@ export default function XliffOnlineTranslator() {
                 }
               }}
             >
-              {t('xliffOnlineTranslator.reset')}
+              {t('jsonOnlineTranslator.reset')}
             </Button>
           </Box>
         </Box>
@@ -517,10 +535,10 @@ export default function XliffOnlineTranslator() {
               borderRadius: '8px'
             }}
           >
-            {t('xliffOnlineTranslator.translationCompletedSuccessfully')}
+            {t('jsonOnlineTranslator.translationCompletedSuccessfully')}
           </Alert>
         )}
       </Box>
     </Box>
   );
-}
+} 

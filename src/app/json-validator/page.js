@@ -8,57 +8,41 @@ import { FileCopy, CheckCircle, Refresh } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import '../i18n'; // Import the i18n configuration
 
-export default function XliffValidator() {
+export default function JsonValidator() {
   const { t } = useTranslation('common');
-  const [xliffContent, setXliffContent] = useState('');
+  const [jsonContent, setJsonContent] = useState('');
   const [validationResult, setValidationResult] = useState(null);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  const [formattedJson, setFormattedJson] = useState('');
 
-  const validateXliff = () => {
-    if (!xliffContent.trim()) {
-      setError('Please enter XLIFF content.');
+  const validateJson = () => {
+    if (!jsonContent.trim()) {
+      setError('Please enter JSON content.');
       setValidationResult(null);
+      setFormattedJson('');
       return;
     }
 
-    // Basic structure validation
-    const parser = new DOMParser();
-    const xmlDoc = parser.parseFromString(xliffContent, 'application/xml');
-
-    const xliffTag = xmlDoc.getElementsByTagName('xliff')[0];
-    const fileTag = xmlDoc.getElementsByTagName('file')[0];
-    const bodyTag = xmlDoc.getElementsByTagName('body')[0];
-    const headerTag = xmlDoc.getElementsByTagName('header')[0];
-
-    if (!xliffTag || !fileTag) {
-      setValidationResult('XLIFF content is invalid: Missing <xliff> or <file> tag.');
+    try {
+      // Parse the JSON to validate it
+      const parsedJson = JSON.parse(jsonContent);
+      
+      // Format the JSON with proper indentation
+      const formatted = JSON.stringify(parsedJson, null, 2);
+      
+      setFormattedJson(formatted);
+      setValidationResult('JSON content is valid!');
       setError('');
-      return;
-    }
-    if (!bodyTag || !headerTag) {
-      setValidationResult('XLIFF content is invalid: Missing <body> or <header> tag.');
+    } catch (e) {
+      setValidationResult(`JSON content is invalid: ${e.message}`);
+      setFormattedJson('');
       setError('');
-      return;
     }
-
-    // Check required attributes
-    const sourceLanguage = fileTag.getAttribute('source-language');
-    const targetLanguage = fileTag.getAttribute('target-language');
-
-    if (!sourceLanguage || !targetLanguage) {
-      setValidationResult('XLIFF content is invalid: <file> tag must have source-language and target-language attributes.');
-      setError('');
-      return;
-    }
-
-    // If all checks pass
-    setValidationResult('XLIFF content is valid!');
-    setError('');
   };
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(xliffContent)
+    navigator.clipboard.writeText(formattedJson || jsonContent)
       .then(() => {
         setSuccess(true);
         setTimeout(() => setSuccess(false), 2000);
@@ -70,8 +54,9 @@ export default function XliffValidator() {
   };
 
   const handleReset = () => {
-    setXliffContent('');
+    setJsonContent('');
     setValidationResult(null);
+    setFormattedJson('');
     setError('');
   };
 
@@ -101,7 +86,7 @@ export default function XliffValidator() {
             fontWeight: 'bold'
           }}
         >
-          {t('xliffValidator.title')}
+          {t('jsonValidator.title')}
         </Typography>
 
         {/* Main Editor Container */}
@@ -145,7 +130,7 @@ export default function XliffValidator() {
                   color: '#4a5568'
                 }}
               >
-                {t('xliffValidator.sourceXliff')}
+                {t('jsonValidator.sourceJson')}
               </Typography>
               <Button
                 size="small"
@@ -161,7 +146,7 @@ export default function XliffValidator() {
                   }
                 }}
               >
-                {t('xliffValidator.reset')}
+                {t('jsonValidator.reset')}
               </Button>
             </Box>
             <TextField
@@ -169,9 +154,9 @@ export default function XliffValidator() {
               fullWidth
               rows={20}
               variant="outlined"
-              placeholder={t('xliffValidator.pasteXliffContentHere')}
-              value={xliffContent}
-              onChange={(e) => setXliffContent(e.target.value)}
+              placeholder={t('jsonValidator.pasteJsonContentHere')}
+              value={jsonContent}
+              onChange={(e) => setJsonContent(e.target.value)}
               sx={{
                 flexGrow: 1,
                 overflow: 'auto',
@@ -187,7 +172,7 @@ export default function XliffValidator() {
             />
             <Button
               variant="contained"
-              onClick={validateXliff}
+              onClick={validateJson}
               startIcon={<CheckCircle />}
               sx={{
                 mt: 2,
@@ -198,7 +183,7 @@ export default function XliffValidator() {
                 }
               }}
             >
-              {t('xliffValidator.validateXliff')}
+              {t('jsonValidator.validateJson')}
             </Button>
           </Box>
 
@@ -230,10 +215,10 @@ export default function XliffValidator() {
                   color: '#4a5568'
                 }}
               >
-                {t('xliffValidator.validationResult')}
+                {t('jsonValidator.validationResult')}
               </Typography>
               
-              {xliffContent && (
+              {jsonContent && (
                 <Button
                   size="small"
                   variant="contained"
@@ -248,7 +233,7 @@ export default function XliffValidator() {
                     }
                   }}
                 >
-                  {t('xliffValidator.copy')}
+                  {t('jsonValidator.copy')}
                 </Button>
               )}
             </Box>
@@ -274,10 +259,10 @@ export default function XliffValidator() {
                   {validationResult}
                 </Alert>
               )}
-              {validationResult && (
+              {formattedJson && (
                 <Box sx={{ height: 'calc(100% - 16px)', margin: 1 }}>
                   <SyntaxHighlighter 
-                    language="xml" 
+                    language="json" 
                     style={solarizedlight}
                     customStyle={{
                       margin: 0,
@@ -286,7 +271,7 @@ export default function XliffValidator() {
                       backgroundColor: '#ffffff'
                     }}
                   >
-                    {xliffContent}
+                    {formattedJson}
                   </SyntaxHighlighter>
                 </Box>
               )}
