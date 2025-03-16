@@ -8,10 +8,12 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { solarizedlight } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { saveAs } from 'file-saver';
 import { useTranslation } from 'react-i18next';
+import { useMediaQuery } from '@mui/material'; // Import useMediaQuery
 import '../i18n'; // Import the i18n configuration
 
 export default function XliffOnlineTranslator() {
   const { t } = useTranslation('common');
+  const isMobile = useMediaQuery('(max-width:600px)'); // Check if the screen size is mobile
   // State variables for managing XLIFF content, translation status, and user information
   const [sourceXliff, setSourceXliff] = useState(''); // Source XLIFF content
   const [translatedXliff, setTranslatedXliff] = useState(''); // Translated XLIFF content
@@ -207,7 +209,7 @@ export default function XliffOnlineTranslator() {
                     }
                   }}
                 >
-                  {t('xliffOnlineTranslator.loadSampleData')}
+                  {isMobile ? 'Sample' : t('xliffOnlineTranslator.loadSampleData')}
                 </Button>
                 <Button
                   variant="outlined"

@@ -24,6 +24,7 @@
     "i18next-http-backend": "^3.0.2",
     "next": "15.2.0",
     "next-i18next": "^15.4.2",
+    "nodemailer": "^6.10.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-dropzone": "^14.3.8",
