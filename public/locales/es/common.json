@@ -114,7 +114,8 @@
   },
   
   "heroTitle": "Tu Herramienta Definitiva para Traducción y Localización",
-  "heroSubtitle": "Traduce y localiza tu contenido sin esfuerzo, impulsado por la API de Google Translate. Perfecto para desarrolladores, traductores, creadores de contenido y empresas.",
+  "heroSubtitle": "Traduce y localiza tu contenido sin esfuerzo, impulsado por la API de Google Translate.",
+  "heroSubtitle2": "Perfecto para desarrolladores, traductores y empresas.",
   "whyChooseUs": "¿Por Qué Elegir LocalizeStrings.com?",
   "multiLanguageSupport": "Soporte Multilingüe",
   "multiLanguageSupportDesc": "Soporte para más de 100 idiomas con traducciones de alta precisión",

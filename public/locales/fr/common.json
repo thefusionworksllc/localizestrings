@@ -12,7 +12,7 @@
     "title": "Traducteur XLIFF en Ligne",
     "sourceXliff": "XLIFF Source",
     "loadSampleData": "Charger des Données d'Exemple",
-    "reset": "Réinitialiser",
+    "reset": "Réinitialiser", 
     "pasteXliffContentHere": "Collez votre contenu XLIFF ici...",
     "translatedXliff": "XLIFF Traduit",
     "copy": "Copier",
@@ -58,7 +58,8 @@
     "copy": "Copier"
   },
   "heroTitle": "Votre Outil Ultime pour la Traduction et la Localisation",
-  "heroSubtitle": "Traduisez et localisez votre contenu sans effort, propulsé par l'API Google Translate. Parfait pour les développeurs, traducteurs, créateurs de contenu et entreprises.",
+  "heroSubtitle": "Traduisez et localisez votre contenu sans effort, propulsé par l'API Google Translate.",
+  "heroSubtitle2": "Parfait pour les développeurs, traducteurs et entreprises.",
   "whyChooseUs": "Pourquoi Choisir LocalizeStrings.com?",
   "multiLanguageSupport": "Support Multilingue",
   "multiLanguageSupportDesc": "Support pour plus de 100 langues avec des traductions de haute précision",

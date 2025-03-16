@@ -107,8 +107,9 @@
     "validationResult": "検証結果",
     "copy": "コピー"
   },
-  "heroTitle": "シームレスな翻訳とローカリゼーションのための究極のツール",
-  "heroSubtitle": "Google Translate API を活用して、コンテンツを簡単に翻訳およびローカライズできます。開発者、翻訳者、企業に最適です。",
+  "heroTitle": "シームレスな翻訳とローカリゼーションのための究極のツール",  
+  "heroSubtitle": "Google Translate API を活用して、コンテンツを簡単に翻訳およびローカライズできます。",
+  "heroSubtitle2": "開発者、翻訳者、企業に最適です。",
   "whyChooseUs": "LocalizeStrings.com を選ぶ理由",
   "multiLanguageSupport": "多言語サポート",
   "multiLanguageSupportDesc": "100以上の言語をサポートし、高精度な翻訳を実現",

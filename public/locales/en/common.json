@@ -115,8 +115,9 @@
     "copy": "Copy"
   },
   
-  "heroTitle": "Your Ultimate Tool for Seamless Translation and Localization",
-  "heroSubtitle": "Translate and localize your content effortlessly, powered by Google Translate API.  Perfect for developers, translators,and businesses.",
+  "heroTitle": "Your Ultimate Tool for Language Translations and Localization",
+  "heroSubtitle": "Translate and localize your content effortlessly, powered by Google Translate API.",
+  "heroSubtitle2": "Perfect for developers, translators,and businesses.",
   "whyChooseUs": "Why Choose LocalizeStrings.com?",
   "multiLanguageSupport": "Multi Language Support",
   "multiLanguageSupportDesc": "Support for over 100 languages with high accuracy translations",

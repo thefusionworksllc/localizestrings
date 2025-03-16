@@ -114,7 +114,8 @@
   },
   
   "heroTitle": "您的无缝翻译和本地化终极工具",
-  "heroSubtitle": "轻松翻译和本地化您的内容，由 Google 翻译 API 提供支持。适合开发人员、翻译人员、内容创作者和企业。",
+  "heroSubtitle": "轻松翻译和本地化您的内容，由 Google 翻译 API 提供支持。",
+  "heroSubtitle2": "适合开发人员、翻译人员、内容创作者和企业。",
   "whyChooseUs": "为什么选择 LocalizeStrings.com？",
   "multiLanguageSupport": "多语言支持",
   "multiLanguageSupportDesc": "支持 100 多种语言，翻译准确度高",

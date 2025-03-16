@@ -144,6 +144,8 @@ export default function Home() {
             sx={{ fontWeight: 400 ,mb: 2}}
           >
             {t('heroSubtitle')}
+            <br />
+            {t('heroSubtitle2')}
           </Typography>
           <div className={styles.ctaButtons}>
             <Button 

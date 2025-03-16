@@ -57,8 +57,9 @@
     "validationResult": "Validierungsergebnis",
     "copy": "Kopieren"
   },
-  "heroTitle": "Ihr ultimatives Werkzeug für nahtlose Übersetzung und Lokalisierung",
-  "heroSubtitle": "Übersetzen und lokalisieren Sie Ihre Inhalte mühelos, unterstützt von der Google Translate API. Perfekt für Entwickler, Übersetzer, Content-Ersteller und Unternehmen.",
+  "heroTitle": "Ihr ultimatives Werkzeug für Sprachübersetzung und Lokalisierung",
+  "heroSubtitle": "Übersetzen und lokalisieren Sie Ihre Inhalte mühelos, unterstützt von der Google Translate API.",
+  "heroSubtitle2": "Perfekt für Entwickler, Übersetzer und Unternehmen.",
   "whyChooseUs": "Warum LocalizeStrings.com wählen?",
   "multiLanguageSupport": "Mehrsprachenunterstützung",
   "multiLanguageSupportDesc": "Unterstützung für über 100 Sprachen mit hochpräzisen Übersetzungen",
