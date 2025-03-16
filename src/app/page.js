@@ -109,19 +109,19 @@ export default function Home() {
     {
       name: 'John D.',
       role: t('developers'),
-      quote: 'LocalizeStrings.com has made app localization so much easier. The multi-format support is a game-changer!',
+      quote: ' The multi-format support is a game-changer!',
       avatar: '/avatars/john.jpg'
     },
     {
       name: 'Maria S.',
       role: t('translators'),
-      quote: 'The real-time collaboration feature has saved me so much time. Highly recommend it!',
+      quote: 'Highly recommend it!',
       avatar: '/avatars/maria.jpg'
     },
     {
       name: 'Alex T.',
       role: t('businesses'),
-      quote: 'Expanding our business globally has never been easier. The translation memory ensures consistency across all our content.',
+      quote: 'Great XLIFF Translation Tool!',
       avatar: '/avatars/alex.jpg'
     }
   ];
