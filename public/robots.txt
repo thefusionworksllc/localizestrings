@@ -1,0 +1,12 @@
+# Allow all web crawlers
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://localizestrings.com/sitemap.xml
+
+# Disallow admin and private areas
+Disallow: /login/
+Disallow: /signup/
+Disallow: /settings/
+Disallow: /forgot-password/ 

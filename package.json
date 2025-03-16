@@ -6,7 +6,11 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "generate-sitemap": "node scripts/generate-sitemap.js",
+    "generate-og-images": "node scripts/generate-og-images.js",
+    "seo": "npm run generate-sitemap && npm run generate-og-images",
+    "prebuild": "npm run seo"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -31,5 +35,9 @@
     "react-i18next": "^15.4.1",
     "react-syntax-highlighter": "^15.6.1",
     "xml-js": "^1.6.11"
+  },
+  "devDependencies": {
+    "canvas": "^2.11.2",
+    "glob": "^10.3.10"
   }
 }

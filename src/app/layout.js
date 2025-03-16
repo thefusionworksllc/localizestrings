@@ -36,6 +36,8 @@ import PublicIcon from '@mui/icons-material/Public';
 import LanguageSwitcher from './components/LanguageSwitcher';
 import { useTranslation } from 'react-i18next';
 import './i18n'; // Import the i18n configuration
+import SchemaMarkup from './components/SchemaMarkup';
+import Breadcrumbs from './components/Breadcrumbs';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -803,8 +805,11 @@ export default function RootLayout({ children }) {
           </Box>
         </Drawer>
 
-        <Box sx={{ mt: '64px' }}>
-          {children}
+        <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+          <Breadcrumbs />
+          <Box component="main" sx={{ flexGrow: 1,mt: '64px' }}>
+            {children}
+          </Box>
         </Box>
       </>
     );
@@ -813,7 +818,11 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
-        <title>LocalizeStrings</title>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="theme-color" content="#7c3aed" />
+        <link rel="canonical" href="https://localizestrings.com" />
+        <SchemaMarkup />
       </head>
       <body className={inter.className}>
         <ThemeProvider>
