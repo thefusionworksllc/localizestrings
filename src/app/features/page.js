@@ -36,20 +36,20 @@ export default function Features() {
   return (
     <div className={styles.container}>
       <section className={styles.featuresSection}>
-        <Typography variant="h4" className={styles.sectionTitle}>
+        <Typography variant="h3" className={styles.sectionTitle}>
           Features of LocalizeStrings.com
         </Typography>
         <div className={styles.featuresGrid}>
           {featuresList.map((feature, index) => (
-            <Card key={index} className={styles.featureCard}>
-              <CardContent>
-                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+            <Card key={index} className={styles.featureCard} elevation={0}>
+              <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%' }}>
+                <Box className={styles.iconWrapper}>
                   {feature.icon}
-                  <Typography variant="h6" gutterBottom sx={{ marginLeft: 1, fontWeight: 600 }}>
-                    {feature.title}
-                  </Typography>
                 </Box>
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="h6" className={styles.cardTitle}>
+                  {feature.title}
+                </Typography>
+                <Typography variant="body2" className={styles.cardDescription}>
                   {feature.description}
                 </Typography>
               </CardContent>

@@ -1,121 +1,85 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { Box, Button, TextField, Typography, Alert, Avatar, MenuItem, Select, FormControl, InputLabel } from '@mui/material';
-import supabase from '../supabaseClient';
-import PersonIcon from '@mui/icons-material/Person';
+import { Typography, Box, Card, CardContent, Avatar, Grid } from '@mui/material';
+import styles from './page.module.css';
+
+const testimonialsList = [
+  {
+    name: 'John D.',
+    role: 'Developer',
+    quote: 'LocalizeStrings.com has made app localization so much easier. The multi-format support is a game-changer!',
+    company: 'Tech Innovations Inc.'
+  },
+  {
+    name: 'Maria S.',
+    role: 'Translator',
+    quote: 'The real-time collaboration feature has saved me so much time. Highly recommend it!',
+    company: 'Global Translations'
+  },
+  {
+    name: 'Alex T.',
+    role: 'Business Owner',
+    quote: 'Expanding our business globally has never been easier. The translation memory ensures consistency across all our content.',
+    company: 'WorldWide Commerce'
+  },
+  {
+    name: 'Sarah L.',
+    role: 'Product Manager',
+    quote: 'We\'ve cut our localization time in half since switching to LocalizeStrings. The interface is intuitive and the translations are accurate.',
+    company: 'SoftDev Solutions'
+  },
+  {
+    name: 'Michael R.',
+    role: 'CTO',
+    quote: 'The API integration was seamless. We now have automated translations as part of our CI/CD pipeline.',
+    company: 'Cloud Systems'
+  },
+  {
+    name: 'Emma K.',
+    role: 'Content Creator',
+    quote: 'As someone who publishes content in multiple languages, this tool has been invaluable. The quality of translations is impressive.',
+    company: 'Digital Content Studio'
+  }
+];
 
 export default function Testimonials() {
-  const [testimonials, setTestimonials] = useState([]);
-  const [name, setName] = useState('');
-  const [message, setMessage] = useState('');
-  const [role, setRole] = useState('User');
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState(false);
-
-  const fetchTestimonials = async () => {
-    const { data, error } = await supabase
-      .from('testimonials')
-      .select('*')
-      .limit(5)
-      .order('created_at', { ascending: false });
-
-    if (error) {
-      setError('Error fetching testimonials');
-      console.error(error);
-    } else {
-      setTestimonials(data);
-    }
-  };
-
-  const handleSubmit = async () => {
-    if (!name || !message || !role) {
-      setError('Please fill in all fields.');
-      return;
-    }
-
-    const { data, error } = await supabase
-      .from('testimonials')
-      .insert([{ name, message, role }]);
-
-    if (error) {
-      setError('Error submitting testimonial');
-      console.error(error);
-    } else {
-      setSuccess(true);
-      setName('');
-      setMessage('');
-      setRole('User');
-      fetchTestimonials();
-    }
-  };
-
-  useEffect(() => {
-    fetchTestimonials();
-  }, []);
-
   return (
-    <Box sx={{ padding: 4, background: '#f8f9fa', textAlign: 'center', }}>
-      <Typography variant="h4" gutterBottom sx={{ marginTop: 3,fontWeight: 'bold',color: '#6d28d9' }}>
-        Testimonials
-      </Typography>
-      <Box sx={{ marginBottom: 4 ,width: '60%', margin: '0 auto' }}>
-        <TextField
-          label="Your Name"
-          variant="outlined"
-          fullWidth
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          sx={{ marginBottom: 2 }}
-        />
-        <FormControl fullWidth sx={{ marginBottom: 2 }}>
-          <InputLabel id="role-label">Your Role</InputLabel>
-          <Select
-            labelId="role-label"
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
-            variant="outlined"
-          >
-            <MenuItem value="User">User</MenuItem>
-            <MenuItem value="Developer">Developer</MenuItem>
-            <MenuItem value="Translator">Translator</MenuItem>
-            <MenuItem value="Project Manager">Project Manager</MenuItem>
-            <MenuItem value="Business Owner">Business Owner</MenuItem>
-          </Select>
-        </FormControl>
-        <TextField
-          label="Your Testimonial"
-          variant="outlined"
-          multiline
-          rows={4}
-          fullWidth
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          sx={{ marginBottom: 2 }}
-        />
-        <Button variant="contained" onClick={handleSubmit}>
-          Submit Testimonial
-        </Button>
-        {error && <Alert severity="error" sx={{ marginTop: 2 }}>{error}</Alert>}
-        {success && <Alert severity="success" sx={{ marginTop: 2 }}>Testimonial submitted!</Alert>}
-      </Box>
-
-      <Typography variant="h5" gutterBottom sx={{ marginTop: 6,fontWeight: 'bold',color: '#6d28d9' }}>
-        All Testimonials
-      </Typography>
-      <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr', lg: '1fr 1fr 1fr' }, gap: 2 ,width: '60%', margin: '0 auto' }}>
-        {testimonials.map((testimonial) => (
-          <Box key={testimonial.id} sx={{ padding: 2, background: '#fff', borderRadius: 2, boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)', transition: 'transform 0.2s', '&:hover': { transform: 'scale(1.02)' } }}>
-            <Avatar sx={{ bgcolor: '#6d28d9' }}>
-              <PersonIcon />
-            </Avatar>
-            <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-              {testimonial.name} <span style={{ fontStyle: 'italic', color: '#6b7280' }}>({testimonial.role})</span>
-            </Typography>
-            <Typography variant="body2" sx={{ marginTop: 1 }}>{testimonial.message}</Typography>
-          </Box>
-        ))}
-      </Box>
-    </Box>
+    <div className={styles.container}>
+      <section className={styles.testimonialsSection}>
+        <Typography variant="h4" className={styles.sectionTitle}>
+          What Our Users Are Saying
+        </Typography>
+        <Typography variant="body1" className={styles.sectionSubtitle}>
+          Don't just take our word for it. Here's what professionals from around the world think about LocalizeStrings.com
+        </Typography>
+        
+        <Grid container spacing={3} className={styles.testimonialGrid}>
+          {testimonialsList.map((testimonial, index) => (
+            <Grid item xs={12} md={6} lg={4} key={index}>
+              <Card className={styles.testimonialCard} elevation={0}>
+                <CardContent>
+                  <Box className={styles.avatarWrapper}>
+                    <Avatar className={styles.avatar}>
+                      {testimonial.name.charAt(0)}
+                    </Avatar>
+                    <Box>
+                      <Typography variant="h6" className={styles.cardTitle}>
+                        {testimonial.name}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        {testimonial.role}, {testimonial.company}
+                      </Typography>
+                    </Box>
+                  </Box>
+                  <Typography variant="body1" className={styles.quote}>
+                    "{testimonial.quote}"
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+      </section>
+    </div>
   );
 } 

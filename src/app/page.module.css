@@ -93,6 +93,179 @@
   opacity: 0;
 }
 
+/* Base Card Styles - Common for all card types */
+.card {
+  padding: 1.5rem;
+  background: white;
+  border-radius: 16px;
+  border: 1px solid rgba(124, 58, 237, 0.1);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.05) 0%, rgba(99, 102, 241, 0.05) 100%);
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 30px rgba(124, 58, 237, 0.15);
+}
+
+.card:hover::before {
+  opacity: 1;
+}
+
+.card .iconWrapper {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.1) 0%, rgba(99, 102, 241, 0.1) 100%);
+  transition: all 0.3s ease;
+}
+
+.card:hover .iconWrapper {
+  transform: scale(1.1) rotate(5deg);
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.2) 0%, rgba(99, 102, 241, 0.2) 100%);
+}
+
+.card .cardTitle {
+  margin-bottom: 1rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  transition: color 0.3s ease;
+}
+
+.card:hover .cardTitle {
+  color: #7c3aed;
+}
+
+.card .cardDescription {
+  color: #6b7280;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+/* Advantages Card Specific Styles */
+.advantageCard {
+  composes: card;
+  border-top: 4px solid #7c3aed;
+}
+
+.advantageCard .iconWrapper {
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.15) 0%, rgba(99, 102, 241, 0.15) 100%);
+}
+
+/* Use Cases Card Specific Styles */
+.useCaseCard {
+  composes: card;
+  border-left: 4px solid #6366f1;
+}
+
+.useCaseCard .iconWrapper {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(79, 70, 229, 0.15) 100%);
+}
+
+/* How It Works Card Specific Styles */
+.stepCard {
+  composes: card;
+  border-bottom: 4px solid #8b5cf6;
+}
+
+.stepCard .stepNumber {
+  font-size: 3rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #7c3aed 0%, #6366f1 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1;
+  margin-bottom: 1rem;
+  transition: all 0.3s ease;
+}
+
+.stepCard:hover .stepNumber {
+  transform: scale(1.1);
+}
+
+/* Testimonial Card Specific Styles */
+.testimonialCard {
+  padding: 1.5rem;
+  background: white;
+  border-radius: 16px;
+  border: 1px solid rgba(124, 58, 237, 0.1);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  position: relative;
+  overflow: hidden;
+}
+
+.testimonialCard::after {
+  content: '"';
+  position: absolute;
+  bottom: -20px;
+  right: 20px;
+  font-size: 120px;
+  font-family: Georgia, serif;
+  color: rgba(124, 58, 237, 0.1);
+  line-height: 1;
+  transition: all 0.3s ease;
+}
+
+.testimonialCard:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 30px rgba(124, 58, 237, 0.15);
+}
+
+.testimonialCard:hover::after {
+  color: rgba(124, 58, 237, 0.2);
+  transform: scale(1.1);
+}
+
+.testimonialCard .avatarWrapper {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.testimonialCard .avatar {
+  background: linear-gradient(135deg, #7c3aed 0%, #6366f1 100%);
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.testimonialCard:hover .avatar {
+  transform: scale(1.1);
+}
+
+.testimonialCard .quote {
+  font-style: italic;
+  color: #4b5563;
+  position: relative;
+  z-index: 1;
+}
+
 /* Key Advantages Section */
 .advantagesSection {
   padding: 4rem 2rem;
@@ -113,34 +286,6 @@
   gap: 1.5rem;
   max-width: 1200px;
   margin: 0 auto;
-}
-
-.advantageCard {
-  padding: 1.25rem;
-  background: white;
-  border-radius: 12px;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);  
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  text-align: center;
-}
-
-.advantageCard:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
-}
-
-.advantageCard .MuiCardContent-root {
-  transition: background-color 0.3s ease;
-}
-
-.advantageCard:hover .MuiCardContent-root {
-  background-color: rgba(124, 58, 237, 0.05);
 }
 
 /* Use Cases Section */
@@ -188,19 +333,6 @@
   gap: 2rem;
   max-width: 1200px;
   margin: 0 auto;
-}
-
-.testimonialCard {
-  padding: 1.25rem;
-  background: white;
-  border-radius: 8px;
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  transition: all 0.3s ease;
-}
-
-.testimonialCard:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.05);
 }
 
 /* Pricing Section */
@@ -303,6 +435,20 @@
 
   .footerGrid {
     gap: 2rem;
+  }
+
+  .card {
+    padding: 1.25rem;
+  }
+  
+  .card .iconWrapper {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 1rem;
+  }
+  
+  .stepCard .stepNumber {
+    font-size: 2.5rem;
   }
 }
 

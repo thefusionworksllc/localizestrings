@@ -208,35 +208,35 @@ export default function Home() {
         <div className={styles.advantagesGrid}>
           {[
             {
-              icon: <Language sx={{ fontSize: 35   }} />,
+              icon: <Language sx={{ fontSize: 35, color: '#7c3aed' }} />,
               title: t('multiLanguageSupport'),
               description: t('multiLanguageSupportDesc')
             },
             {
-              icon: <Speed sx={{ fontSize: 35 }} />,
-            title: t('lightningFast'),
-            description: t('lightningFastDesc')
-          },
-            
+              icon: <Speed sx={{ fontSize: 35, color: '#7c3aed' }} />,
+              title: t('lightningFast'),
+              description: t('lightningFastDesc')
+            },
             {
-              icon: <Timeline sx={{ fontSize: 35 }} />,
+              icon: <Timeline sx={{ fontSize: 35, color: '#7c3aed' }} />,
               title: t('translationMemory'),
               description: t('translationMemoryDesc')
             },
             {
-              icon: <CheckCircle sx={{ fontSize: 35 }} />,
+              icon: <CheckCircle sx={{ fontSize: 35, color: '#7c3aed' }} />,
               title: t('qualityAssurance'),
               description: t('qualityAssuranceDesc')
             },
-          
           ].map((advantage, index) => (
             <Card key={index} className={styles.advantageCard} elevation={0}>
-              <CardContent>
-                <Box sx={{ color: '#7c3aed', mb: 2 }}>{advantage.icon}</Box>
-                <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
+              <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%' }}>
+                <Box className={styles.iconWrapper}>
+                  {advantage.icon}
+                </Box>
+                <Typography variant="h6" className={styles.cardTitle}>
                   {advantage.title}
                 </Typography>
-                <Typography variant="body2" sx={{ color: '#6b7280' }}>
+                <Typography variant="body2" className={styles.cardDescription}>
                   {advantage.description}
                 </Typography>
               </CardContent>
@@ -257,29 +257,30 @@ export default function Home() {
         <div className={styles.useCasesGrid}>
           {[
             {
-              icon: <Code sx={{ fontSize: 35 }} />,
+              icon: <Code sx={{ fontSize: 35, color: '#6366f1' }} />,
               title: t('developers'),
               description: t('developersDesc')
             },
             {
-              icon: <Language sx={{ fontSize: 35 }} />,
+              icon: <Language sx={{ fontSize: 35, color: '#6366f1' }} />,
               title: t('translators'),
               description: t('translatorsDesc')
             },
             {
-              icon: <Business sx={{ fontSize: 35 }} />,
+              icon: <Business sx={{ fontSize: 35, color: '#6366f1' }} />,
               title: t('businesses'),
               description: t('businessesDesc')
             },
-
           ].map((useCase, index) => (
-            <Card key={index} className={styles.advantageCard} elevation={0}>
-              <CardContent>
-                <Box sx={{ color: '#7c3aed', mb: 2 }}>{useCase.icon}</Box>
-                <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
+            <Card key={index} className={styles.useCaseCard} elevation={0}>
+              <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%' }}>
+                <Box className={styles.iconWrapper}>
+                  {useCase.icon}
+                </Box>
+                <Typography variant="h6" className={styles.cardTitle}>
                   {useCase.title}
                 </Typography>
-                <Typography variant="body2" sx={{ color: '#6b7280' }}>
+                <Typography variant="body2" className={styles.cardDescription}>
                   {useCase.description}
                 </Typography>
               </CardContent>
@@ -320,24 +321,15 @@ export default function Home() {
               description: t('downloadDesc')
             }
           ].map((step, index) => (
-            <Card key={index} className={styles.advantageCard} elevation={0}>
-              <CardContent>
-                <Typography
-                  variant="h1"
-                  sx={{
-                    color: '#7c3aed',
-                    opacity: 0.8,
-                    mb: 2,
-                    fontSize: '2.5rem',
-                    fontWeight: 800
-                  }}
-                >
+            <Card key={index} className={styles.stepCard} elevation={0}>
+              <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%' }}>
+                <Typography className={styles.stepNumber}>
                   {step.step}
                 </Typography>
-                <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
+                <Typography variant="h6" className={styles.cardTitle}>
                   {step.title}
                 </Typography>
-                <Typography variant="body2" sx={{ color: '#6b7280' }}>
+                <Typography variant="body2" className={styles.cardDescription}>
                   {step.description}
                 </Typography>
               </CardContent>
@@ -353,19 +345,24 @@ export default function Home() {
         </Typography>
         <div className={styles.testimonialGrid}>
           {testimonials.map((testimonial, index) => (
-            <Card key={index} className={styles.testimonialCard}>
+            <Card key={index} className={styles.testimonialCard} elevation={0}>
               <CardContent>
-                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                  <Avatar //src={testimonial.avatar} 
-                  sx={{ mr: 2 , color: '#7c3aed',opacity: 0.8}} />
+                <Box className={styles.avatarWrapper}>
+                  <Avatar className={styles.avatar} sx={{ mr: 2 }}>
+                    {testimonial.name.charAt(0)}
+                  </Avatar>
                   <Box>
-                    <Typography variant="h6">{testimonial.name}</Typography>
+                    <Typography variant="h6" className={styles.cardTitle}>
+                      {testimonial.name}
+                    </Typography>
                     <Typography variant="body2" color="text.secondary">
                       {testimonial.role}
                     </Typography>
                   </Box>
                 </Box>
-                <Typography variant="body1">"{testimonial.quote}"</Typography>
+                <Typography variant="body1" className={styles.quote}>
+                  "{testimonial.quote}"
+                </Typography>
               </CardContent>
             </Card>
           ))}

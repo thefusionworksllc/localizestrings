@@ -1,0 +1,111 @@
+.container {
+  min-height: 100vh;
+  background: #ffffff;
+}
+
+.testimonialsSection {
+  padding: 4rem 2rem;
+  background: #fafafa;
+  text-align: center;
+}
+
+.sectionTitle {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #7c3aed;
+  margin-bottom: 1rem;
+}
+
+.sectionSubtitle {
+  max-width: 800px;
+  margin: 0 auto 3rem;
+  color: #6b7280;
+}
+
+.testimonialGrid {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Testimonial Card Styles */
+.testimonialCard {
+  padding: 1.5rem;
+  background: white;
+  border-radius: 16px;
+  border: 1px solid rgba(124, 58, 237, 0.1);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  position: relative;
+  overflow: hidden;
+  height: 100%;
+}
+
+.testimonialCard::after {
+  content: '"';
+  position: absolute;
+  bottom: -20px;
+  right: 20px;
+  font-size: 120px;
+  font-family: Georgia, serif;
+  color: rgba(124, 58, 237, 0.1);
+  line-height: 1;
+  transition: all 0.3s ease;
+}
+
+.testimonialCard:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 30px rgba(124, 58, 237, 0.15);
+}
+
+.testimonialCard:hover::after {
+  color: rgba(124, 58, 237, 0.2);
+  transform: scale(1.1);
+}
+
+.avatarWrapper {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.avatar {
+  background: linear-gradient(135deg, #7c3aed 0%, #6366f1 100%) !important;
+  color: white !important;
+  margin-right: 1rem !important;
+  transition: all 0.3s ease !important;
+}
+
+.testimonialCard:hover .avatar {
+  transform: scale(1.1);
+}
+
+.cardTitle {
+  margin-bottom: 0.25rem !important;
+  font-weight: 700 !important;
+  color: #1a1a1a !important;
+  transition: color 0.3s ease !important;
+}
+
+.testimonialCard:hover .cardTitle {
+  color: #7c3aed !important;
+}
+
+.quote {
+  font-style: italic !important;
+  color: #4b5563 !important;
+  position: relative !important;
+  z-index: 1 !important;
+  margin-top: 1rem !important;
+  line-height: 1.6 !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .testimonialCard {
+    padding: 1.25rem;
+  }
+  
+  .testimonialCard::after {
+    font-size: 100px;
+  }
+} 

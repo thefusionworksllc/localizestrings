@@ -1,28 +1,29 @@
 'use client';
 
-import { Typography, Box, Grid, Paper } from '@mui/material';
+import { Typography, Box, Grid, Paper, Card, CardContent } from '@mui/material';
 import { Language, Speed, Security, Code } from '@mui/icons-material';
 import sharedStyles from '../styles/shared.module.css';
+import styles from './page.module.css';
 
 export default function About() {
   const features = [
     {
-      icon: <Language sx={{ fontSize: 40 }} />,
+      icon: <Language sx={{ fontSize: 40, color: '#7c3aed' }} />,
       title: 'Multiple Languages',
       description: 'Support for over 100 languages with high accuracy translations powered by Google Translate API.'
     },
     {
-      icon: <Speed sx={{ fontSize: 40 }} />,
+      icon: <Speed sx={{ fontSize: 40, color: '#7c3aed' }} />,
       title: 'Lightning Fast',
       description: 'Get instant translations for your language files with our optimized processing engine.'
     },
     {
-      icon: <Security sx={{ fontSize: 40 }} />,
+      icon: <Security sx={{ fontSize: 40, color: '#7c3aed' }} />,
       title: 'Secure & Reliable',
       description: 'Your files are encrypted and processed securely. We never store your translation content.'
     },
     {
-      icon: <Code sx={{ fontSize: 40 }} />,
+      icon: <Code sx={{ fontSize: 40, color: '#7c3aed' }} />,
       title: 'Language Support',
       description: 'Full support for all languages, maintaining all your translation memory and metadata.'
     }
@@ -40,52 +41,19 @@ export default function About() {
         <Grid container spacing={4}>
           {features.map((feature, index) => (
             <Grid item xs={12} sm={6} md={3} key={index}>
-              <Paper
-                elevation={0}
-                sx={{
-                  p: 3,
-                  height: '100%',
-                  background: 'rgba(255, 255, 255, 0.9)',
-                  backdropFilter: 'blur(10px)',
-                  borderRadius: 2,
-                  transition: 'transform 0.2s ease-in-out',
-                  '&:hover': {
-                    transform: 'translateY(-4px)'
-                  }
-                }}
-              >
-                <Box
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    mb: 2,
-                    color: '#7c3aed'
-                  }}
-                >
-                  {feature.icon}
-                </Box>
-                <Typography
-                  variant="h6"
-                  sx={{
-                    mb: 1,
-                    textAlign: 'center',
-                    fontWeight: 600,
-                    color: '#4b5563'
-                  }}
-                >
-                  {feature.title}
-                </Typography>
-                <Typography
-                  variant="body2"
-                  sx={{
-                    textAlign: 'center',
-                    color: '#6b7280'
-                  }}
-                >
-                  {feature.description}
-                </Typography>
-              </Paper>
+              <Card className={styles.featureCard} elevation={0}>
+                <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%' }}>
+                  <Box className={styles.iconWrapper}>
+                    {feature.icon}
+                  </Box>
+                  <Typography variant="h6" className={styles.cardTitle}>
+                    {feature.title}
+                  </Typography>
+                  <Typography variant="body2" className={styles.cardDescription}>
+                    {feature.description}
+                  </Typography>
+                </CardContent>
+              </Card>
             </Grid>
           ))}
         </Grid>
@@ -94,10 +62,16 @@ export default function About() {
           sx={{
             mt: 8,
             p: 4,
-            background: 'rgba(255, 255, 255, 0.9)',
-            backdropFilter: 'blur(10px)',
-            borderRadius: 2,
-            textAlign: 'center'
+            background: 'linear-gradient(135deg, rgba(124, 58, 237, 0.05) 0%, rgba(99, 102, 241, 0.05) 100%)',
+            borderRadius: '16px',
+            textAlign: 'center',
+            border: '1px solid rgba(124, 58, 237, 0.1)',
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)',
+            transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+            '&:hover': {
+              transform: 'translateY(-4px)',
+              boxShadow: '0 20px 30px rgba(124, 58, 237, 0.15)'
+            }
           }}
         >
           <Typography variant="h5" sx={{ mb: 2, color: '#4b5563', fontWeight: 600 }}>
