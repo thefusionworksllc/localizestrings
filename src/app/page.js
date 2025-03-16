@@ -271,11 +271,7 @@ export default function Home() {
               title: t('businesses'),
               description: t('businessesDesc')
             },
-            {
-              icon: <Create sx={{ fontSize: 35 }} />,
-              title: t('contentCreators'),
-              description: t('contentCreatorsDesc')
-            }
+
           ].map((useCase, index) => (
             <Card key={index} className={styles.advantageCard} elevation={0}>
               <CardContent>

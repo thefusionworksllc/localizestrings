@@ -25,7 +25,11 @@ import {
   CheckCircleOutlineOutlined as CheckCircle,
   Star as StarIcon,
   ArrowDropDown,
-  ArrowDropUp
+  ArrowDropUp,
+  Code as CodeIcon,
+  DataObject as DataObjectIcon,
+  ExpandMore,
+  ExpandLess
 } from '@mui/icons-material';
 import Head from 'next/head';
 import PublicIcon from '@mui/icons-material/Public';
@@ -42,6 +46,8 @@ export default function RootLayout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [jsonMenuAnchorEl, setJsonMenuAnchorEl] = useState(null);
   const [xliffMenuAnchorEl, setXliffMenuAnchorEl] = useState(null);
+  const [xliffExpanded, setXliffExpanded] = useState(false);
+  const [jsonExpanded, setJsonExpanded] = useState(false);
   const { t } = useTranslation('common');
 
   useEffect(() => {
@@ -84,6 +90,14 @@ export default function RootLayout({ children }) {
   const handleMenuClose = () => {
     setJsonMenuAnchorEl(null);
     setXliffMenuAnchorEl(null);
+  };
+
+  const toggleXliffExpanded = () => {
+    setXliffExpanded(!xliffExpanded);
+  };
+
+  const toggleJsonExpanded = () => {
+    setJsonExpanded(!jsonExpanded);
   };
 
   const renderContent = () => {
@@ -251,6 +265,13 @@ export default function RootLayout({ children }) {
                   {t('jsonOnlineTranslator.title')}
                 </MenuItem>
                 <MenuItem 
+                  onClick={() => { handleNavigation('/json-file-translator'); handleMenuClose(); }}
+                  sx={{ '&:hover': { background: 'linear-gradient(135deg, rgba(80, 74, 194, 0.9), rgba(147, 51, 234, 0.90))', color: 'white' } }}
+                >
+                  <Dashboard sx={{ mr: 1 }} />
+                  {t('jsonFileTranslator.title')}
+                </MenuItem>
+                <MenuItem 
                   onClick={() => { handleNavigation('/json-validator'); handleMenuClose(); }}
                   sx={{ '&:hover': { background: 'linear-gradient(135deg, rgba(80, 74, 194, 0.9), rgba(147, 51, 234, 0.90))', color: 'white' } }}
                 >
@@ -346,10 +367,13 @@ export default function RootLayout({ children }) {
           onClose={toggleSidebar}
           PaperProps={{
             sx: {
-              width: 310,
-              background: 'linear-gradient(135deg, rgba(79, 70, 229, 0.90), rgba(147, 51, 234, 0.90))',
+              width: 340,
+              background: 'linear-gradient(135deg, rgba(79, 70, 229, 0.95), rgba(147, 51, 234, 0.95))',
               borderRadius: '0 16px 16px 0',
-              padding: '24px 16px',
+              padding: '10px 10px',
+              boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)',
+              backdropFilter: 'blur(10px)' 
+
             }
           }}
         >
@@ -358,46 +382,56 @@ export default function RootLayout({ children }) {
               height: '100%',
               display: 'flex',
               flexDirection: 'column',
-              marginBottom: '20px'
+              marginBottom: '10px',
             }}
           >
-            <Box sx={{ mb: 4, px: 2, display: 'flex', alignItems: 'center',borderBottom: '1px solid rgba(255, 255, 255, 0.3)' }}>
-              <PublicIcon sx={{ mr: 1, color: '#ffffff' }} />
+            <Box sx={{ 
+              mb: 4, 
+              px: 2, 
+              display: 'flex', 
+              alignItems: 'center',
+              borderBottom: '1px solid rgba(255, 255, 255, 0.3)',
+              pb: 2
+            }}>
+              <PublicIcon sx={{ mr: 1, color: '#ffffff', fontSize: '28px' }} />
               <Typography 
                 variant="h6" 
                 sx={{ 
                   fontWeight: 600,
                   color: '#ffffff',
-                  letterSpacing: '-0.5px'
-                  
+                  letterSpacing: '-0.5px',
+                  fontSize: '1rem'
                 }}
               >
                 Localize Strings
               </Typography>
             </Box>
 
-            <Box sx={{ flex: 1 }}>
+            <Box sx={{ flex: 1, overflowY: 'auto', pr: 1 }}>
               <Typography 
                 variant="subtitle2" 
                 sx={{ 
                   px: 2, 
-                  mb: 1, 
-                  color: '#ffffff',
+                 // mb: 1, 
+                  color: 'rgba(255, 255, 255, 0.7)',
                   textTransform: 'uppercase',
                   fontSize: '0.75rem',
                   fontWeight: 600,
+                  letterSpacing: '0.5px'
                 }}
               >
                 Main Menu
               </Typography>
               <List sx={{ px: 1 }}>
-              <ListItem 
+                <ListItem 
                   onClick={() => handleNavigation('/')}
                   sx={{
-                    borderRadius: '8px',
+                    borderRadius: '12px',
                     mb: 1,
+                    transition: 'all 0.2s ease',
                     '&:hover': {
-                      backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                      backgroundColor: 'rgba(255, 255, 255, 0.15)',
+                      transform: 'translateX(5px)'
                     }
                   }}
                 >
@@ -409,110 +443,207 @@ export default function RootLayout({ children }) {
                     }}
                   />
                 </ListItem>
+                
+                {/* XLIFF Group */}
                 <ListItem 
-                  onClick={() => handleNavigation('/xliff-online-translator')}
+                  onClick={toggleXliffExpanded}
                   sx={{
-                    borderRadius: '8px',
-                    mb: 1,
+                    borderRadius: '12px',
+                    mb: 0.5,
+                    transition: 'all 0.2s ease',
+                    backgroundColor: 'rgba(255, 255, 255, 0.08)',
                     '&:hover': {
-                      backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                      backgroundColor: 'rgba(255, 255, 255, 0.15)',
                     }
                   }}
                 >
-                  <TranslateIcon sx={{ mr: 2, color: '#ffffff' }} />
+                  <CodeIcon sx={{ mr: 2, color: '#ffffff' }} />
                   <ListItemText 
-                    primary={t('xliffOnlineTranslator.title')}
+                    primary={t('xliffMenu')}
                     primaryTypographyProps={{
-                      sx: { fontWeight: 500, color: '#ffffff' }
+                      sx: { fontWeight: 600, color: '#ffffff' }
                     }}
                   />
-                </ListItem>
-                <ListItem 
-                  onClick={() => handleNavigation('/xliff-file-translator')}
-                  sx={{
-                    borderRadius: '8px',
-                    mb: 1,
-                    '&:hover': {
-                      backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                    }
-                  }}
-                >
-                  <Dashboard sx={{ mr: 2, color: '#ffffff' }} />
-                  <ListItemText 
-                    primary={t('xliffFileTranslator.title')}
-                    primaryTypographyProps={{
-                      sx: { fontWeight: 500, color: '#ffffff' }
-                    }}
-                  />
-                </ListItem>
-                <ListItem 
-                  onClick={() => handleNavigation('/xliff-validator')}
-                  sx={{
-                    borderRadius: '8px',
-                    mb: 1,
-                    '&:hover': {
-                      backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                    }
-                  }}
-                >
-                  <CheckCircle sx={{ mr: 2, color: '#ffffff' }} />
-                  <ListItemText 
-                    primary={t('xliffValidator.title')}
-                    primaryTypographyProps={{
-                      sx: { fontWeight: 500, color: '#ffffff' }
-                    }}
-                  />
+                  {xliffExpanded ? 
+                    <ExpandLess sx={{ color: '#ffffff' }} /> : 
+                    <ExpandMore sx={{ color: '#ffffff' }} />
+                  }
                 </ListItem>
                 
-                {/* JSON Menu Items in Sidebar */}
+                {xliffExpanded && (
+                  <Box sx={{ pl: 2 }}>
+                    <ListItem 
+                      onClick={() => handleNavigation('/xliff-online-translator')}
+                      sx={{
+                        borderRadius: '12px',
+                        mb: 0.5,
+                        pl: 3,
+                        transition: 'all 0.2s ease',
+                        '&:hover': {
+                          backgroundColor: 'rgba(255, 255, 255, 0.15)',
+                          transform: 'translateX(5px)'
+                        }
+                      }}
+                    >
+                      <TranslateIcon sx={{ mr: 2, color: '#ffffff', fontSize: '1.2rem' }} />
+                      <ListItemText 
+                        primary={t('xliffOnlineTranslator.title')}
+                        primaryTypographyProps={{
+                          sx: { fontWeight: 400, color: '#ffffff', fontSize: '0.95rem' }
+                        }}
+                      />
+                    </ListItem>
+                    <ListItem 
+                      onClick={() => handleNavigation('/xliff-file-translator')}
+                      sx={{
+                        borderRadius: '12px',
+                        mb: 0.5,
+                        pl: 3,
+                        transition: 'all 0.2s ease',
+                        '&:hover': {
+                          backgroundColor: 'rgba(255, 255, 255, 0.15)',
+                          transform: 'translateX(5px)'
+                        }
+                      }}
+                    >
+                      <Dashboard sx={{ mr: 2, color: '#ffffff', fontSize: '1.2rem' }} />
+                      <ListItemText 
+                        primary={t('xliffFileTranslator.title')}
+                        primaryTypographyProps={{
+                          sx: { fontWeight: 400, color: '#ffffff', fontSize: '0.95rem' }
+                        }}
+                      />
+                    </ListItem>
+                    <ListItem 
+                      onClick={() => handleNavigation('/xliff-validator')}
+                      sx={{
+                        borderRadius: '12px',
+                        mb: 1,
+                        pl: 3,
+                        transition: 'all 0.2s ease',
+                        '&:hover': {
+                          backgroundColor: 'rgba(255, 255, 255, 0.15)',
+                          transform: 'translateX(5px)'
+                        }
+                      }}
+                    >
+                      <CheckCircle sx={{ mr: 2, color: '#ffffff', fontSize: '1.2rem' }} />
+                      <ListItemText 
+                        primary={t('xliffValidator.title')}
+                        primaryTypographyProps={{
+                          sx: { fontWeight: 400, color: '#ffffff', fontSize: '0.95rem' }
+                        }}
+                      />
+                    </ListItem>
+                  </Box>
+                )}
+                
+                {/* JSON Group */}
                 <ListItem 
-                  onClick={() => handleNavigation('/json-online-translator')}
+                  onClick={toggleJsonExpanded}
                   sx={{
-                    borderRadius: '8px',
-                    mb: 1,
+                    borderRadius: '12px',
+                    mb: 0.5,
+                    transition: 'all 0.2s ease',
+                    backgroundColor: 'rgba(255, 255, 255, 0.08)',
                     '&:hover': {
-                      backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                      backgroundColor: 'rgba(255, 255, 255, 0.15)',
                     }
                   }}
                 >
-                  <TranslateIcon sx={{ mr: 2, color: '#ffffff' }} />
+                  <DataObjectIcon sx={{ mr: 2, color: '#ffffff' }} />
                   <ListItemText 
-                    primary={t('jsonOnlineTranslator.title')}
+                    primary={t('jsonMenu')}
                     primaryTypographyProps={{
-                      sx: { fontWeight: 500, color: '#ffffff' }
+                      sx: { fontWeight: 600, color: '#ffffff' }
                     }}
                   />
+                  {jsonExpanded ? 
+                    <ExpandLess sx={{ color: '#ffffff' }} /> : 
+                    <ExpandMore sx={{ color: '#ffffff' }} />
+                  }
                 </ListItem>
-                <ListItem 
-                  onClick={() => handleNavigation('/json-validator')}
-                  sx={{
-                    borderRadius: '8px',
-                    mb: 1,
-                    '&:hover': {
-                      backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                    }
-                  }}
-                >
-                  <CheckCircle sx={{ mr: 2, color: '#ffffff' }} />
-                  <ListItemText 
-                    primary={t('jsonValidator.title')}
-                    primaryTypographyProps={{
-                      sx: { fontWeight: 500, color: '#ffffff' }
-                    }}
-                  />
-                </ListItem>
+                
+                {jsonExpanded && (
+                  <Box sx={{ pl: 2 }}>
+                    <ListItem 
+                      onClick={() => handleNavigation('/json-online-translator')}
+                      sx={{
+                        borderRadius: '12px',
+                        mb: 0.5,
+                        pl: 3,
+                        transition: 'all 0.2s ease',
+                        '&:hover': {
+                          backgroundColor: 'rgba(255, 255, 255, 0.15)',
+                          transform: 'translateX(5px)'
+                        }
+                      }}
+                    >
+                      <TranslateIcon sx={{ mr: 2, color: '#ffffff', fontSize: '1.2rem' }} />
+                      <ListItemText 
+                        primary={t('jsonOnlineTranslator.title')}
+                        primaryTypographyProps={{
+                          sx: { fontWeight: 400, color: '#ffffff', fontSize: '0.95rem' }
+                        }}
+                      />
+                    </ListItem>
+                    <ListItem 
+                      onClick={() => handleNavigation('/json-file-translator')}
+                      sx={{
+                        borderRadius: '12px',
+                        mb: 0.5,
+                        pl: 3,
+                        transition: 'all 0.2s ease',
+                        '&:hover': {
+                          backgroundColor: 'rgba(255, 255, 255, 0.15)',
+                          transform: 'translateX(5px)'
+                        }
+                      }}
+                    >
+                      <Dashboard sx={{ mr: 2, color: '#ffffff', fontSize: '1.2rem' }} />
+                      <ListItemText 
+                        primary={t('jsonFileTranslator.title')}
+                        primaryTypographyProps={{
+                          sx: { fontWeight: 400, color: '#ffffff', fontSize: '0.95rem' }
+                        }}
+                      />
+                    </ListItem>
+                    <ListItem 
+                      onClick={() => handleNavigation('/json-validator')}
+                      sx={{
+                        borderRadius: '12px',
+                        mb: 1,
+                        pl: 3,
+                        transition: 'all 0.2s ease',
+                        '&:hover': {
+                          backgroundColor: 'rgba(255, 255, 255, 0.15)',
+                          transform: 'translateX(5px)'
+                        }
+                      }}
+                    >
+                      <CheckCircle sx={{ mr: 2, color: '#ffffff', fontSize: '1.2rem' }} />
+                      <ListItemText 
+                        primary={t('jsonValidator.title')}
+                        primaryTypographyProps={{
+                          sx: { fontWeight: 400, color: '#ffffff', fontSize: '0.95rem' }
+                        }}
+                      />
+                    </ListItem>
+                  </Box>
+                )}
               </List>
 
               <Typography 
                 variant="subtitle2" 
                 sx={{ 
                   px: 2, 
-                  mb: 1, 
+                  //mb: 1, 
                   mt: 2,
-                  color: '#ffffff',
+                  color: 'rgba(255, 255, 255, 0.7)',
                   textTransform: 'uppercase',
                   fontSize: '0.75rem',
-                  fontWeight: 600
+                  fontWeight: 600,
+                  letterSpacing: '0.5px'
                 }}
               >
                 {t('support')}
@@ -521,10 +652,12 @@ export default function RootLayout({ children }) {
                 <ListItem 
                   onClick={() => handleNavigation('/about')}
                   sx={{
-                    borderRadius: '8px',
+                    borderRadius: '12px',
                     mb: 1,
+                    transition: 'all 0.2s ease',
                     '&:hover': {
-                      backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                      backgroundColor: 'rgba(255, 255, 255, 0.15)',
+                      transform: 'translateX(5px)'
                     }
                   }}
                 >
@@ -539,10 +672,12 @@ export default function RootLayout({ children }) {
                 <ListItem 
                   onClick={() => handleNavigation('/contact')}
                   sx={{
-                    borderRadius: '8px',
+                    borderRadius: '12px',
                     mb: 1,
+                    transition: 'all 0.2s ease',
                     '&:hover': {
-                      backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                      backgroundColor: 'rgba(255, 255, 255, 0.15)',
+                      transform: 'translateX(5px)'
                     }
                   }}
                 >
@@ -554,25 +689,6 @@ export default function RootLayout({ children }) {
                     }}
                   />
                 </ListItem>
-              {/*}  <ListItem 
-                  onClick={() => handleNavigation('/testimonials')}
-                  sx={{
-                    borderRadius: '8px',
-                    mb: 1,
-                    '&:hover': {
-                      backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                    }
-                  }}
-                >
-                  <StarIcon sx={{ mr: 2, color: '#ffffff' }} />
-                  <ListItemText 
-                    primary={t('testimonials')}
-                    primaryTypographyProps={{
-                      sx: { fontWeight: 500, color: '#ffffff' }
-                    }}
-                  />
-                </ListItem>
-                */}
               </List>
             </Box>
 
@@ -581,16 +697,17 @@ export default function RootLayout({ children }) {
               <Typography 
                 variant="subtitle2" 
                 sx={{ 
-                  mb: 1, 
-                  color: '#ffffff',
+                 // mb: 1, 
+                  color: 'rgba(255, 255, 255, 0.7)',
                   textTransform: 'uppercase',
                   fontSize: '0.75rem',
-                  fontWeight: 600
+                  fontWeight: 600,
+                  letterSpacing: '0.5px'
                 }}
               >
                 {t('language')}
               </Typography>
-              <Box sx={{ px: 1 , color: '#ffffff'}}>
+              <Box sx={{ px: 1, color: '#ffffff'}}>
                 <LanguageSwitcher />
               </Box>
             </Box>
@@ -601,10 +718,12 @@ export default function RootLayout({ children }) {
                   <ListItem 
                     onClick={() => handleNavigation('/settings')}
                     sx={{
-                      borderRadius: '8px',
+                      borderRadius: '12px',
                       mb: 1,
+                      transition: 'all 0.2s ease',
                       '&:hover': {
-                        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                        backgroundColor: 'rgba(255, 255, 255, 0.15)',
+                        transform: 'translateX(5px)'
                       }
                     }}
                   >
@@ -619,9 +738,11 @@ export default function RootLayout({ children }) {
                   <ListItem 
                     onClick={handleLogout}
                     sx={{
-                      borderRadius: '8px',
+                      borderRadius: '12px',
+                      transition: 'all 0.2s ease',
                       '&:hover': {
-                        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                        backgroundColor: 'rgba(255, 255, 255, 0.15)',
+                        transform: 'translateX(5px)'
                       }
                     }}
                   >
@@ -639,9 +760,12 @@ export default function RootLayout({ children }) {
                 <ListItem 
                   onClick={() => handleNavigation('/login')}
                   sx={{
-                    borderRadius: '8px',
+                    borderRadius: '12px',
+                    mb: 1,
+                    transition: 'all 0.2s ease',
                     '&:hover': {
-                      backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                      backgroundColor: 'rgba(255, 255, 255, 0.15)',
+                      transform: 'translateX(5px)'
                     }
                   }}
                 >
@@ -656,9 +780,11 @@ export default function RootLayout({ children }) {
                  <ListItem 
                  onClick={() => handleNavigation('/signup')}
                  sx={{
-                   borderRadius: '8px',
+                   borderRadius: '12px',
+                   transition: 'all 0.2s ease',
                    '&:hover': {
-                     backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                     backgroundColor: 'rgba(255, 255, 255, 0.15)',
+                     transform: 'translateX(5px)'
                    }
                  }}
                >

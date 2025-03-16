@@ -78,6 +78,31 @@
     "translationCompletedSuccessfully": "翻译成功完成！"
   },
   
+  "jsonFileTranslator": {
+    "title": "JSON 文件翻译器",
+    "featureCards": {
+      "lightningFast": "闪电般快速",
+      "lightningFastDescription": "以高精度获得多种语言的即时翻译。",
+      "multipleLanguages": "多种语言",
+      "multipleLanguagesDescription": "支持 100 多种语言，翻译准确度高。",
+      "secureReliable": "安全可靠",
+      "secureReliableDescription": "您的文件安全处理，永不存储在我们的服务器上。"
+    },
+    "dropzone": {
+      "dropHere": "将 JSON 文件拖放到这里...",
+      "dragDrop": "将 JSON 文件拖放到这里，或点击选择",
+      "trySample": "尝试示例文件",
+      "selectedFile": "已选择文件："
+    },
+    "languageSelect": {
+      "selectTargetLanguage": "选择目标语言",
+      "chooseLanguage": "选择一种语言",
+      "popularLanguages": "热门语言："
+    },
+    "translateNow": "立即翻译",
+    "translationCompleted": "翻译成功完成！文件已下载。"
+  },
+  
   "jsonValidator": {
     "title": "JSON 验证器",
     "sourceJson": "源 JSON",

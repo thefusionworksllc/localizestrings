@@ -78,6 +78,31 @@
     "translationCompletedSuccessfully": "¡Traducción completada con éxito!"
   },
   
+  "jsonFileTranslator": {
+    "title": "Traductor de Archivos JSON",
+    "featureCards": {
+      "lightningFast": "Súper Rápido",
+      "lightningFastDescription": "Obtén traducciones instantáneas en múltiples idiomas con alta precisión.",
+      "multipleLanguages": "Múltiples Idiomas",
+      "multipleLanguagesDescription": "Soporte para más de 100 idiomas con traducción de alta precisión.",
+      "secureReliable": "Seguro y Confiable",
+      "secureReliableDescription": "Tus archivos se procesan de forma segura y nunca se almacenan en nuestros servidores."
+    },
+    "dropzone": {
+      "dropHere": "Suelta el archivo JSON aquí...",
+      "dragDrop": "Arrastra y suelta un archivo JSON aquí, o haz clic para seleccionar",
+      "trySample": "Probar un Archivo de Ejemplo",
+      "selectedFile": "Archivo seleccionado:"
+    },
+    "languageSelect": {
+      "selectTargetLanguage": "Seleccionar Idioma Destino",
+      "chooseLanguage": "Elige un idioma",
+      "popularLanguages": "Idiomas Populares:"
+    },
+    "translateNow": "Traducir Ahora",
+    "translationCompleted": "¡Traducción completada con éxito! Los archivos se han descargado."
+  },
+  
   "jsonValidator": {
     "title": "Validador JSON",
     "sourceJson": "JSON de Origen",

@@ -78,6 +78,31 @@
     "translationCompletedSuccessfully": "Translation completed successfully!"
   },
   
+  "jsonFileTranslator": {
+    "title": "JSON File Translator",
+    "featureCards": {
+      "lightningFast": "Lightning Fast",
+      "lightningFastDescription": "Get instant translations in multiple languages with high accuracy.",
+      "multipleLanguages": "Multiple Languages",
+      "multipleLanguagesDescription": "Support for over 100 languages with high accuracy translation.",
+      "secureReliable": "Secure & Reliable",
+      "secureReliableDescription": "Your files are processed securely and never stored on our servers."
+    },
+    "dropzone": {
+      "dropHere": "Drop the JSON file here...",
+      "dragDrop": "Drag & drop a JSON file here, or click to select",
+      "trySample": "Try a Sample File",
+      "selectedFile": "Selected file:"
+    },
+    "languageSelect": {
+      "selectTargetLanguage": "Select Target Language",
+      "chooseLanguage": "Choose a language",
+      "popularLanguages": "Popular Languages:"
+    },
+    "translateNow": "Translate Now",
+    "translationCompleted": "Translation completed successfully! Files have been downloaded."
+  },
+  
   "jsonValidator": {
     "title": "JSON Validator",
     "sourceJson": "Source JSON",
@@ -89,7 +114,7 @@
   },
   
   "heroTitle": "Your Ultimate Tool for Seamless Translation and Localization",
-  "heroSubtitle": "Translate and localize your content effortlessly, powered by Google Translate API. Perfect for developers, translators, content creators and businesses.",
+  "heroSubtitle": "Translate and localize your content effortlessly, powered by Google Translate API.  Perfect for developers, translators,and businesses.",
   "whyChooseUs": "Why Choose LocalizeStrings.com?",
   "multiLanguageSupport": "Multi Language Support",
   "multiLanguageSupportDesc": "Support for over 100 languages with high accuracy translations",

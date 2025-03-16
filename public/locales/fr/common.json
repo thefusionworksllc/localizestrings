@@ -101,5 +101,29 @@
   "privacyPolicy": "Politique de Confidentialité",
   "termsOfService": "Conditions d'Utilisation",
   "copyright": "LocalizeStrings.com. Tous droits réservés.",
-  "language": "Langue"
+  "language": "Langue",
+  "jsonFileTranslator": {
+    "title": "Traducteur de Fichiers JSON",
+    "featureCards": {
+      "lightningFast": "Ultra Rapide",
+      "lightningFastDescription": "Obtenez des traductions instantanées dans plusieurs langues avec une haute précision.",
+      "multipleLanguages": "Plusieurs Langues",
+      "multipleLanguagesDescription": "Support pour plus de 100 langues avec des traductions de haute précision.",
+      "secureReliable": "Securisé & Fiable",
+      "secureReliableDescription": "Vos fichiers sont traités en toute sécurité et ne sont jamais stockés sur nos serveurs."
+    },
+    "dropzone": {
+      "dropHere": "Déposez le fichier JSON ici...",
+      "dragDrop": "Faites glisser et déposez un fichier JSON ici, ou cliquez pour sélectionner",
+      "trySample": "Essayer un Fichier d'Exemple",
+      "selectedFile": "Fichier Sélectionné:"
+    },
+    "languageSelect": {
+      "selectTargetLanguage": "Sélectionner la Langue Cible",
+      "chooseLanguage": "Choisissez une langue",
+      "popularLanguages": "Langues Populaires:"
+    },
+    "translateNow": "Traduire Maintenant",
+    "translationCompleted": "Traduction terminée avec succès! Les fichiers ont été téléchargés."
+  }
 } 

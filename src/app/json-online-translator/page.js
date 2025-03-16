@@ -221,7 +221,7 @@ export default function JsonOnlineTranslator() {
                     color: 'white',
                     textTransform: 'none',
                     '&:hover': {
-                      backgroundColor: '#4f46e5'
+                      backgroundColor: '#4f46e5',
                     }
                   }}
                 >
