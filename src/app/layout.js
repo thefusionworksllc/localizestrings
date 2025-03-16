@@ -117,11 +117,10 @@ export default function RootLayout({ children }) {
                 src="/logo.png" 
                 alt="Logo" 
                 style={{ 
-                  height: '50px',
+                  height: '55px',
                   marginRight: '10px',
-                  borderRadius: '8px',
+                  borderRadius: '6px',
                   boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
-                  transition: 'transform 0.3s',
                 }} 
                 onClick={() => handleNavigation('/')} 
                 onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
@@ -555,7 +554,7 @@ export default function RootLayout({ children }) {
                     }}
                   />
                 </ListItem>
-                <ListItem 
+              {/*}  <ListItem 
                   onClick={() => handleNavigation('/testimonials')}
                   sx={{
                     borderRadius: '8px',
@@ -573,6 +572,7 @@ export default function RootLayout({ children }) {
                     }}
                   />
                 </ListItem>
+                */}
               </List>
             </Box>
 

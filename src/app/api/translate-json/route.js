@@ -1,13 +1,67 @@
 import { NextResponse } from 'next/server';
 import { Translate } from '@google-cloud/translate/build/src/v2';
+import { createServerClient } from '@supabase/ssr';
+import { cookies } from 'next/headers';
 
 // Initialize the Google Translate API client
 const translate = new Translate({
   key: process.env.GOOGLE_TRANSLATE_API_KEY,
 });
 
+// Helper function to check translation cache
+async function checkCache(sourceText, targetLanguage, supabase) {
+  try {
+    const { data, error } = await supabase
+      .from('translations')
+      .select('translated_text')
+      .eq('source_text', sourceText)
+      .eq('target_language', targetLanguage)
+      .single();
+
+    if (error) throw error;
+    return data?.translated_text;
+  } catch (error) {
+    console.error('Cache check error:', error);
+    return null;
+  }
+}
+
+// Helper function to update translation cache
+async function updateCache(sourceText, translatedText, targetLanguage, supabase) {
+  try {
+    await supabase.from('translations').upsert({
+      source_text: sourceText,
+      translated_text: translatedText,
+      target_language: targetLanguage,
+      created_at: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Cache update error:', error);
+  }
+}
+
 export async function POST(request) {
   try {
+    // Create Supabase client for server-side operations
+    const cookieStore = await cookies();
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL,
+      process.env.SUPABASE_SERVICE_KEY,
+      {
+        cookies: {
+          get(name) {
+            return cookieStore.get(name)?.value; // Get cookie value
+          },
+          set(name, value, options) {
+            cookieStore.set({ name, value, ...options }); // Set cookie value
+          },
+          remove(name, options) {
+            cookieStore.delete({ name, ...options }); // Remove cookie
+          },
+        },
+      }
+    );
+
     const { content, targetLanguage } = await request.json();
 
     // Validate input
@@ -37,22 +91,46 @@ export async function POST(request) {
         const value = obj[key];
         
         if (typeof value === 'string') {
-          // Translate string values
-          try {
-            const [translation] = await translate.translate(value, targetLang);
-            result[key] = translation;
-          } catch (error) {
-            console.error(`Error translating "${value}":`, error);
-            result[key] = value; // Keep original if translation fails
+          // Check cache first for translated text
+          let translatedText = await checkCache(value, targetLang, supabase);
+          
+          if (!translatedText) {
+            // If not in cache, use Google Translate
+            try {
+              const [translation] = await translate.translate(value, targetLang);
+              translatedText = translation;
+              // Update cache with new translation
+              await updateCache(value, translatedText, targetLang, supabase);
+            } catch (error) {
+              console.error(`Error translating "${value}":`, error);
+              translatedText = value; // Keep original if translation fails
+            }
           }
+          
+          result[key] = translatedText;
         } else if (typeof value === 'object' && value !== null) {
           // Recursively translate nested objects or arrays
           if (Array.isArray(value)) {
             result[key] = await Promise.all(
               value.map(async (item) => {
                 if (typeof item === 'string') {
-                  const [translation] = await translate.translate(item, targetLang);
-                  return translation;
+                  // Check cache first for translated text
+                  let translatedText = await checkCache(item, targetLang, supabase);
+                  
+                  if (!translatedText) {
+                    // If not in cache, use Google Translate
+                    try {
+                      const [translation] = await translate.translate(item, targetLang);
+                      translatedText = translation;
+                      // Update cache with new translation
+                      await updateCache(item, translatedText, targetLang, supabase);
+                    } catch (error) {
+                      console.error(`Error translating "${item}":`, error);
+                      translatedText = item; // Keep original if translation fails
+                    }
+                  }
+                  
+                  return translatedText;
                 } else if (typeof item === 'object' && item !== null) {
                   return await translateJsonValues(item, targetLang);
                 }

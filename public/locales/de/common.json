@@ -21,7 +21,7 @@
     "popularLanguages": "Beliebte Sprachen:",
     "selectTargetLanguage": "Zielsprache auswählen",
     "translating": "Übersetzen...",
-    "translateNow": "Jetzt übersetzen",
+    "translateNow": "Jetzt übersetzen", 
     "translationCompletedSuccessfully": "Übersetzung erfolgreich abgeschlossen!"
   },
   "xliffFileTranslator": {
@@ -97,9 +97,9 @@
   "features": "Funktionen",
   "support": "Support",
   "contactUs": "Kontaktieren Sie uns",
-  "legal": "Rechtliches",
+  "legal": "Rechtliches", 
   "privacyPolicy": "Datenschutzrichtlinie",
   "termsOfService": "Nutzungsbedingungen",
-  "copyright": "© {year} LocalizeStrings.com. Alle Rechte vorbehalten.",
+  "copyright": "LocalizeStrings.com. Alle Rechte vorbehalten.",
   "language": "Sprache"
 } 

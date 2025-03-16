@@ -212,6 +212,11 @@ export default function Home() {
               title: t('multiLanguageSupport'),
               description: t('multiLanguageSupportDesc')
             },
+            {
+              icon: <Speed sx={{ fontSize: 35 }} />,
+            title: t('lightningFast'),
+            description: t('lightningFastDesc')
+          },
             
             {
               icon: <Timeline sx={{ fontSize: 35 }} />,
@@ -223,11 +228,7 @@ export default function Home() {
               title: t('qualityAssurance'),
               description: t('qualityAssuranceDesc')
             },
-            {
-                icon: <Speed sx={{ fontSize: 35 }} />,
-              title: t('lightningFast'),
-              description: t('lightningFastDesc')
-            }
+          
           ].map((advantage, index) => (
             <Card key={index} className={styles.advantageCard} elevation={0}>
               <CardContent>
@@ -448,9 +449,9 @@ export default function Home() {
           <div>
             <Typography variant="h6" sx={{ color: 'white', mb: 2 }}>{t('services')}</Typography>
             <ul className={styles.footerLinks}>
-              <li><Link href="/xliff-online-translator">{t('xliffOnlineTranslator')}</Link></li>
-              <li><Link href="/xliff-file-translator">{t('xliffFileTranslator')}</Link></li>
-              <li><Link href="/xliff-validator">{t('xliffValidator')}</Link></li>
+              <li><Link href="/xliff-online-translator">{t('xliffOnlineTranslator.title')}</Link></li>
+              <li><Link href="/xliff-file-translator">{t('xliffFileTranslator.title')}</Link></li>
+              <li><Link href="/xliff-validator">{t('xliffValidator.title')}</Link></li>
             </ul>
           </div>
           <div>
@@ -480,8 +481,8 @@ export default function Home() {
         </Box>
         <Divider className={styles.footerDivider} />
           
-          <Typography variant="body2" className={styles.copyright}>
-            {t('copyright', { year: new Date().getFullYear() })}
+          <Typography variant="body2" className={styles.copyright}> 
+          {'©'}{new Date().getFullYear() + ' '}{t('copyright')} 
           </Typography>
       </footer>
     </div>

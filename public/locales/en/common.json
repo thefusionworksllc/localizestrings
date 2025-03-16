@@ -3,8 +3,8 @@
   "getStarted": "Get Started",
   "exploreFeatures": "Explore Features",
   "home": "Home",
-  "xliffMenu": "XLIFF Menu",
-  "jsonMenu": "JSON Menu",
+  "xliffMenu": "XLIFF",
+  "jsonMenu": "JSON",
   "aboutUs": "About Us",
   "login": "Login",
   "signup": "Signup",
@@ -131,6 +131,6 @@
   "legal": "Legal",
   "privacyPolicy": "Privacy Policy",
   "termsOfService": "Terms of Service",
-  "copyright": "© {year} LocalizeStrings.com. All rights reserved.",
+  "copyright": "LocalizeStrings.com. All rights reserved.",
   "language": "Language"
 } 
