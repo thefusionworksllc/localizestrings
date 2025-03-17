@@ -22,7 +22,7 @@ import {
   Close as CloseIcon
 } from '@mui/icons-material';
 import supabase from '../supabaseClient'; // Importing the Supabase client
-import { useColorMode } from '../contexts/ThemeContext';
+import { useTheme } from '../contexts/ThemeContext';
 import styles from './page.module.css';
 
 export default function ContactUs() {
@@ -34,7 +34,7 @@ export default function ContactUs() {
   const [loading, setLoading] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [openSnackbar, setOpenSnackbar] = useState(false);
-  const { isDarkMode } = useColorMode();
+  const { mode } = useTheme();
 
   useEffect(() => {
     setMounted(true);
@@ -89,7 +89,7 @@ export default function ContactUs() {
   }
 
   return (
-    <Container maxWidth="md" sx={{ py: 6 }}>
+    <Container maxWidth="md" sx={{ py: 6 }} data-theme={mode}>
       <Paper 
         elevation={0} 
         sx={{ 
@@ -103,6 +103,7 @@ export default function ContactUs() {
             transform: 'translateY(-4px)'
           }
         }}
+        data-theme={mode}
       >
         <Grid container spacing={4}>
           <Grid item xs={12} md={5}>
@@ -123,7 +124,8 @@ export default function ContactUs() {
                 borderRadius: '12px',
                 border: '1px solid rgba(124, 58, 237, 0.1)',
                 mb: 3
-              }}>
+              }}
+              data-theme={mode}>
                 <Typography variant="h6" component="div" sx={{ fontWeight: 600, mb: 1, color: '#1a1a1a' }}>
                   Email Us Directly
                 </Typography>

@@ -1,80 +1,87 @@
 'use client';
-import { useState } from 'react';
-import { Typography, Box, Card, CardContent, Button } from '@mui/material';
-import { Language, Group, CheckCircle, Timeline, Code } from '@mui/icons-material';
-import styles from './page.module.css';
 
-const featuresList = [
-  {
-    title: 'Multi-Format Support',
-    description: 'Translate and localize various file formats including XLIFF, JSON, and more.',
-    icon: <Language sx={{ fontSize: 40, color: '#7c3aed' }} />
-  },
-  {
-    title: 'Real-Time Collaboration',
-    description: 'Work with your team in real-time on translation projects.',
-    icon: <Group sx={{ fontSize: 40, color: '#7c3aed' }} />
-  },
-  {
-    title: 'Translation Memory',
-    description: 'Save time with reusable translations and consistent terminology.',
-    icon: <CheckCircle sx={{ fontSize: 40, color: '#7c3aed' }} />
-  },
-  {
-    title: 'Quality Assurance',
-    description: 'Automated QA checks to ensure accurate and consistent translations.',
-    icon: <Timeline sx={{ fontSize: 40, color: '#7c3aed' }} />
-  },
-  {
-    title: 'Easy Integration',
-    description: 'Seamlessly integrate with your existing workflows and tools.',
-    icon: <Code sx={{ fontSize: 40, color: '#7c3aed' }} />
-  }
-];
+import { Box, Grid, Card, CardContent, Typography } from '@mui/material';
+import { Language, Speed, Security, Code, Translate, Storage, CloudUpload, CloudDownload } from '@mui/icons-material';
+import sharedStyles from '../styles/shared.module.css';
+import styles from './page.module.css';
+import { useTheme } from '../contexts/ThemeContext';
 
 export default function Features() {
-  return (
-    <div className={styles.container}>
-      <section className={styles.featuresSection}>
-        <Typography variant="h3" className={styles.sectionTitle}>
-          Features of LocalizeStrings.com
-        </Typography>
-        <div className={styles.featuresGrid}>
-          {featuresList.map((feature, index) => (
-            <Card key={index} className={styles.featureCard} elevation={0}>
-              <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%' }}>
-                <Box className={styles.iconWrapper}>
-                  {feature.icon}
-                </Box>
-                <Typography variant="h6" className={styles.cardTitle}>
-                  {feature.title}
-                </Typography>
-                <Typography variant="body2" className={styles.cardDescription}>
-                  {feature.description}
-                </Typography>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </section>
+  const { mode } = useTheme();
+  
+  const features = [
+    {
+      icon: <Translate sx={{ fontSize: 40, color: '#7c3aed' }} />,
+      title: 'XLIFF Translation',
+      description: 'Translate XLIFF files with high accuracy while preserving all metadata and translation memory.'
+    },
+    {
+      icon: <Code sx={{ fontSize: 40, color: '#7c3aed' }} />,
+      title: 'JSON Translation',
+      description: 'Easily translate JSON files for your web applications, maintaining nested structures and arrays.'
+    },
+    {
+      icon: <Language sx={{ fontSize: 40, color: '#7c3aed' }} />,
+      title: '100+ Languages',
+      description: 'Support for over 100 languages with high accuracy translations powered by Google Translate API.'
+    },
+    {
+      icon: <Speed sx={{ fontSize: 40, color: '#7c3aed' }} />,
+      title: 'Lightning Fast',
+      description: 'Get instant translations for your language files with our optimized processing engine.'
+    },
+    {
+      icon: <Security sx={{ fontSize: 40, color: '#7c3aed' }} />,
+      title: 'Secure & Reliable',
+      description: 'Your files are encrypted and processed securely. We never store your translation content.'
+    },
+    {
+      icon: <Storage sx={{ fontSize: 40, color: '#7c3aed' }} />,
+      title: 'Format Preservation',
+      description: 'We maintain all formatting, placeholders, and special characters in your translation files.'
+    },
+    {
+      icon: <CloudUpload sx={{ fontSize: 40, color: '#7c3aed' }} />,
+      title: 'Batch Processing',
+      description: 'Upload multiple files at once and translate them in a single operation to save time.'
+    },
+    {
+      icon: <CloudDownload sx={{ fontSize: 40, color: '#7c3aed' }} />,
+      title: 'Easy Export',
+      description: 'Download your translated files in the original format, ready to use in your application.'
+    }
+  ];
 
-      <section className={styles.ctaSection}>
-        <Typography variant="h4" sx={{ color: 'white', mb: 2 }}>
-          Ready to Simplify Your Localization Workflow?
-        </Typography>
-        <Button
-          variant="contained"
-          size="large"
-          href="/xliff-online-translator"
-          sx={{
-            background: 'white',
-            color: '#7c3aed',
-            '&:hover': { background: '#f3f4f6' }
-          }}
-        >
-          Get Started for Free
-        </Button>
-      </section>
+  return (
+    <div className={`${styles.container} ${sharedStyles.pageContainer}`} data-theme={mode}>
+      <Box sx={{ maxWidth: '1200px', width: '100%', mx: 'auto', px: 3 }}>
+        <div className={styles.featuresSection}>
+          <h1 className={`${sharedStyles.title} ${styles.sectionTitle}`}>Our Features</h1>
+          <p className={`${sharedStyles.subtitle} ${styles.sectionSubtitle}`}>
+            Discover the powerful features that make LocalizeStrings.com the preferred choice for developers and content managers.
+          </p>
+          
+          <Grid container spacing={4} className={styles.featuresGrid}>
+            {features.map((feature, index) => (
+              <Grid item xs={12} sm={6} md={3} key={index}>
+                <Card className={styles.featureCard} elevation={0} data-theme={mode}>
+                  <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%' }}>
+                    <Box className={styles.iconWrapper}>
+                      {feature.icon}
+                    </Box>
+                    <Typography variant="h6" className={styles.cardTitle}>
+                      {feature.title}
+                    </Typography>
+                    <Typography variant="body2" className={styles.cardDescription}>
+                      {feature.description}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        </div>
+      </Box>
     </div>
   );
 }

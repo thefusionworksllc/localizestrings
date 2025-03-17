@@ -42,6 +42,7 @@ import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
 import './i18n'; // Import the i18n configuration
 import PageMetadata from './components/PageMetadata';
+import { useTheme } from './contexts/ThemeContext';
 
 const images = [
   '/ss_online_1.jpg',
@@ -61,6 +62,7 @@ export default function Home() {
   const [fadeOut, setFadeOut] = useState(false);
   const [isPlaying, setIsPlaying] = useState(true);
   const totalSlides = images.length;
+  const { mode } = useTheme();
 
   // Update user state when session changes
   useEffect(() => {
@@ -135,7 +137,7 @@ export default function Home() {
         keywords="XLIFF translator, JSON translator, localization tool, translation software, multilingual support, file translation"
         canonicalPath="/"
       />
-      <div className={styles.container}>
+      <div className={styles.container} data-theme={mode}>
         {/* Hero Section */}
         <section className={styles.heroSection}>
           <div className={styles.heroContent}>
@@ -238,7 +240,7 @@ export default function Home() {
                 description: t('qualityAssuranceDesc')
               },
             ].map((advantage, index) => (
-              <Card key={index} className={styles.advantageCard} elevation={0}>
+              <Card key={index} className={styles.advantageCard} elevation={0} data-theme={mode}>
                 <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%' }}>
                   <Box className={styles.iconWrapper}>
                     {advantage.icon}
@@ -282,7 +284,7 @@ export default function Home() {
                 description: t('businessesDesc')
               },
             ].map((useCase, index) => (
-              <Card key={index} className={styles.useCaseCard} elevation={0}>
+              <Card key={index} className={styles.useCaseCard} elevation={0} data-theme={mode}>
                 <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%' }}>
                   <Box className={styles.iconWrapper}>
                     {useCase.icon}
@@ -331,7 +333,7 @@ export default function Home() {
                 description: t('downloadDesc')
               }
             ].map((step, index) => (
-              <Card key={index} className={styles.stepCard} elevation={0}>
+              <Card key={index} className={styles.stepCard} elevation={0} data-theme={mode}>
                 <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%' }}>
                   <Typography className={styles.stepNumber}>
                     {step.step}
@@ -355,7 +357,7 @@ export default function Home() {
           </Typography>
           <div className={styles.testimonialGrid}>
             {testimonials.map((testimonial, index) => (
-              <Card key={index} className={styles.testimonialCard} elevation={0}>
+              <Card key={index} className={styles.testimonialCard} elevation={0} data-theme={mode}>
                 <CardContent>
                   <Box className={styles.avatarWrapper}>
                     <Avatar className={styles.avatar} sx={{ mr: 2 }}>

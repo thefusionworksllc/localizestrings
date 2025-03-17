@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 import supabase from '../supabaseClient';
 import { useRouter } from 'next/navigation';
-import { useColorMode } from '../contexts/ThemeContext';
+import { useTheme } from '../contexts/ThemeContext';
 import sharedStyles from '../styles/shared.module.css';
 import styles from './page.module.css';
 
@@ -22,7 +22,7 @@ export default function ForgotPassword() {
   const [loading, setLoading] = useState(false);
   const [mounted, setMounted] = useState(false);
   const router = useRouter();
-  const { isDarkMode } = useColorMode();
+  const { mode } = useTheme();
 
   useEffect(() => {
     setMounted(true);
@@ -36,12 +36,12 @@ export default function ForgotPassword() {
 
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/login`,
+        redirectTo: `${window.location.origin}/reset-password`,
       });
 
       if (error) throw error;
 
-      setSuccess('Password reset link has been sent to your email!');
+      setSuccess('Password reset link sent to your email!');
     } catch (error) {
       setError(error.message);
     } finally {
@@ -58,10 +58,14 @@ export default function ForgotPassword() {
   }
 
   return (
-    <Box className={`${styles.root} ${isDarkMode ? styles.darkTheme : ''}`}>
-      <Box className={styles.container}>
-        <Typography variant="h4" className={styles.title}>
-          Forgot Password
+    <Box className={`${sharedStyles.pageContainer} ${styles.root}`} data-theme={mode}>
+      <Box className={`${sharedStyles.contentCard} ${styles.container}`} data-theme={mode}>
+        <Typography variant="h4" className={`${sharedStyles.title} ${styles.title}`}>
+          Reset Password
+        </Typography>
+        
+        <Typography variant="body1" className={styles.description}>
+          Enter your email address and we'll send you a link to reset your password.
         </Typography>
         
         <Box component="form" onSubmit={handleResetPassword} className={styles.form}>
@@ -91,12 +95,13 @@ export default function ForgotPassword() {
               }}
             />
           </div>
-
+          
           {error && (
             <Alert severity="error" sx={{ mt: 2 }}>
               {error}
             </Alert>
           )}
+          
           {success && (
             <Alert severity="success" sx={{ mt: 2 }}>
               {success}
@@ -121,7 +126,7 @@ export default function ForgotPassword() {
               onClick={navigateToLogin}
               className={styles.link}
             >
-              Remembered your password? Sign In
+              Back to Sign In
             </Button>
           </Box>
         </Box>

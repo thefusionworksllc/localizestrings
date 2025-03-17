@@ -12,7 +12,7 @@ import {
 } from '@mui/material';
 import supabase from '../supabaseClient';
 import { useRouter } from 'next/navigation';
-import { useColorMode } from '../contexts/ThemeContext';
+import { useTheme } from '../contexts/ThemeContext';
 import sharedStyles from '../styles/shared.module.css';
 import styles from './page.module.css';
 
@@ -23,7 +23,7 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [mounted, setMounted] = useState(false);
   const router = useRouter();
-  const { isDarkMode } = useColorMode();
+  const { mode } = useTheme();
 
   useEffect(() => {
     setMounted(true);
@@ -65,8 +65,8 @@ export default function Login() {
   }
 
   return (
-    <Box className={`${sharedStyles.pageContainer} ${styles.root} ${isDarkMode ? styles.darkTheme : ''}`}>
-      <Box className={`${sharedStyles.contentCard} ${styles.loginContainer}`}>
+    <Box className={`${sharedStyles.pageContainer} ${styles.root}`} data-theme={mode}>
+      <Box className={`${sharedStyles.contentCard} ${styles.loginContainer}`} data-theme={mode}>
         <Typography variant="h4" className={`${sharedStyles.title} ${styles.title}`}>
           Sign In
         </Typography>

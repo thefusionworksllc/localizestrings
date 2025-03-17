@@ -1,25 +1,52 @@
+/* Define CSS variables for theming */
+.variables {
+  --background-primary: #ffffff;
+  --background-secondary: #f9f9f9;
+  --text-primary: #1a1a1a;
+  --text-secondary: #6b7280;
+  --primary-color: #7C3AED;
+  --primary-dark: #6D28D9;
+  --card-background: #ffffff;
+  --card-border: rgba(124, 58, 237, 0.1);
+  --card-shadow: rgba(0, 0, 0, 0.05);
+}
+
 .container {
+  composes: variables;
   min-height: 100vh;
-  background: #ffffff;
+  background-color: var(--background-primary);
+  padding: 2rem 1rem;
+}
+
+.container[data-theme="dark"] {
+  --background-primary: #121212;
+  --background-secondary: #1e1e1e;
+  --text-primary: #f3f4f6;
+  --text-secondary: #9ca3af;
+  --primary-color: #8B5CF6;
+  --primary-dark: #7C3AED;
+  --card-background: #1e1e1e;
+  --card-border: rgba(124, 58, 237, 0.2);
+  --card-shadow: rgba(0, 0, 0, 0.2);
 }
 
 .testimonialsSection {
   padding: 4rem 2rem;
-  background: #fafafa;
+  background: var(--background-secondary);
   text-align: center;
 }
 
 .sectionTitle {
   font-size: 1.75rem;
   font-weight: 700;
-  color: #7c3aed;
+  color: var(--primary-color);
   margin-bottom: 1rem;
 }
 
 .sectionSubtitle {
   max-width: 800px;
   margin: 0 auto 3rem;
-  color: #6b7280;
+  color: var(--text-secondary);
 }
 
 .testimonialGrid {
@@ -27,14 +54,14 @@
   margin: 0 auto;
 }
 
-/* Testimonial Card Styles */
+/* Testimonial Card Specific Styles */
 .testimonialCard {
   padding: 1.5rem;
-  background: white;
+  background: var(--card-background);
   border-radius: 16px;
-  border: 1px solid rgba(124, 58, 237, 0.1);
+  border: 1px solid var(--card-border);
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 12px var(--card-shadow);
   position: relative;
   overflow: hidden;
   height: 100%;
@@ -82,21 +109,46 @@
 .cardTitle {
   margin-bottom: 0.25rem !important;
   font-weight: 700 !important;
-  color: #1a1a1a !important;
+  color: var(--text-primary) !important;
   transition: color 0.3s ease !important;
 }
 
 .testimonialCard:hover .cardTitle {
-  color: #7c3aed !important;
+  color: var(--primary-color) !important;
 }
 
 .quote {
   font-style: italic !important;
-  color: #4b5563 !important;
+  color: var(--text-secondary) !important;
   position: relative !important;
   z-index: 1 !important;
   margin-top: 1rem !important;
   line-height: 1.6 !important;
+}
+
+/* Make sure card titles are clearly visible in dark mode */
+.container[data-theme="dark"] .cardTitle {
+  color: #f3f4f6 !important;
+}
+
+.container[data-theme="dark"] .testimonialCard:hover .cardTitle {
+  color: #a78bfa !important;
+}
+
+.container[data-theme="dark"] .sectionTitle {
+  color: #8b5cf6;
+}
+
+.container[data-theme="dark"] .quote {
+  color: #9ca3af !important;
+}
+
+.container[data-theme="dark"] .testimonialCard::after {
+  color: rgba(139, 92, 246, 0.1);
+}
+
+.container[data-theme="dark"] .testimonialCard:hover::after {
+  color: rgba(139, 92, 246, 0.2);
 }
 
 /* Responsive adjustments */

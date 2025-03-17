@@ -4,8 +4,11 @@ import { Typography, Box, Grid, Paper, Card, CardContent } from '@mui/material';
 import { Language, Speed, Security, Code } from '@mui/icons-material';
 import sharedStyles from '../styles/shared.module.css';
 import styles from './page.module.css';
+import { useTheme } from '../contexts/ThemeContext';
 
 export default function About() {
+  const { mode } = useTheme();
+  
   const features = [
     {
       icon: <Language sx={{ fontSize: 40, color: '#7c3aed' }} />,
@@ -41,15 +44,15 @@ export default function About() {
         <Grid container spacing={4}>
           {features.map((feature, index) => (
             <Grid item xs={12} sm={6} md={3} key={index}>
-              <Card className={styles.featureCard} elevation={0}>
+              <Card className={styles.featureCard} elevation={0} data-theme={mode}>
                 <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%' }}>
                   <Box className={styles.iconWrapper}>
                     {feature.icon}
                   </Box>
-                  <Typography variant="h6" className={styles.cardTitle}>
+                  <Typography variant="h6" className={styles.cardTitle} data-theme={mode}>
                     {feature.title}
                   </Typography>
-                  <Typography variant="body2" className={styles.cardDescription}>
+                  <Typography variant="body2" className={styles.cardDescription} data-theme={mode}>
                     {feature.description}
                   </Typography>
                 </CardContent>

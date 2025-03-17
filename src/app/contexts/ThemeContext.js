@@ -1,103 +1,99 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect } from 'react';
-import { ThemeProvider as MuiThemeProvider, createTheme } from '@mui/material';
+import React, { createContext, useState, useEffect, useContext } from 'react';
+import { ThemeProvider as MuiThemeProvider, createTheme } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
 
-const ThemeContext = createContext({
-  isDarkMode: false,
-  toggleColorMode: () => {}
+// Create the context
+export const ThemeContext = createContext({
+  mode: 'light',
+  toggleMode: () => {},
+  isDarkMode: false
 });
 
-export const lightTheme = createTheme({
-  palette: {
-    mode: 'light',
-    primary: {
-      main: '#7C3AED',
-      dark: '#6D28D9',
-      light: '#8B5CF6',
-      contrastText: '#fff',
-    },
-    background: {
-      default: '#F9FAFB',
-      paper: '#FFFFFF',
-    },
-    text: {
-      primary: '#111827',
-      secondary: '#4B5563',
-    },
-  },
-});
+// Custom hook to use the theme context
+export const useTheme = () => useContext(ThemeContext);
 
-export const darkTheme = createTheme({
-  palette: {
-    mode: 'dark',
-    primary: {
-      main: '#8B5CF6',
-      dark: '#7C3AED',
-      light: '#A78BFA',
-      contrastText: '#fff',
-    },
-    background: {
-      default: '#111827',
-      paper: '#1F2937',
-    },
-    text: {
-      primary: '#F9FAFB',
-      secondary: '#D1D5DB',
-    },
-  },
-});
-
+// Theme provider component
 export function ThemeProvider({ children }) {
-  const [isDarkMode, setIsDarkMode] = useState(false);
-  const [mounted, setMounted] = useState(false);
-
+  // Initialize with system preference, defaulting to 'light' if not available
+  const [mode, setMode] = useState('light');
+  
   useEffect(() => {
-    setMounted(true);
-    // Check local storage for theme preference
-    try {
-      const savedTheme = localStorage.getItem('theme');
-      if (savedTheme) {
-        setIsDarkMode(savedTheme === 'dark');
-      } else if (typeof window !== 'undefined') {
-        // Check system preference
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        setIsDarkMode(prefersDark);
-      }
-    } catch (error) {
-      console.error('Error accessing localStorage:', error);
+    // Check for saved preference in localStorage
+    const savedMode = localStorage.getItem('themeMode');
+    
+    if (savedMode) {
+      setMode(savedMode);
+    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      // If no saved preference, use system preference
+      setMode('dark');
     }
-  }, []);
-
-  const toggleColorMode = () => {
-    setIsDarkMode(prev => {
-      try {
-        const newTheme = !prev;
-        localStorage.setItem('theme', newTheme ? 'dark' : 'light');
-        return newTheme;
-      } catch (error) {
-        console.error('Error accessing localStorage:', error);
-        return prev;
+    
+    // Listen for changes in system preference
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const handleChange = (e) => {
+      if (!localStorage.getItem('themeMode')) {
+        setMode(e.matches ? 'dark' : 'light');
       }
-    });
+    };
+    
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
+  }, []);
+  
+  // Toggle between light and dark mode
+  const toggleMode = () => {
+    const newMode = mode === 'light' ? 'dark' : 'light';
+    setMode(newMode);
+    localStorage.setItem('themeMode', newMode);
   };
-
-  // Use a default theme until the component is mounted
-  const theme = mounted ? (isDarkMode ? darkTheme : lightTheme) : lightTheme;
-
+  
+  // Create MUI theme based on current mode
+  const theme = createTheme({
+    palette: {
+      mode,
+      primary: {
+        main: '#7c3aed', // Purple
+        dark: '#6d28d9',
+        light: '#8b5cf6',
+        contrastText: '#ffffff',
+      },
+      secondary: {
+        main: '#6366f1', // Indigo
+        dark: '#4f46e5',
+        light: '#818cf8',
+        contrastText: '#ffffff',
+      },
+      background: {
+        default: mode === 'light' ? '#ffffff' : '#121212',
+        paper: mode === 'light' ? '#ffffff' : '#1e1e1e',
+      },
+      text: {
+        primary: mode === 'light' ? '#1a1a1a' : '#f3f4f6',
+        secondary: mode === 'light' ? '#6b7280' : '#9ca3af',
+      },
+    },
+    typography: {
+      fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+    },
+    components: {
+      MuiCssBaseline: {
+        styleOverrides: {
+          body: {
+            transition: 'background-color 0.3s ease, color 0.3s ease',
+          },
+        },
+      },
+    },
+  });
+  
   return (
-    <ThemeContext.Provider value={{ isDarkMode: mounted ? isDarkMode : false, toggleColorMode }}>
+    <ThemeContext.Provider value={{ mode, toggleMode, isDarkMode: mode === 'dark' }}>
       <MuiThemeProvider theme={theme}>
+        <CssBaseline />
         {children}
       </MuiThemeProvider>
     </ThemeContext.Provider>
   );
 }
-
-export const useColorMode = () => {
-  const context = useContext(ThemeContext);
-  if (context === undefined) {
-    throw new Error('useColorMode must be used within a ThemeProvider');
-  }
-  return context;
-};

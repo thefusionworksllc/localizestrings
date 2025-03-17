@@ -38,6 +38,7 @@ import { useTranslation } from 'react-i18next';
 import './i18n'; // Import the i18n configuration
 import SchemaMarkup from './components/SchemaMarkup';
 import Breadcrumbs from './components/Breadcrumbs';
+import ThemeToggle from './components/ThemeToggle';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -162,7 +163,7 @@ export default function RootLayout({ children }) {
                 onClick={() => handleNavigation('/')}
                 onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.15)'}
                 onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
-                startIcon={<HomeIcon />}
+               // startIcon={<HomeIcon />}
                 sx={{ 
                     mr: '10px', 
                     '&:hover': {
@@ -285,7 +286,7 @@ export default function RootLayout({ children }) {
               <Button 
                 color="inherit" 
                 onClick={() => handleNavigation('/about')}
-                startIcon={<Info />}
+              //  startIcon={<Info />}
                 onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.15)'}
                 onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
                 sx={{ 
@@ -300,7 +301,10 @@ export default function RootLayout({ children }) {
                 {t('aboutUs')}
               </Button>
               
-              <LanguageSwitcher />
+              <Box sx={{ display: 'flex', alignItems: 'center', ml: 'auto' }}>
+                <ThemeToggle />
+                <LanguageSwitcher />
+              </Box>
                        
               {user ? (
                 <>
@@ -807,7 +811,7 @@ export default function RootLayout({ children }) {
 
         <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
           <Breadcrumbs />
-          <Box component="main" sx={{ flexGrow: 1,mt: '64px' }}>
+          <Box component="main" sx={{ flexGrow: 1,mt: '35px' }}>
             {children}
           </Box>
         </Box>
