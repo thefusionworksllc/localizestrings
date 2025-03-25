@@ -1,7 +1,7 @@
 export const metadata = {
   title: 'LocalizeStrings - Professional XLIFF & JSON Translation Tool',
   description: 'Streamline your localization workflow with our powerful XLIFF and JSON translation tools. Support for 100+ languages, real-time collaboration, and secure file handling.',
-  keywords: 'XLIFF translator, JSON translator, localization tool, translation software, multilingual support, file translation',
+  keywords: 'XLIFF translator,XLIFF, JSON translator, localization tool, translation software, multilingual support, file translation',
   openGraph: {
     title: 'LocalizeStrings - Professional XLIFF & JSON Translation Tool',
     description: 'Streamline your localization workflow with our powerful XLIFF and JSON translation tools. Support for 100+ languages, real-time collaboration, and secure file handling.',
