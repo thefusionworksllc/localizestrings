@@ -37,7 +37,6 @@
     "xml-js": "^1.6.11"
   },
   "devDependencies": {
-    "canvas": "^2.11.2",
     "glob": "^10.3.10"
   }
 }
